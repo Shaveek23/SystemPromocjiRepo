@@ -45,5 +45,18 @@ namespace WebApi.Database.Mapper
             
             return list.AsQueryable();
         }
+
+
+        public static IQueryable<Person> Map(IQueryable<PersonDTO> people)
+        {
+            List<Person> list = new List<Person>();
+            foreach (var person in people)
+            {
+                list.Add(Map(person));
+            }
+
+            return list.AsQueryable();
+        }
+
     }
 }
