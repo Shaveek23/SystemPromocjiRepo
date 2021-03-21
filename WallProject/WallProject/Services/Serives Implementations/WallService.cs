@@ -12,11 +12,8 @@ namespace WallProject.Services.Serives_Implementations
 {
     public class WallService : IWallService
     {
-        
+        //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
         private readonly IHttpClientFactory clientFactory;
-        private string BaseUrl = "https://webapi20210317153051.azurewebsites.net/api/";
-       
-
         public WallService(IHttpClientFactory clientFactory)
         {
 
@@ -28,8 +25,8 @@ namespace WallProject.Services.Serives_Implementations
         [HttpGet]
         async public Task<PersonViewModel> getUser()
         {
-            var client = clientFactory.CreateClient();
-            var result = await client.GetAsync(BaseUrl+"person");
+            var client = clientFactory.CreateClient("webapi");
+            var result = await client.GetAsync("person");
            
             if(result!=null)
             {

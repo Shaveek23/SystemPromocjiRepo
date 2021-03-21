@@ -26,7 +26,8 @@ namespace WallProject
         public void ConfigureServices(IServiceCollection services)
         {
             //Dependency MOJE
-            services.AddHttpClient();
+            services.AddHttpClient("webapi",c =>
+                { c.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/api/"); });
             services.AddControllersWithViews();
             services.AddScoped<IWallService, WallService>();
         }

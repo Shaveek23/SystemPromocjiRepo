@@ -13,18 +13,18 @@ namespace WallProject.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IWallService service;
+        private readonly IWallService _service;
 
         public HomeController(ILogger<HomeController> logger, IWallService service)
         {
             _logger = logger;
-            this.service = service;
+           _service = service;
         }
 
         public async Task<IActionResult> WallAsync()
         {
            
-            PersonViewModel user= await service.getUser();
+            PersonViewModel user= await _service.getUser();
             WallViewModel wall = new WallViewModel();
             wall.Owner = user;
             //Bedzie uzupełniane jak beda w bazie
