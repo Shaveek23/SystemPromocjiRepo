@@ -1,6 +1,8 @@
 using System;
 using WebApi.Models.POCO;
 using Xunit;
+using WebApi.Controllers;
+
 
 namespace WebApiTest
 {
