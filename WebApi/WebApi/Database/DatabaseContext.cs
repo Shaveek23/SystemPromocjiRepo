@@ -14,6 +14,7 @@ namespace WebApi.Database
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
              : base(options)
         {
+
         }
         virtual public DbSet<Person> Persons { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
