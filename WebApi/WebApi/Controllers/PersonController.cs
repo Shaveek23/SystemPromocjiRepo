@@ -11,6 +11,14 @@ using WebApi.Services.Services_Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
+    /* when using [ApiController] validation is performed autmatically - don't need to execute: 
+        if (!ModelState.IsValid)           // Invokes the build-in
+            return BadRequest(ModelState); // validation mechanism
+        
+        in case of error 400 status code is returned with ModelState as shown above.
+        Validation rules are defined by dto class attributes (i.e: [Required]) or Validate method
+    */
+
     [Route("api/[controller]")]
     public class PersonController : Controller
     {

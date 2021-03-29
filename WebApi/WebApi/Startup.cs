@@ -24,6 +24,7 @@ namespace WebApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -42,6 +43,8 @@ namespace WebApi
             // adding repository services
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IPersonRepository, PersonRepository>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
