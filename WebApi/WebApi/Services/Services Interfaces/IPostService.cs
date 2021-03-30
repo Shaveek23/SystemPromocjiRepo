@@ -12,5 +12,7 @@ namespace WebApi.Services.Services_Interfaces
 
         public PostDTO GetById(int id);
         public Task<PostDTO> AddPersonAsync(PostDTO newPostDTO);
+        IQueryable<PostDTO> GetAllOfUser(int userID);
+        void DeletePost(int id);
     }
 }
