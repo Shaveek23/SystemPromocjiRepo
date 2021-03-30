@@ -57,6 +57,53 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
+        //Mapowanie dla komentarzy
+        public static CommentDTO Map(Comment comment)
+        {
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.CommentID = comment.CommentID;
+            commentDTO.UserID = comment.UserID;
+            commentDTO.PostID = comment.PostID;
+            commentDTO.DateTime = comment.DateTime;
+            commentDTO.Content = comment.Content;
+            return commentDTO;
+
+        }
+        public static Comment Map(CommentDTO commentDTO)
+        {
+            Comment comment = new Comment();
+            comment.CommentID = commentDTO.CommentID;
+            comment.UserID = commentDTO.UserID;
+            comment.PostID = commentDTO.PostID;
+            comment.DateTime = commentDTO.DateTime;
+            comment.Content = commentDTO.Content;
+            return comment;
+
+        }
+        public static IQueryable<CommentDTO> Map(IQueryable<Comment> comments)
+        {
+            List<CommentDTO> list = new List<CommentDTO>();
+            foreach (var comment in comments)
+            {
+                list.Add(Map(comment));
+            }
+
+            return list.AsQueryable();
+        }
+
+
+        public static IQueryable<Comment> Map(IQueryable<CommentDTO> comments)
+        {
+            List<Comment> list = new List<Comment>();
+            foreach (var comment in comments)
+            {
+                list.Add(Map(comment));
+            }
+
+            return list.AsQueryable();
+        }
 
     }
+
 }
+
