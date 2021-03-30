@@ -35,7 +35,6 @@ namespace WebApi.Models.DTO
         //public IQueryable<CommentDTO> comments { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-
             if (content == "" && title == "")
                 yield return new ValidationResult("If content is empty, post must contain some title.", new[] { nameof(PostDTO) });
         }

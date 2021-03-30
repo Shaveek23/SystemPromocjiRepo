@@ -25,61 +25,60 @@ namespace WebApi.Controllers
 
 
         [HttpGet]
-        public IQueryable<PostDTO> GetAll([FromHeader] int headerID)
+        public IQueryable<PostDTO> GetAll([FromHeader] int userID)
         {
             return _postService.GetAll();
         }
 
-        [HttpGet("{UserID}")]
-        public PostDTO GetUserPosts(int UserID) //[FromHeader] int headerID
+        [HttpGet("{userID}")]
+        public IQueryable<PostDTO> GetUserPosts([FromQuery] int UserID) //[FromHeader] int headerID
         {
-            return _postService.GetById(UserID);
+            return _postService.GetAllOfUser(UserID);
         }
 
-        [HttpGet("/post/{postID}")]
-        public PostDTO Get([FromHeader] int headerID, int postID)
+        [HttpGet("{postID}")]
+        public PostDTO Get([FromHeader] int userID, [FromQuery] int id)
         {
-            return _postService.GetById(postID);
+            return _postService.GetById(id);
         }
 
 
-        [HttpDelete("/post/{postID}")]
-        public PostDTO Delete([FromHeader] int headerID, int postID)
+        [HttpDelete("{postID}")]
+        public void Delete([FromHeader] int userID, [FromQuery] int id, [FromBody] DateTime dateTime)
         {
-            return _postService.GetById(postID);
+            _postService.DeletePost(id);
         }
 
-        [HttpPut("/post/{postID}")]
-        public PostDTO Edit([FromHeader] int headerID, int PostID)
+        [HttpPut("{postID}")]
+        public void Edit([FromHeader] int userID, [FromQuery] int id, [FromBody] PostEditDTO body)
         {
-            return _postService.GetById(PostID);
+            _postService.EditPost(id, body);
         }
 
-        [HttpPost("/post")]
-        public PostDTO Create(int PostID)
+        [HttpPost("{postID}")]
+        public int Create([FromBody] PostEditDTO body)
         {
-            return _postService.GetById(PostID);
+            return _postService.CreatePost(body);
         }
 
         //I need Comment DTO to implement this endpoint
-        [HttpGet("/post/{postID}/comments")]
-        public void GetPostComments(int PostID)
-        {
-            //return _postService.GetAllComments(PostID);
-        }
+        //[HttpGet("{postID}/comments")]
+        //public IQueryable<CommentDTO> GetPostComments([FromHeader] int userID, [FromQuery] )
+        //{
+        //    return _postService.GetAllComments(PostID);
+        //}
 
         //I need Like-Post Table in database
         [HttpGet("/post/{postID}/likeUsers")]
-        public PostLikesDTO GetPostLikes(int PostID)
+        public PostLikesDTO GetPostLikes([FromQuery] int postID)
         {
-            //return _postService.GetAllLikes(PostID);
-            return new PostLikesDTO{ likers=null };
+            return _postService.GetLikes(postID);
         }
 
         [HttpPut("/post/{postID}/likeUsers")]
-        public void EditLikeStatus(int PostID)
+        public void EditLikeStatus([FromHeader] int userID, [FromQuery] int commentID, [FromBody] bool Like)
         {
-            //return _postService.EditLikeStatus(PostID);
+            _postService.EditLikeStatus(commentID, Like);
         }
 
     }
