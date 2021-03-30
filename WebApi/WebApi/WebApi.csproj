@@ -6,6 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210312140625_AddPeople.cs" />
+    <Compile Remove="Migrations\20210312140625_AddPeople.Designer.cs" />
+    <Compile Remove="Migrations\20210329185615_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329185615_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210329200756_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329200756_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210329201144_AddPsts.cs" />
+    <Compile Remove="Migrations\20210329201144_AddPsts.Designer.cs" />
+    <Compile Remove="Migrations\20210329201210_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329201210_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330193606_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330193606_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330194128_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330194128_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330201145_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330201145_AddPosts.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">

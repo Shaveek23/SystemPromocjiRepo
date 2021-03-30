@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Post : IPostable
+    public class Post
     {
-        public int UserId { get; set ; }
+        [Key]
+        public int PostID { get; set; }
+        public int UserID { get; set ; }
+        public int CategoryID { get; set; }
         public DateTime Date { get ; set; }
-        public List<int> Likes { get; set; }
-        public IPostableData Content { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string Localization { get; set; }
+        public string ShopName { get; set; }
+        public bool IsPromoted { get; set; }
     }
 }
