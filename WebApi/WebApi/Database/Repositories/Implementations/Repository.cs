@@ -18,7 +18,10 @@ namespace WebApi.Database
         {
             try
             {
-                return dbContext.Find<TEntity>(id);
+                
+                var result= dbContext.Find<TEntity>(id);
+                if (result != null) return result;
+                throw new Exception();
             }
             catch (Exception ex)
             {

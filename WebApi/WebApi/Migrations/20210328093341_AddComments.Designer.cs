@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210328093341_AddComments")]
+    partial class AddComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,32 +46,6 @@ namespace WebApi.Migrations
                     b.HasKey("CommentID");
 
                     b.ToTable("Comment");
-
-                    b.HasData(
-                        new
-                        {
-                            CommentID = 1,
-                            Content = "tralalala ",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 418, DateTimeKind.Local).AddTicks(6952),
-                            PostID = 1,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 2,
-                            Content = "tralalala pararara",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2920),
-                            PostID = 2,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 3,
-                            Content = "tu ti tu rum tu tu",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2972),
-                            PostID = 1,
-                            UserID = 2
-                        });
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>

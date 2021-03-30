@@ -2,7 +2,7 @@
 
 namespace WebApi.Migrations
 {
-    public partial class AddPeople : Migration
+    public partial class fixing : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

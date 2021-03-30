@@ -39,10 +39,12 @@ namespace WebApi
                      options.UseSqlServer(Configuration.GetConnectionString("SystemPromocjiDb")));
 
             services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             // adding repository services
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IPersonRepository, PersonRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
 
 
         }

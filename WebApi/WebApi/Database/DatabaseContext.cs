@@ -17,6 +17,7 @@ namespace WebApi.Database
 
         }
         virtual public DbSet<Person> Persons { get; set; }
+        virtual public DbSet<Comment> Comments { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -41,6 +42,26 @@ namespace WebApi.Database
                 (
                   new Person { PersonID = 1, FirstName = "Adam", LastName = "Nowak", Address = "ul. Koszykowa 57A/7", City = "Warszawa" }
                 );
+
+            });
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                //CO z relacjami ??
+                modelBuilder.Entity<Comment>().ToTable("Comment");
+                modelBuilder.Entity<Comment>().HasKey(p => p.CommentID);
+                modelBuilder.Entity<Comment>().Property(p => p.CommentID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<Comment>().Property(p => p.DateTime).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<Comment>().Property(p => p.PostID).IsRequired();
+                modelBuilder.Entity<Comment>().Property(p => p.UserID).IsRequired();
+                modelBuilder.Entity<Comment>().Property(p => p.Content).IsRequired().HasMaxLength(255);
+
+                modelBuilder.Entity<Comment>().HasData
+                (
+                  new Comment { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Now, Content = "tralalala " },
+                    new Comment { CommentID = 2, UserID = 1, PostID = 2, DateTime = DateTime.Now, Content = "tralalala pararara" },
+                      new Comment { CommentID = 3, UserID = 2, PostID = 1, DateTime = DateTime.Now, Content = "tu ti tu rum tu tu" }
+                );
+
 
             });
 
