@@ -70,6 +70,7 @@ namespace WebApi.Database
 
             try
             {
+                
                 dbContext.Update(entity);
                 await dbContext.SaveChangesAsync();
 

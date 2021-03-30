@@ -6,7 +6,7 @@ using Xunit;
 
 namespace WebApiTest
 {
-    public class ComentTest
+    public class CommentTest
     {
         [Fact]
         public void Test()

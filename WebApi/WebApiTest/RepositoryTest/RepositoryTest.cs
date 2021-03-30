@@ -9,6 +9,7 @@ using WebApi.Database;
 using System.Linq;
 using Xunit;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace WebApiTest
 {
@@ -61,9 +62,9 @@ namespace WebApiTest
                 dbContext.SaveChanges();
 
                 var cls = new Repository<Person>(dbContext);
-                var actual = cls.GetById(0);
+               
 
-                Assert.True(actual == null);
+                Assert.Throws<Exception>(() => cls.GetById(0));
             }
         }
 

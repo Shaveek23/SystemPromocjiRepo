@@ -12,15 +12,14 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public CommentRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        public void DeleteComment(int id)
+        public void DeleteComment(int id, int userId)
         {
-           
-
             try
             {
-                
-                 dbContext.Remove(dbContext.Find<Comment>(id));
+                dbContext.Remove(dbContext.Find<Comment>(id));
                 dbContext.SaveChanges();
+
+
             }
             catch (Exception ex)
             {
@@ -29,7 +28,7 @@ namespace WebApi.Database.Repositories.Implementations
             return;
         }
 
-        public Task EditLikeOnComment(int commentId)
+        public Task EditLikeOnComment(int commentId, int userId)
         {
             throw new NotImplementedException();
         }

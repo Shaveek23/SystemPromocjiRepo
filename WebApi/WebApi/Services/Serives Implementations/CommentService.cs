@@ -19,36 +19,38 @@ namespace WebApi.Services.Serives_Implementations
             _commentRepository = commentRepository;
         }
 
-        public async Task<CommentDTO> AddCommentAsync(CommentDTO comment)
+        public async Task<CommentDTO> AddCommentAsync(int userId,CommentDTO comment)
         {
+            //Tu nw bo odziedziczona
             Comment newComment = Mapper.Map(comment);
             Comment createdComment = await _commentRepository.AddAsync(newComment);
             return Mapper.Map(createdComment);
+
         }
 
-        public void DeleteComment(int commentId)
+        public void DeleteComment(int commentId,int userId)
         {
-            _commentRepository.DeleteComment(commentId);
+            _commentRepository.DeleteComment(commentId,userId);
         }
 
-        public async Task<CommentDTO> EditCommentAsync(CommentDTO comment)
+        public async Task<CommentDTO> EditCommentAsync(int commentId,int userId,CommentDTO comment)
         {
             Comment newComment = Mapper.Map(comment);
             Comment editedComment = await _commentRepository.UpdateAsync(newComment);
             return Mapper.Map(editedComment);
         }
 
-        public Task EditLikeOnCommentAsync(int commentId)
+        public Task EditLikeOnCommentAsync(int commentId,int userId)
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<CommentDTO> GetAll()
+        public IQueryable<CommentDTO> GetAll(int userId)
         {
             return Mapper.Map(_commentRepository.GetAll());
         }
 
-        public CommentDTO GetById(int commentId)
+        public CommentDTO GetById(int commentId,int userId)
         {
             return Mapper.Map(_commentRepository.GetById(commentId));
         }

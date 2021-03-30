@@ -22,39 +22,40 @@ namespace WebApi.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public IQueryable<CommentDTO> GetAll()
+        public IQueryable<CommentDTO> GetAll([FromHeader] int userId)
         {
-            return _commentService.GetAll();
+            return _commentService.GetAll(userId);
         }
         [HttpGet("{id}")]
-        public CommentDTO GetById( int id)
+        public CommentDTO GetById([FromRoute] int id, [FromHeader] int userId)
         {
-            return _commentService.GetById(id);
+            return _commentService.GetById(id,userId);
+        }
+       //Nw jak w post ma byc juz id 
+        [HttpPost]
+        public async Task<CommentDTO> AddComment([FromBody] CommentDTO comment, [FromHeader] int userId)
+        {
+            return await _commentService.AddCommentAsync(userId,comment);
+        }
+        [HttpDelete("{id}")]
+        public  void DeleteComment( [FromRoute] int id,[FromHeader] int userId)
+        {
+            _commentService.DeleteComment(id,userId);
+        }
+        [HttpPut("{id}")]
+        public async Task<CommentDTO> EditComment([FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
+        {
+            return await _commentService.EditCommentAsync(id,userId,comment);
         }
         [HttpGet("{id}/likedUsers")]
-        public IQueryable<int> GetLikedUsers([FromQuery] int id)
+        public IQueryable<int> GetLikedUsers([FromRoute] int id)
         {
             return _commentService.GetLikedUsers(id);
         }
-        [HttpPost]
-        public async Task<CommentDTO> AddComment( [FromBody] CommentDTO comment)
+        [HttpPut("{id}/likedUsers")]
+        public async Task EditLikeOnComment([FromRoute] int id, [FromHeader] int userId)
         {
-            return await _commentService.AddCommentAsync(comment);
-        }
-        [HttpDelete("{id}")]
-        public  void DeleteComment( int id)
-        {
-            _commentService.DeleteComment(id);
-        }
-        [HttpPut]
-        public async Task<CommentDTO> EditComment( [FromBody] CommentDTO comment)
-        {
-            return await _commentService.EditCommentAsync(comment);
-        }
-        [HttpPut]
-        public async Task EditLikeOnComment( [FromQuery] int commentId)
-        {
-            await _commentService.EditLikeOnCommentAsync( commentId);
+            await _commentService.EditLikeOnCommentAsync( id,userId);
         }
 
 
