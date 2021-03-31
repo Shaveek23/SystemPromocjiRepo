@@ -22,7 +22,7 @@ namespace WebApiTest.ControllerTest
 
         public void GetById_Test(int c_id, int u_id, int p_id, string content)
         {
-            DateTime date = DateTime.Today;
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
            
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.GetById(0, UserId)).Returns(new CommentDTO
@@ -60,7 +60,7 @@ namespace WebApiTest.ControllerTest
         [InlineData(3, 3, 3, "test3")]
         public void GetAll_Test(int c_id, int u_id, int p_id, string content)
         {
-            DateTime date = DateTime.Today;
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
 
             List<CommentDTO> comments = new List<CommentDTO>();
@@ -100,7 +100,7 @@ namespace WebApiTest.ControllerTest
         public void AddCommentDTO_Test(int c_id, int u_id, int p_id, string content)
         {
 
-            DateTime date = DateTime.Today;
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.AddCommentAsync(UserId,It.IsAny<CommentDTO>())).Returns(Task.Run(() =>
@@ -176,7 +176,7 @@ namespace WebApiTest.ControllerTest
 
         public void DeleteComment_Test(int c_id, int u_id)
         {
-            DateTime date = DateTime.Today;
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<ICommentService>();
 
@@ -193,7 +193,7 @@ namespace WebApiTest.ControllerTest
         [InlineData(3, 3, 3, "test3")]
         public void EditCommentDTO_Test(int c_id, int u_id, int p_id, string content)
         {
-            DateTime date = DateTime.Today;
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.EditCommentAsync(c_id,UserId,It.IsAny<CommentDTO>())).Returns(Task.Run(() =>

@@ -17,9 +17,9 @@ namespace WebApiTest.ServiceTest
         const int UserId = 1;
         List<Comment> comments = new List<Comment>
         {
-            new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
-             new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
-            new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" }
+            new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test" },
+             new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test2" },
+            new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test3" }
 
         };
 
@@ -71,8 +71,6 @@ namespace WebApiTest.ServiceTest
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.GetAll(UserId).ToList();
 
-            Assert.True(actual != null);
-            Assert.Equal(expected.Count, actual.Count);
             Assert.True(expected.All(item => actual.Any(actualItem => item.CommentID == actualItem.CommentID &&
               item.UserID == actualItem.UserID && item.Content == actualItem.Content &&
               item.PostID == actualItem.PostID)));
@@ -114,14 +112,14 @@ namespace WebApiTest.ServiceTest
 
             int initLength = comments.Count();
             var expected = comments;
-            var newCommentDTO = new CommentDTO() { CommentID = 4, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
-            var newComment = new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
-            expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" });
+            var newCommentDTO = new CommentDTO() { CommentID = 4, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newComment = new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" });
             var mockICommentRepository = new Mock<ICommentRepository>();
            
             mockICommentRepository.Setup(x => x.AddAsync(It.IsAny<Comment>())).Returns(Task.Run(() =>
             {
-                return new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
+                return new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
             }));
 
 
@@ -172,8 +170,8 @@ namespace WebApiTest.ServiceTest
         {
 
 
-            var newCommentDTO = new CommentDTO() { CommentID = 2, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
-            var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
+            var newCommentDTO = new CommentDTO() { CommentID = 2, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
             mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => newComment));

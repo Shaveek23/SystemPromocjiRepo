@@ -36,6 +36,7 @@ namespace WebApi.Services.Serives_Implementations
         public async Task<CommentDTO> EditCommentAsync(int commentId,int userId,CommentDTO comment)
         {
             Comment newComment = Mapper.Map(comment);
+            newComment.CommentID = commentId;
             Comment editedComment = await _commentRepository.UpdateAsync(newComment);
             return Mapper.Map(editedComment);
         }

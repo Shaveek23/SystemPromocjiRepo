@@ -15,9 +15,9 @@ namespace WebApiTest
         const int UserId = 1;
         void SeedComment(DatabaseContext dbContext)
         {
-            dbContext.Add(new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" });
-            dbContext.Add(new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" });
-            dbContext.Add(new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" });
+            dbContext.Add(new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test" });
+            dbContext.Add(new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test2" });
+            dbContext.Add(new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test3" });
 
             dbContext.SaveChanges();
         }
@@ -151,7 +151,7 @@ namespace WebApiTest
             {
                
                 int initLength = dbContext.Comments.Count();
-                var expected = new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "testNowy" };
+                var expected = new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
                 var cls = new CommentRepository(dbContext);
 
@@ -253,7 +253,7 @@ namespace WebApiTest
 
                 string expectedText = "zedytowany tekst";
 
-                var expected = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = expectedText };
+                var expected = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = expectedText };
                 var cls = new CommentRepository(dbContext);
 
                 var actual = cls.UpdateAsync(expected).Result;

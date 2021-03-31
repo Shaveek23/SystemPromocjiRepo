@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace WebApi.Controllers
             _commentService.DeleteComment(id,userId);
         }
         [HttpPut("{id}")]
-        public async Task<CommentDTO> EditComment([FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
+        public async Task<CommentDTO> EditComment([Required][FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
         {
             return await _commentService.EditCommentAsync(id,userId,comment);
         }
