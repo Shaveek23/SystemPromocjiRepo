@@ -18,7 +18,7 @@ namespace WebApi.Controllers
     {
         private readonly IPostService _postService;
         private readonly ILogger<PostController> _logger;
-        public PostController(IPostService postService, ILogger<PostController> logger)
+        public PostController(ILogger<PostController> logger , IPostService postService)
         {
             _logger = logger;
             _postService = postService;

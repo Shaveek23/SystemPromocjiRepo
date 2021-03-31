@@ -31,10 +31,10 @@ namespace WebApi.Services.Serives_Implementations
             return PostMapper.Map(_postRepository.GetById(id));
         }
 
-        public async Task<int> AddPostAsync(PostEditDTO newPostDTO, int id)
+        public async Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
-            createdPost.UserID = id;
+            createdPost.UserID = userID;
             createdPost.PostID = _postRepository.GetAll().Max(p => p.PostID) + 1;
             createdPost = await _postRepository.AddAsync(createdPost);
             return createdPost.PostID;
