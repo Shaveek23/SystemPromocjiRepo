@@ -47,7 +47,7 @@ namespace WebApi.Services.Serives_Implementations
 
         public void DeletePost(int id)
         {
-            _postRepository.RemoveAsync(_postRepository.GetById(id));
+            //_postRepository.RemoveAsync(_postRepository.GetById(id));
         }
 
         public Task<Post> EditPost(int id, PostEditDTO body)
