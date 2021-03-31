@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
+using WebApi.Models.POCO;
 
 namespace WebApi.Services.Services_Interfaces
 {
@@ -12,11 +13,10 @@ namespace WebApi.Services.Services_Interfaces
         public IQueryable<PostDTO> GetAll();
 
         public PostDTO GetById(int id);
-        public Task<PostDTO> AddPersonAsync(PostDTO newPostDTO);
+        public Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID);
         IQueryable<PostDTO> GetAllOfUser(int userID);
         void DeletePost(int id);
-        void EditPost(int id, PostEditDTO body);
-        int CreatePost(PostEditDTO body);
+        Task<Post> EditPost(int id, PostEditDTO body);
         PostLikesDTO GetLikes(int postID);
         void EditLikeStatus(int commentID, bool like);
     }

@@ -17,7 +17,7 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         public int category { get; set; }
         [Required]
-        public bool IsPromoted { get; set; }
+        public bool isPromoted { get; set; }
         [Required]
         public DateTime dateTime { get; set; }
 

@@ -77,5 +77,26 @@ namespace WebApi.Database
                 throw new Exception($"{nameof(entity)} could not be updated: {ex.Message}");
             }
         }
+
+
+        public async Task<TEntity> RemoveAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+            }
+
+            try
+            {
+                dbContext.Remove(entity);
+                await dbContext.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be removed: {ex.Message}");
+            }
+        }
     }
 }

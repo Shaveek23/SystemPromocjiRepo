@@ -16,10 +16,11 @@ namespace WebApi.Controllers
     [Route("api")]
     public class PostController : Controller
     {
-        private readonly IPostService _postService; // this service handles all logic and database updates -> no logic in controllers !!!
-
-        public PostController(IPostService postService)
+        private readonly IPostService _postService;
+        private readonly ILogger<PostController> _logger;
+        public PostController(IPostService postService, ILogger<PostController> logger)
         {
+            _logger = logger;
             _postService = postService;
         }
 
@@ -56,9 +57,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("{postID}")]
-        public int Create([FromBody] PostEditDTO body)
+        public Task<int> Create([FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
-            return _postService.CreatePost(body);
+            return _postService.AddPostAsync(body, userID);
         }
 
         //I need Comment DTO to implement this endpoint
