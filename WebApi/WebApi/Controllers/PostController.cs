@@ -13,7 +13,7 @@ using WebApi.Services.Services_Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/[controller]")]
     public class PostController : Controller
     {
         private readonly IPostService _postService;
@@ -31,6 +31,7 @@ namespace WebApi.Controllers
             return _postService.GetAll();
         }
 
+        //Proponuje przenieść to do kontrolera user. Zniknie konflikt posts/userID i posts/postID
         [HttpGet("{userID}")]
         public IQueryable<PostDTO> GetUserPosts([FromQuery] int UserID) //[FromHeader] int headerID
         {
@@ -38,22 +39,22 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{postID}")]
-        public PostDTO Get([FromHeader] int userID, [FromQuery] int id)
+        public PostDTO Get([FromHeader] int userID, [FromRoute] int id)
         {
             return _postService.GetById(id);
         }
 
 
         [HttpDelete("{postID}")]
-        public void Delete([FromHeader] int userID, [FromQuery] int id, [FromBody] DateTime dateTime)
+        public Task Delete([FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
         {
-            _postService.DeletePost(id);
+            return _postService.DeletePostAsync(postID);
         }
 
         [HttpPut("{postID}")]
-        public void Edit([FromHeader] int userID, [FromQuery] int id, [FromBody] PostEditDTO body)
+        public Task Edit([FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
-            _postService.EditPost(id, body);
+            return _postService.EditPostAsync(postID, body);
         }
 
         [HttpPost("{postID}")]
@@ -62,6 +63,7 @@ namespace WebApi.Controllers
             return _postService.AddPostAsync(body, userID);
         }
 
+
         //I need Comment DTO to implement this endpoint
         //[HttpGet("{postID}/comments")]
         //public IQueryable<CommentDTO> GetPostComments([FromHeader] int userID, [FromQuery] )
@@ -69,17 +71,18 @@ namespace WebApi.Controllers
         //    return _postService.GetAllComments(PostID);
         //}
 
+
         //I need Like-Post Table in database
-        [HttpGet("/post/{postID}/likeUsers")]
-        public PostLikesDTO GetPostLikes([FromQuery] int postID)
+        [HttpGet("{postID}/likeUsers")]
+        public IQueryable<int> GetPostLikes([FromRoute] int postID)
         {
             return _postService.GetLikes(postID);
         }
 
-        [HttpPut("/post/{postID}/likeUsers")]
-        public void EditLikeStatus([FromHeader] int userID, [FromQuery] int commentID, [FromBody] bool Like)
+        [HttpPut("{postID}/likeUsers")]
+        public Task EditLikeStatus([FromHeader] int userID, [FromRoute] int commentID, [FromBody] bool Like)
         {
-            _postService.EditLikeStatus(commentID, Like);
+            return _postService.EditLikeStatusAsync(commentID, Like);
         }
 
     }

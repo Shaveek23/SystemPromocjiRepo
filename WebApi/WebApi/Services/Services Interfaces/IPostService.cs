@@ -14,10 +14,10 @@ namespace WebApi.Services.Services_Interfaces
 
         public PostDTO GetById(int id);
         public Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID);
-        IQueryable<PostDTO> GetAllOfUser(int userID);
-        void DeletePost(int id);
-        Task<Post> EditPost(int id, PostEditDTO body);
-        PostLikesDTO GetLikes(int postID);
-        void EditLikeStatus(int commentID, bool like);
+        public IQueryable<PostDTO> GetAllOfUser(int userID);
+        public Task DeletePostAsync(int id);
+        public Task<Post> EditPostAsync(int id, PostEditDTO body);
+        public IQueryable<int> GetLikes(int postID);
+        public Task EditLikeStatusAsync(int commentID, bool like);
     }
 }

@@ -22,6 +22,10 @@
     <Compile Remove="Migrations\20210330194128_AddPosts.Designer.cs" />
     <Compile Remove="Migrations\20210330201145_AddPosts.cs" />
     <Compile Remove="Migrations\20210330201145_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210401080355_New.cs" />
+    <Compile Remove="Migrations\20210401080355_New.Designer.cs" />
+    <Compile Remove="Migrations\20210401080816_AddPersonAndPost.cs" />
+    <Compile Remove="Migrations\20210401080816_AddPersonAndPost.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

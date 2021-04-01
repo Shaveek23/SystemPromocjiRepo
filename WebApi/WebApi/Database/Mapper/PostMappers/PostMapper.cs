@@ -21,9 +21,9 @@ namespace WebApi.Database.Mapper
             post.IsPromoted = postDTO.isPromoted;
 
             //TODO:
-            //post.CategoryID = search category name in database to find its ID?
-            //post.Localization = "Miasto";
-            //post.ShopName = "Sklep";
+            post.CategoryID = 1;// search category name in database to find its ID?
+            post.Localization = "Miasto";
+            post.ShopName = "Sklep";
 
             return post;
         }
@@ -41,10 +41,10 @@ namespace WebApi.Database.Mapper
 
             //TODO:
             //These fields should be found in database:
-            //postDTO.author = "Jan";
-            //postDTO.category = "kategoria pod indeksem 1";
-            //postDTO.likesCount = 5;
-            //postDTO.isLikedByUser = false;
+            postDTO.author = "Jan";
+            postDTO.category = "kategoria pod indeksem 1";
+            postDTO.likesCount = 5;
+            postDTO.isLikedByUser = false;
             //postDTO.comments = ....
 
             return postDTO;
@@ -52,6 +52,7 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<PostDTO> Map(IQueryable<Post> posts)
         {
+            int x = posts.Count();
             List<PostDTO> list = new List<PostDTO>();
             foreach (var post in posts)
             {

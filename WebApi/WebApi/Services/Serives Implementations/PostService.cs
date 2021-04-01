@@ -34,8 +34,6 @@ namespace WebApi.Services.Serives_Implementations
         public async Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
-            createdPost.UserID = userID;
-            createdPost.PostID = _postRepository.GetAll().Max(p => p.PostID) + 1;
             createdPost = await _postRepository.AddAsync(createdPost);
             return createdPost.PostID;
         }
@@ -45,22 +43,22 @@ namespace WebApi.Services.Serives_Implementations
             return PostMapper.Map(_postRepository.GetAll().Where(post => post.UserID == userID));
         }
 
-        public void DeletePost(int id)
+        public async Task DeletePostAsync(int id)
         {
-            //_postRepository.RemoveAsync(_postRepository.GetById(id));
+            await _postRepository.RemoveAsync(_postRepository.GetById(id));
         }
 
-        public Task<Post> EditPost(int id, PostEditDTO body)
+        public async Task<Post> EditPostAsync(int id, PostEditDTO body)
         { 
-            return _postRepository.EditPostAsync(id, body);
+            return await _postRepository.EditPostAsync(id, body);
         }
 
-        public PostLikesDTO GetLikes(int postID)
+        public IQueryable<int> GetLikes(int postID)
         {
             throw new NotImplementedException();
         }
 
-        public void EditLikeStatus(int commentID, bool like)
+        public async Task EditLikeStatusAsync(int commentID, bool like)
         {
             throw new NotImplementedException();
         }
