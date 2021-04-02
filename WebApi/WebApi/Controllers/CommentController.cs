@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
 using WebApi.Services.Services_Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/comment")]
-    public class CommentController
+    public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
         private readonly ILogger<CommentController> _logger;
@@ -32,11 +33,16 @@ namespace WebApi.Controllers
         {
             return _commentService.GetById(id,userId);
         }
-       //Nw jak w post ma byc juz id 
+        //Nw jak w post ma byc juz id 
         [HttpPost]
-        public async Task<CommentDTO> AddComment([FromBody] CommentDTO comment, [FromHeader] int userId)
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentDTO))]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async  Task<ActionResult> AddComment([FromBody] CommentDTO comment, [FromHeader] int userId)
         {
-            return await _commentService.AddCommentAsync(userId,comment);
+            var result = await _commentService.AddCommentAsync(userId, comment);
+            if (result == null) return NotFound();
+            return Ok( result.CommentID);
+        
         }
         [HttpDelete("{id}")]
         public  void DeleteComment( [FromRoute] int id,[FromHeader] int userId)
@@ -44,7 +50,7 @@ namespace WebApi.Controllers
             _commentService.DeleteComment(id,userId);
         }
         [HttpPut("{id}")]
-        public async Task<CommentDTO> EditComment([Required][FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
+        public async Task<CommentDTO> EditComment([FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
         {
             return await _commentService.EditCommentAsync(id,userId,comment);
         }

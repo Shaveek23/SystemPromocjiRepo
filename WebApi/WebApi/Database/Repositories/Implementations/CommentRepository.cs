@@ -12,6 +12,7 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public CommentRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
+        #region TODO: Przeniesc do generycznego
         public void DeleteComment(int id, int userId)
         {
             try
@@ -27,6 +28,7 @@ namespace WebApi.Database.Repositories.Implementations
             }
             return;
         }
+        #endregion
 
         public Task EditLikeOnComment(int commentId, int userId)
         {

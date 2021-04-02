@@ -50,14 +50,19 @@ namespace WebApi.Database
 
             try
             {
+                
                 await dbContext.AddAsync(entity);
                 await dbContext.SaveChangesAsync();
 
                 return entity;
             }
+            
             catch (Exception ex)
             {
-                throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+               
+                //throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+                return null;
+               
             }
         }
 
