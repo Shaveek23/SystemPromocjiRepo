@@ -12,8 +12,8 @@ namespace WebApiTest.MapperTest.PostMappersTest
     {
         public static IEnumerable<object[]> PostDTOData()
         {
-            yield return new object[] { new PostEditDTO { title="Titleeee1", content="swietna oferta", category =3, dateTime=DateTime.Now, isPromoted=true } };
-            yield return new object[] { new PostEditDTO { title = "Titleeee2", content = "Hi, I am new here....", dateTime = DateTime.Now, isPromoted = false } };
+            yield return new object[] { new PostEditDTO { title="Titleeee1", content="swietna oferta", category =3, dateTime= new DateTime(2000, 10, 10, 11, 4, 41), isPromoted=true } };
+            yield return new object[] { new PostEditDTO { title = "Titleeee2", content = "Hi, I am new here....", dateTime = new DateTime(2020, 10, 13, 11, 4, 41), isPromoted = false } };
             yield return new object[] { new PostEditDTO() };
         }
 

@@ -19,7 +19,6 @@ namespace WebApi.Database.Repositories.Implementations
         }
 
 
-        //TODO: Make it throw exception
         public Task<Post> EditPostAsync(int id, PostEditDTO body)
         {
             var postToEdit = dbContext.Posts.SingleOrDefault(post => post.PostID == id);

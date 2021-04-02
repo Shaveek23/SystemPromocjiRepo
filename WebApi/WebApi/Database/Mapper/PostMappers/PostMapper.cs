@@ -22,8 +22,6 @@ namespace WebApi.Database.Mapper
 
             //TODO:
             post.CategoryID = 1;// search category name in database to find its ID?
-            post.Localization = "Miasto";
-            post.ShopName = "Sklep";
 
             return post;
         }

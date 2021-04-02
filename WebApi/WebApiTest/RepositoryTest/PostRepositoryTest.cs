@@ -16,11 +16,14 @@ namespace WebApiTest
 {
     public class PostRepositoryTest
     {
+        DateTime datetime1 = new DateTime(2020, 1, 1);
+        DateTime datetime2 = new DateTime(3213123);
+        DateTime datetime3 = new DateTime(2000, 10, 10, 11, 4, 41);
         void SeedPost(DatabaseContext dbContext)
         {
-            dbContext.Add(new Post { PostID = 1, UserID = 1, CategoryID = 1, Title = "Title1", Content = "Content1 ", Date = DateTime.Now, IsPromoted = false, Localization = "Warszawa", ShopName = "U Romka" });
-            dbContext.Add(new Post { PostID = 12, UserID = 8, CategoryID = 3, Date = DateTime.UtcNow, IsPromoted = true, Localization = "War sza w a", ShopName = "U Tomka" });
-            dbContext.Add(new Post { PostID = 2, UserID = 5, CategoryID = 5, Title = "Title32321", Date = DateTime.Now, IsPromoted = false, Localization = "Krakówarszawa", ShopName = "U Pawła" });
+            dbContext.Add(new Post { PostID = 1, UserID = 1, CategoryID = 1, Title = "Title1", Content = "Content1 ", Date = new DateTime(2020, 1, 1), IsPromoted = false});
+            dbContext.Add(new Post { PostID = 12, UserID = 8, CategoryID = 3, Date = new DateTime(3213123), IsPromoted = true });
+            dbContext.Add(new Post { PostID = 2, UserID = 5, CategoryID = 5, Title = "Title32321", Date = new DateTime(2000, 10, 10, 11, 4, 41), IsPromoted = false });
             dbContext.SaveChanges();
         }
         [Fact]
@@ -45,8 +48,6 @@ namespace WebApiTest
                 Assert.Equal(expected.Date, actual.Result.Date);
                 Assert.Equal(expected.Title, actual.Result.Title);
                 Assert.Equal(expected.Content, actual.Result.Content);
-                Assert.Equal(expected.Localization, actual.Result.Localization);
-                Assert.Equal(expected.ShopName, actual.Result.ShopName);
                 Assert.Equal(expected.IsPromoted, actual.Result.IsPromoted);
 
             }
@@ -113,8 +114,6 @@ namespace WebApiTest
                 Assert.Equal(expected.Date, actual.Result.Date);
                 Assert.Equal(expected.Title, actual.Result.Title);
                 Assert.Equal(expected.Content, actual.Result.Content);
-                Assert.Equal(expected.Localization, actual.Result.Localization);
-                Assert.Equal(expected.ShopName, actual.Result.ShopName);
                 Assert.Equal(expected.IsPromoted, actual.Result.IsPromoted);
             }
         }

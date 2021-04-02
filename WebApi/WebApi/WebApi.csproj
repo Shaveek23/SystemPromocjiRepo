@@ -26,6 +26,8 @@
     <Compile Remove="Migrations\20210401080355_New.Designer.cs" />
     <Compile Remove="Migrations\20210401080816_AddPersonAndPost.cs" />
     <Compile Remove="Migrations\20210401080816_AddPersonAndPost.Designer.cs" />
+    <Compile Remove="Migrations\20210402204811_PostUpdate.cs" />
+    <Compile Remove="Migrations\20210402204811_PostUpdate.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

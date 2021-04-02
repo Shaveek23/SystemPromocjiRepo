@@ -20,11 +20,11 @@ namespace WebApiTest.ServiceTest
     public class PostServiceTest
     {
         List<Post> posts = new List<Post> {
-                    new Post { PostID = 1, UserID = 1, CategoryID = 1, Title= "Title1", Content = "Content1 ", Date = DateTime.Now, IsPromoted = false, Localization = "Warszawa", ShopName = "U Romka" },
-                    new Post { PostID = 31, UserID = 1, CategoryID = 1, Title= "Title2221", Content = "Content32 ", Date = DateTime.Now, IsPromoted = false, Localization = "Warszawa" },
-                    new Post { PostID = 4, UserID = 1, CategoryID = 1, Title= "Title1321321312312", Content = "Content656565 ", Localization = "Warszawa", ShopName = "U Romka" },
-                    new Post { PostID = 12, UserID = 8, CategoryID = 3, Date = DateTime.UtcNow, IsPromoted = true, Localization = "War sza w a", ShopName = "U Tomka" },
-                    new Post { PostID = 2, UserID = 5, CategoryID = 5, Title= "Title32321", Date = DateTime.Now, IsPromoted = false, Localization = "Krakówarszawa", ShopName = "U Pawła" },
+                    new Post { PostID = 1, UserID = 1, CategoryID = 1, Title= "Title1", Content = "Content1 ", Date = new DateTime(2020, 7, 1), IsPromoted = false},
+                    new Post { PostID = 31, UserID = 1, CategoryID = 1, Title= "Title2221", Content = "Content32 ", Date = new DateTime(2000, 5, 2), IsPromoted = false },
+                    new Post { PostID = 4, UserID = 1, CategoryID = 1, Title= "Title1321321312312", Content = "Content656565 "},
+                    new Post { PostID = 12, UserID = 8, CategoryID = 3, Date = new DateTime(2011, 12, 12), IsPromoted = true},
+                    new Post { PostID = 2, UserID = 5, CategoryID = 5, Title= "Title32321", Date = new DateTime(2015, 6, 5), IsPromoted = false },
                     new Post()
         };
 
@@ -68,7 +68,7 @@ namespace WebApiTest.ServiceTest
         public void EditComment_ValidCall()
         {
             int postID = 1;
-            DateTime currentTime = DateTime.Now;
+            DateTime currentTime = new DateTime(2000,10,10,10,10,42);
             var newPostDTO = new PostEditDTO
             {
                 title = "newtitle",
@@ -86,8 +86,7 @@ namespace WebApiTest.ServiceTest
                 Content = "newcontent",
                 Date = currentTime,
                 IsPromoted = true,
-                Localization = "Warszawa",
-                ShopName = "U Romka"
+
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();

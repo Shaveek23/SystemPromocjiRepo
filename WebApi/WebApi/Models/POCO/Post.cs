@@ -15,8 +15,6 @@ namespace WebApi.Models.POCO
         public DateTime Date { get ; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public string Localization { get; set; }
-        public string ShopName { get; set; }
         public bool IsPromoted { get; set; }
     }
 }

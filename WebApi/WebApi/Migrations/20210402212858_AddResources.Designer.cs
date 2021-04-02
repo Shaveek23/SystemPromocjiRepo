@@ -10,8 +10,8 @@ using WebApi.Database;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210401080047_RepairPost")]
-    partial class RepairPost
+    [Migration("20210402212858_AddResources")]
+    partial class AddResources
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,15 +83,6 @@ namespace WebApi.Migrations
                     b.Property<bool>("IsPromoted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Localization")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("ShopName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -110,10 +101,8 @@ namespace WebApi.Migrations
                             PostID = 1,
                             CategoryID = 1,
                             Content = "Oto mój pierwszy post!",
-                            Date = new DateTime(2021, 4, 1, 10, 0, 47, 511, DateTimeKind.Local).AddTicks(7697),
+                            Date = new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified),
                             IsPromoted = false,
-                            Localization = "Warszawa",
-                            ShopName = "Sklep1",
                             Title = "tytuł 1",
                             UserID = 1
                         },
@@ -122,10 +111,8 @@ namespace WebApi.Migrations
                             PostID = 2,
                             CategoryID = 1,
                             Content = "Oto mój drugi post!",
-                            Date = new DateTime(2021, 4, 1, 10, 0, 47, 514, DateTimeKind.Local).AddTicks(6888),
+                            Date = new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified),
                             IsPromoted = false,
-                            Localization = "Kraków",
-                            ShopName = "Sklep2",
                             Title = "tytuł 2",
                             UserID = 2
                         },
@@ -134,10 +121,8 @@ namespace WebApi.Migrations
                             PostID = 3,
                             CategoryID = 1,
                             Content = "Oto mój trzeci post!",
-                            Date = new DateTime(2021, 4, 1, 10, 0, 47, 514, DateTimeKind.Local).AddTicks(6953),
+                            Date = new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified),
                             IsPromoted = false,
-                            Localization = "Poznań",
-                            ShopName = "Sklep3",
                             Title = "tytuł 3",
                             UserID = 3
                         });

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PostController : Controller
+    public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
         private readonly ILogger<PostController> _logger;
@@ -26,7 +27,7 @@ namespace WebApi.Controllers
 
 
         [HttpGet]
-        public IQueryable<PostDTO> GetAll([FromHeader] int userID)
+        public IQueryable<PostDTO> GetAll([Required][FromHeader] int userID)
         {
             return _postService.GetAll();
         }
@@ -39,30 +40,32 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{postID}")]
-        public PostDTO Get([FromHeader] int userID, [FromRoute] int id)
+        public PostDTO Get([Required][FromHeader] int userID, [FromRoute] int id)
         {
             return _postService.GetById(id);
         }
 
 
         [HttpDelete("{postID}")]
-        public Task Delete([FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
+        public Task Delete([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
         {
             return _postService.DeletePostAsync(postID);
         }
 
         [HttpPut("{postID}")]
-        public Task Edit([FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
+        public Task Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
             return _postService.EditPostAsync(postID, body);
         }
 
         [HttpPost("{postID}")]
-        public Task<int> Create([FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public Task Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             return _postService.AddPostAsync(body, userID);
         }
 
+
+        //TODO:
 
         //I need Comment DTO to implement this endpoint
         //[HttpGet("{postID}/comments")]
@@ -73,17 +76,17 @@ namespace WebApi.Controllers
 
 
         //I need Like-Post Table in database
-        [HttpGet("{postID}/likeUsers")]
-        public IQueryable<int> GetPostLikes([FromRoute] int postID)
-        {
-            return _postService.GetLikes(postID);
-        }
+        //[HttpGet("{postID}/likeUsers")]
+        //public IQueryable<int> GetPostLikes([Required][FromRoute] int postID)
+        //{
+        //    return _postService.GetLikes(postID);
+        //}
 
-        [HttpPut("{postID}/likeUsers")]
-        public Task EditLikeStatus([FromHeader] int userID, [FromRoute] int commentID, [FromBody] bool Like)
-        {
-            return _postService.EditLikeStatusAsync(commentID, Like);
-        }
+        //[HttpPut("{postID}/likeUsers")]
+        //public Task EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int commentID, [FromBody] bool Like)
+        //{
+        //    return _postService.EditLikeStatusAsync(commentID, Like);
+        //}
 
     }
 }
