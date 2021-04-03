@@ -78,9 +78,9 @@ namespace WebApiTest.ControllerTest
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
             var expected = posts;
-            //Act
-            var actual = controller.GetAll(userID).ToList();
 
+            //Act
+            var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.GetAll(userID).Result).Value).ToList();
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
         }
@@ -145,7 +145,7 @@ namespace WebApiTest.ControllerTest
 
             var expected = new List<PostDTO> { posts[0], posts[2] };
             //Act
-            var actual = controller.GetUserPosts(in_authorID).ToList();
+            var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.GetUserPosts(in_authorID).Result).Value).ToList();
 
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -189,13 +189,14 @@ namespace WebApiTest.ControllerTest
                 title = in_title,
                 content = in_content,
                 likesCount = in_likesCount,
-                datetime = datetime2,
+                datetime = datetime1,
                 isLikedByUser = in_isLiked,
                 isPromoted = in_isPromoted
             };
 
             //Act
-            var actual = controller.Get(userID, in_id);
+            var actual = (PostDTO)(((OkObjectResult)controller.Get(userID, in_id).Result).Value);
+            //var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.Get(userID, in_id).Result).Value).ToList();
 
             //Assert
             Assert.Equal(expected.id, actual.id);

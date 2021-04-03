@@ -27,41 +27,54 @@ namespace WebApi.Controllers
 
 
         [HttpGet]
-        public IQueryable<PostDTO> GetAll([Required][FromHeader] int userID)
+        public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
         {
-            return _postService.GetAll();
+            var result = _postService.GetAll();
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
-        //Proponuje przenieść to do kontrolera user. Zniknie konflikt posts/userID i posts/postID
+
+        // Czy skoro userID Jest z Query to nie powinno być :  [HttpGet]
         [HttpGet("{userID}")]
-        public IQueryable<PostDTO> GetUserPosts([FromQuery] int UserID) //[FromHeader] int headerID
+        public ActionResult<IQueryable<PostDTO>> GetUserPosts([FromQuery] int UserID) //[FromHeader] int headerID
         {
-            return _postService.GetAllOfUser(UserID);
+            var result = _postService.GetAllOfUser(UserID);
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
         [HttpGet("{postID}")]
-        public PostDTO Get([Required][FromHeader] int userID, [FromRoute] int id)
+        public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int id)
         {
-            return _postService.GetById(id);
+            var result = _postService.GetById(id);
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
 
         [HttpDelete("{postID}")]
-        public Task Delete([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
+        public ActionResult<Task> Delete([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
         {
-            return _postService.DeletePostAsync(postID);
+            var result = _postService.DeletePostAsync(postID);
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
         [HttpPut("{postID}")]
-        public Task Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
+        public ActionResult<Task> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
-            return _postService.EditPostAsync(postID, body);
+            var result = _postService.EditPostAsync(postID, body);
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
         [HttpPost("{postID}")]
-        public Task Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public ActionResult<Task<int>> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
-            return _postService.AddPostAsync(body, userID);
+            var result = _postService.AddPostAsync(body, userID);
+            if (result != null) return Ok(result);
+            else return NotFound();
         }
 
 
