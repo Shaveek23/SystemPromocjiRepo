@@ -14,6 +14,8 @@ namespace WebApi.Database
             dbContext = databaseContext;
         }
 
+        // TODO:
+        // WYJĄTKI NIE SĄ RZUCANE !!!
         public TEntity GetById(int id)
         {
             try

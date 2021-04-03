@@ -28,6 +28,20 @@
     <Compile Remove="Migrations\20210401080816_AddPersonAndPost.Designer.cs" />
     <Compile Remove="Migrations\20210402204811_PostUpdate.cs" />
     <Compile Remove="Migrations\20210402204811_PostUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20210402212858_AddResources.cs" />
+    <Compile Remove="Migrations\20210402212858_AddResources.Designer.cs" />
+    <Compile Remove="Migrations\20210403160620_AddPost.cs" />
+    <Compile Remove="Migrations\20210403160620_AddPost.Designer.cs" />
+    <Compile Remove="Migrations\20210403162209_helpMigration.cs" />
+    <Compile Remove="Migrations\20210403162209_helpMigration.Designer.cs" />
+    <Compile Remove="Migrations\20210403162311_RemovePost.cs" />
+    <Compile Remove="Migrations\20210403162311_RemovePost.Designer.cs" />
+    <Compile Remove="Migrations\20210403162415_addPost.cs" />
+    <Compile Remove="Migrations\20210403162415_addPost.Designer.cs" />
+    <Compile Remove="Migrations\20210403163233_removePost.cs" />
+    <Compile Remove="Migrations\20210403163233_removePost.Designer.cs" />
+    <Compile Remove="Migrations\20210403163653_RepairPost.cs" />
+    <Compile Remove="Migrations\20210403163653_RepairPost.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

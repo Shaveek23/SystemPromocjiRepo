@@ -34,43 +34,46 @@ namespace WebApi.Controllers
             else return NotFound();
         }
 
-
-        // Czy skoro userID Jest z Query to nie powinno być :  [HttpGet]
-        [HttpGet("{userID}")]
-        public ActionResult<IQueryable<PostDTO>> GetUserPosts([FromQuery] int UserID) //[FromHeader] int headerID
+      
+        //[HttpGet("{UserID}")]
+        [HttpGet]
+        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromQuery] int UserID) //[FromHeader] int headerID
         {
             var result = _postService.GetAllOfUser(UserID);
             if (result != null) return Ok(result);
             else return NotFound();
         }
 
+
         [HttpGet("{postID}")]
-        public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int id)
+        public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
-            var result = _postService.GetById(id);
+            var result = _postService.GetById(postID);
             if (result != null) return Ok(result);
             else return NotFound();
         }
 
 
         [HttpDelete("{postID}")]
-        public ActionResult<Task> Delete([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] DateTime dateTime)
+        public ActionResult<Task> Delete([Required][FromHeader] int userID, [FromRoute] int postID)//, [FromBody] DateTime dateTime) - nie wiem czemu z tym nie działa. Może trzeba zoribć DTO na datetime?
         {
-            var result = _postService.DeletePostAsync(postID);
-            if (result != null) return Ok(result);
-            else return NotFound();
+            _postService.DeletePostAsync(postID);
+            return Ok();
         }
 
         [HttpPut("{postID}")]
         public ActionResult<Task> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
             var result = _postService.EditPostAsync(postID, body);
-            if (result != null) return Ok(result);
+            if (result != null) return Ok();
             else return NotFound();
         }
 
         [HttpPost("{postID}")]
-        public ActionResult<Task<int>> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        //Zmieniłbym na:
+        //[HttpPost]
+        //Bo i tak nie potrzebujemy postID, bo dopiero je tworzymy.
+        public ActionResult<Task<int>> Create([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = _postService.AddPostAsync(body, userID);
             if (result != null) return Ok(result);

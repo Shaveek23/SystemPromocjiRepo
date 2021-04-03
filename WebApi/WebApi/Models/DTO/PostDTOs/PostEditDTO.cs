@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApi.Models.DTO.PostDTOs
 {
     //DTO for creating and editing post
-    public class PostEditDTO : IValidatableObject
+    public class PostEditDTO
     {
         [Required]
         [MaxLength(50)]
@@ -21,9 +21,5 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         public DateTime dateTime { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            yield return null;
-        }
     }
 }

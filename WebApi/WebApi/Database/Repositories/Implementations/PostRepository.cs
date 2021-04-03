@@ -34,7 +34,7 @@ namespace WebApi.Database.Repositories.Implementations
                 postToEdit.Date = body.dateTime;
                 postToEdit.IsPromoted = body.isPromoted;
             }
-            return UpdateAsync(postToEdit);           
+            return UpdateAsync(postToEdit);
         }
     }
 }
