@@ -19,13 +19,13 @@ namespace WebApi.Services.Serives_Implementations
             _commentRepository = commentRepository;
         }
 
-        public async Task<CommentDTO> AddCommentAsync(int userId, CommentDTO comment)
+        public async Task<CommentDTOOutput> AddCommentAsync(int userId, CommentDTO comment)
         {
 
             Comment newComment = Mapper.Map(comment);
             Comment createdComment = await _commentRepository.AddAsync(newComment);
             if (createdComment == null) return null;
-            return Mapper.Map(createdComment);
+            return Mapper.MapOutput(createdComment);
 
         }
 
@@ -34,13 +34,13 @@ namespace WebApi.Services.Serives_Implementations
             return _commentRepository.DeleteComment(commentId, userId);
         }
 
-        public async Task<CommentDTO> EditCommentAsync(int commentId, int userId, CommentDTO comment)
+        public async Task<CommentDTOOutput> EditCommentAsync(int commentId, int userId, CommentDTO comment)
         {
             Comment newComment = Mapper.Map(comment);
             newComment.CommentID = commentId;
             Comment editedComment = await _commentRepository.UpdateAsync(newComment);
             if (editedComment == null) return null;
-            return Mapper.Map(editedComment);
+            return Mapper.MapOutput(editedComment);
         }
 
         public Task<bool> EditLikeOnCommentAsync(int commentId, int userId)
@@ -48,19 +48,19 @@ namespace WebApi.Services.Serives_Implementations
             throw new NotImplementedException();
         }
 
-        public IQueryable<CommentDTO> GetAll(int userId)
+        public IQueryable<CommentDTOOutput> GetAll(int userId)
         {
             var result = _commentRepository.GetAll();
             if (result == null) return null;
-            return Mapper.Map(result);
+            return Mapper.MapOutput(result);
         }
 
-        public CommentDTO GetById(int commentId, int userId)
+        public CommentDTOOutput GetById(int commentId, int userId)
         {
 
             var result = _commentRepository.GetById(commentId);
             if (result == null) return null;
-            return Mapper.Map(result);
+            return Mapper.MapOutput(result);
         }
 
         public IQueryable<int> GetLikedUsers(int commentId)

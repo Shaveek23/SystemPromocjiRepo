@@ -25,14 +25,14 @@ namespace WebApi.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public ActionResult<IQueryable<CommentDTO>> GetAll([Required][FromHeader] int userId)
+        public ActionResult<IQueryable<CommentDTOOutput>> GetAll([Required][FromHeader] int userId)
         {
             var result = _commentService.GetAll(userId);
             if (result == null) return NotFound();
             return Ok(result);
         }
         [HttpGet("{id}")]
-        public ActionResult<CommentDTO> GetById([FromRoute] int id, [Required][FromHeader] int userId)
+        public ActionResult<CommentDTOOutput> GetById([FromRoute] int id, [Required][FromHeader] int userId)
         {
             var result = _commentService.GetById(id, userId);
             if (result == null) return NotFound();
@@ -40,12 +40,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTOInput commentInput, [Required][FromHeader] int userId)
+        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTO comment, [Required][FromHeader] int userId)
         {
-            var comment = new CommentDTO() { Content = commentInput.Content, DateTime = commentInput.DateTime, PostID = commentInput.PostID, UserID = commentInput.UserID };
+
             var result = await _commentService.AddCommentAsync(userId, comment);
             if (result == null) return BadRequest();
-            return Ok(result.CommentID);
+            return Ok(result);
 
         }
         [HttpDelete("{id}")]
@@ -57,9 +57,9 @@ namespace WebApi.Controllers
 
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTOInput commentInput)
+        public async Task<ActionResult> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
         {
-            var comment= new CommentDTO() { Content = commentInput.Content, DateTime = commentInput.DateTime, PostID = commentInput.PostID, UserID = commentInput.UserID };
+
             var result = await _commentService.EditCommentAsync(id, userId, comment);
             if (result == null) return NotFound();
             return Ok();

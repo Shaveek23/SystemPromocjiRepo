@@ -10,8 +10,6 @@ namespace WebApi.Models.DTO
     {
         
         [Required]
-        public int CommentID { get; set; }
-        [Required]
         public int UserID { get; set; }
         [Required]
         public int PostID { get; set; }
