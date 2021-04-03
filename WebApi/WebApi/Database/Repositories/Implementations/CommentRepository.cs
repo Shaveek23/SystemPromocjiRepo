@@ -13,20 +13,21 @@ namespace WebApi.Database.Repositories.Implementations
         public CommentRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
         #region TODO: Przeniesc do generycznego
-        public void DeleteComment(int id, int userId)
+        public bool DeleteComment(int id, int userId)
         {
             try
             {
                 dbContext.Remove(dbContext.Find<Comment>(id));
                 dbContext.SaveChanges();
+                return true;
 
 
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception($"The Comment of {id} could not be deleted: {ex.Message}");
+                return false;
             }
-            return;
+           
         }
         #endregion
 

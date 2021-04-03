@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace WebApiTest.ControllerTest
             DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
            
             var mockService = new Mock<ICommentService>();
-            mockService.Setup(x => x.GetById(0, UserId)).Returns(new CommentDTO
+            mockService.Setup(x => x.GetById(c_id, UserId)).Returns(new CommentDTO
             {
                 CommentID = c_id,
                 UserID = u_id,
@@ -45,12 +46,35 @@ namespace WebApiTest.ControllerTest
                 Content = content
             };
 
-            var actual = controller.GetById( 0, UserId);
+            var actual = (CommentDTO)((OkObjectResult)controller.GetById(c_id, UserId).Result).Value;
             Assert.Equal(expected.CommentID, actual.CommentID);
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.DateTime, actual.DateTime);
             Assert.Equal(expected.PostID, actual.PostID);
             Assert.Equal(expected.UserID, actual.UserID);
+
+
+
+        }
+        [Theory]
+        [InlineData(-1)]       
+
+        public void GetById_TestInValid(int c_id)
+        {
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var mockService = new Mock<ICommentService>();
+            mockService.Setup(x => x.GetById(c_id, UserId)).Returns(()=>null);         
+            
+
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+
+
+            var actual = (NotFoundResult)controller.GetById(c_id, UserId).Result;
+            Assert.Equal(404, actual.StatusCode);
+           
+
 
 
         }
@@ -89,8 +113,9 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             var expected = comments;
-            var actual = controller.GetAll(UserId).ToList();
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
+            var actual =((OkObjectResult)controller.GetAll(UserId).Result).Value;
+            var val = ((IQueryable<CommentDTO>)actual).ToList();
+           Assert.True(expected.All(shouldItem => val.Any(isItem => isItem == shouldItem)));
         }
 
         [Theory]
@@ -116,14 +141,7 @@ namespace WebApiTest.ControllerTest
               }));
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
-            var expected = new CommentDTO
-            {
-                CommentID = c_id,
-                UserID = u_id,
-                PostID = p_id,
-                DateTime = date,
-                Content = content
-            };
+            var expected = c_id;           
             var actual = controller.AddComment(new CommentDTO
             {
 
@@ -134,11 +152,38 @@ namespace WebApiTest.ControllerTest
                 Content = content
 
             }, UserId).Result;
-            Assert.Equal(expected.CommentID, actual.CommentID);
-            Assert.Equal(expected.Content, actual.Content);
-            Assert.Equal(expected.DateTime, actual.DateTime);
-            Assert.Equal(expected.PostID, actual.PostID);
-            Assert.Equal(expected.UserID, actual.UserID);
+            var val = ((OkObjectResult)actual.Result).Value;
+            Assert.Equal(expected, val);
+          
+
+        }
+        [Theory]
+        [InlineData(-1, 1, 1, "test")]
+   
+        public void AddCommentDTO_TestInValid(int c_id, int u_id, int p_id, string content)
+        {
+
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+            CommentDTO newComment = new CommentDTO
+            {
+
+                CommentID = c_id,
+                UserID = u_id,
+                PostID = p_id,
+                DateTime = date,
+                Content = content
+
+            };
+            var mockService = new Mock<ICommentService>();
+            mockService.Setup(x => x.AddCommentAsync(UserId, newComment)).Returns(Task.FromResult<CommentDTO>(null));
+           
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+           
+            var actual = controller.AddComment(newComment, UserId).Result;
+            var val = ((NotFoundResult)actual.Result);
+            Assert.Equal(404, val.StatusCode);
+
 
         }
 
@@ -168,7 +213,7 @@ namespace WebApiTest.ControllerTest
         }
         #endregion
 
-        //NW Jak to zrobic 
+        
         [Theory]
         [InlineData(1, 1)]
         [InlineData(2, 2)]
@@ -183,7 +228,27 @@ namespace WebApiTest.ControllerTest
 
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
-            mockService.Setup(x => x.DeleteComment(c_id, UserId));
+            mockService.Setup(x => x.DeleteComment(c_id, UserId)).Returns(true);
+            var actual = controller.DeleteComment(c_id, UserId).Result;
+            Assert.Equal(typeof(OkResult), actual.GetType());
+
+        }
+        [Theory]
+        [InlineData(-1, 1)]
+       
+
+        public void DeleteComment_TestInValid(int c_id, int u_id)
+        {
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var mockService = new Mock<ICommentService>();
+
+
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+            mockService.Setup(x => x.DeleteComment(c_id, UserId)).Returns(false);
+            var actual = controller.DeleteComment(c_id, UserId).Result;
+            Assert.Equal(typeof(NotFoundResult), actual.GetType());
 
         }
 
@@ -227,12 +292,38 @@ namespace WebApiTest.ControllerTest
                 Content = content
 
             }).Result;
-            Assert.Equal(expected.CommentID, actual.CommentID);
-            Assert.Equal(expected.Content, actual.Content);
-            Assert.Equal(expected.DateTime, actual.DateTime);
-            Assert.Equal(expected.PostID, actual.PostID);
-            Assert.Equal(expected.UserID, actual.UserID);
+            var val = (CommentDTO)((OkObjectResult)actual.Result).Value;
+            Assert.Equal(expected.CommentID, val.CommentID);
+            Assert.Equal(expected.Content, val.Content);
+            Assert.Equal(expected.DateTime, val.DateTime);
+            Assert.Equal(expected.PostID, val.PostID);
+            Assert.Equal(expected.UserID, val.UserID);
         }
-        //Tu tez nw jak EDitLikeOnComment
+        [Theory]
+        [InlineData(-1, 1, 1, "test")]
+    
+        public void EditCommentDTO_TestInValid(int c_id, int u_id, int p_id, string content)
+        {
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var mockService = new Mock<ICommentService>();
+            mockService.Setup(x => x.EditCommentAsync(c_id, UserId, It.IsAny<CommentDTO>())).Returns(Task.FromResult<CommentDTO>(null));
+
+
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+            var actual = controller.EditComment(c_id, UserId, new CommentDTO
+            {
+
+                CommentID = c_id,
+                UserID = u_id,
+                PostID = p_id,
+                DateTime = date,
+                Content = content
+
+            }).Result;
+            var val = (NotFoundResult)actual.Result;
+       
+        }
     }
 }

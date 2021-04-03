@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
 using WebApi.Services.Services_Interfaces;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace WebApi.Controllers
 {
@@ -24,47 +24,59 @@ namespace WebApi.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public IQueryable<CommentDTO> GetAll([FromHeader] int userId)
+        public ActionResult<IQueryable<CommentDTO>> GetAll([FromHeader] int userId)
         {
-            return _commentService.GetAll(userId);
+            var result = _commentService.GetAll(userId);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
         [HttpGet("{id}")]
-        public CommentDTO GetById([FromRoute] int id, [FromHeader] int userId)
+        public ActionResult<CommentDTO> GetById([FromRoute] int id, [FromHeader] int userId)
         {
-            return _commentService.GetById(id,userId);
+            var result = _commentService.GetById(id, userId);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
-        //Nw jak w post ma byc juz id 
+
         [HttpPost]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentDTO))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async  Task<ActionResult> AddComment([FromBody] CommentDTO comment, [FromHeader] int userId)
+        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTO comment, [FromHeader] int userId)
         {
             var result = await _commentService.AddCommentAsync(userId, comment);
             if (result == null) return NotFound();
-            return Ok( result.CommentID);
-        
+            return Ok(result.CommentID);
+
         }
         [HttpDelete("{id}")]
-        public  void DeleteComment( [FromRoute] int id,[FromHeader] int userId)
+        public ActionResult<bool> DeleteComment([FromRoute] int id, [FromHeader] int userId)
         {
-            _commentService.DeleteComment(id,userId);
+            var result = _commentService.DeleteComment(id, userId);
+            if (!result) return NotFound();
+            return Ok();
+
         }
         [HttpPut("{id}")]
-        public async Task<CommentDTO> EditComment([FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
+        public async Task<ActionResult<CommentDTO>> EditComment([FromRoute] int id, [FromHeader] int userId, [FromBody] CommentDTO comment)
         {
-            return await _commentService.EditCommentAsync(id,userId,comment);
+            var result = await _commentService.EditCommentAsync(id, userId, comment);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
         [HttpGet("{id}/likedUsers")]
-        public IQueryable<int> GetLikedUsers([FromRoute] int id)
+        public ActionResult<IQueryable<int>> GetLikedUsers([FromRoute] int id)
         {
-            return _commentService.GetLikedUsers(id);
+            var result = _commentService.GetLikedUsers(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
         [HttpPut("{id}/likedUsers")]
-        public async Task EditLikeOnComment([FromRoute] int id, [FromHeader] int userId)
+        public async Task<ActionResult<bool>> EditLikeOnComment([FromRoute] int id, [FromHeader] int userId)
         {
-            await _commentService.EditLikeOnCommentAsync( id,userId);
+            var result = await _commentService.EditLikeOnCommentAsync(id, userId);
+            if (!result) return NotFound();
+            return Ok();
         }
 
 
     }
+
 }

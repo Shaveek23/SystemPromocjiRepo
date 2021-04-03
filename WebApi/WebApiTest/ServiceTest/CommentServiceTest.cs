@@ -57,7 +57,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.True(actual.CommentID == 0);
             Assert.Null(actual.Content);
-            ;
+            
 
 
         }
@@ -132,7 +132,7 @@ namespace WebApiTest.ServiceTest
             Assert.Equal(newComment.DateTime, actual.DateTime);
             Assert.Equal(newComment.PostID, actual.PostID);
             Assert.Equal(newComment.UserID, actual.UserID);
-            //DLUGOSC
+            
 
 
 
@@ -140,30 +140,59 @@ namespace WebApiTest.ServiceTest
         }
 
         [Fact]
-        #region TODO
+        #region TODO tak jak w edit
 
         public void AddComment_InValidCall()
         {
-            Assert.True(true);
+
+           
+            var newCommentDTO = new CommentDTO() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newComment = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+          
+            var mockICommentRepository = new Mock<ICommentRepository>();
+
+            mockICommentRepository.Setup(x => x.AddAsync(newComment)).Returns(Task.Run(() =>
+            {
+                return new Comment();
+            }));
+
+
+            var commentService = new CommentService(mockICommentRepository.Object);
+            var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result;
+
+            Assert.Null(actual);
         }
         #endregion
         [Fact]
-        #region TODO
+       //istniejace id
         public void DeleteComment_ValidCall()
         {
+            var mockICommentRepository = new Mock<ICommentRepository>();
+            var id = comments[0].CommentID;
+            mockICommentRepository.Setup(x => x.DeleteComment(id, UserId)).Returns(true);
 
+            var commentService = new CommentService(mockICommentRepository.Object);
+            var actual = commentService.DeleteComment(id,UserId);
 
-            Assert.True(true);
+            Assert.True(actual);
+           
 
         }
-        #endregion
+     
         [Fact]
-        #region TODO
+       //Nieistneijacy id
         public void DeleteComment_InValidCall()
         {
-            Assert.True(true);
+            var mockICommentRepository = new Mock<ICommentRepository>();
+            var id = 1000;
+            mockICommentRepository.Setup(x => x.DeleteComment(id, UserId)).Returns(false);
+
+            var commentService = new CommentService(mockICommentRepository.Object);
+            var actual = commentService.DeleteComment(id, UserId);
+
+            Assert.False(actual);
         }
-        #endregion
+      
         [Fact]
 
         public void EditComment_ValidCall()
@@ -189,10 +218,20 @@ namespace WebApiTest.ServiceTest
 
         }
         [Fact]
-        #region TODO
+        #region TODO: Nw czy to moze byc w ten sposob, ale nw jak zwrocic null z taska
         public void EditComment_InValidCall()
         {
-            Assert.True(true);
+             var newCommentDTO = new CommentDTO() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newComment = new Comment() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+
+            var mockICommentRepository = new Mock<ICommentRepository>();
+            mockICommentRepository.Setup(x => x.UpdateAsync(newComment)).Returns(Task.Run(() => new Comment()));
+
+
+            var commentService = new CommentService(mockICommentRepository.Object);
+            var actual = commentService.EditCommentAsync(newCommentDTO.CommentID, UserId, newCommentDTO).Result;
+
+            Assert.Null(actual);
         }
         #endregion
         [Fact]

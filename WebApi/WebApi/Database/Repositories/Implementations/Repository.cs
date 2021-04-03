@@ -18,14 +18,14 @@ namespace WebApi.Database
         {
             try
             {
-                
-                var result= dbContext.Find<TEntity>(id);
+
+                var result = dbContext.Find<TEntity>(id);
                 if (result != null) return result;
                 throw new Exception();
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception($"Couldn't retrieve entity with id = {id}. Message: {ex.Message}");
+                return null;
             }
         }
 
@@ -35,9 +35,10 @@ namespace WebApi.Database
             {
                 return dbContext.Set<TEntity>();
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception($"Couldn't retrieve entities: {ex.Message}");
+                return null;
+
             }
         }
 
@@ -50,19 +51,19 @@ namespace WebApi.Database
 
             try
             {
-                
+
                 await dbContext.AddAsync(entity);
                 await dbContext.SaveChangesAsync();
 
                 return entity;
             }
-            
+
             catch (Exception ex)
             {
-               
-                //throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+
+
                 return null;
-               
+
             }
         }
 
@@ -70,20 +71,21 @@ namespace WebApi.Database
         {
             if (entity == null)
             {
-                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+                //throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+                return null;
             }
 
             try
             {
-                
+
                 dbContext.Update(entity);
                 await dbContext.SaveChangesAsync();
 
                 return entity;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception($"{nameof(entity)} could not be updated: {ex.Message}");
+                return null;
             }
         }
     }

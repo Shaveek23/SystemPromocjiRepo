@@ -13,7 +13,7 @@ namespace WebApi.Database.Repositories.Interfaces
     
         //TODO:Zamienic na Users
         Task<IQueryable<int> >GetLikedUsersAsync(int id);
-       void  DeleteComment(int id,int userId);
+       bool  DeleteComment(int id,int userId);
        Task EditLikeOnComment(int commentId,int userId);
    
     }

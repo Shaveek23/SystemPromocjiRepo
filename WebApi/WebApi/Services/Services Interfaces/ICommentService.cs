@@ -13,8 +13,8 @@ namespace WebApi.Services.Services_Interfaces
         public CommentDTO GetById(int commentId,int userId);
         public IQueryable<int> GetLikedUsers(int commentId);
         public Task<CommentDTO> EditCommentAsync(int commentId,int userId, CommentDTO comment);
-        public void DeleteComment(int  commentId,int userId);
+        public bool DeleteComment(int  commentId,int userId);
         public Task<CommentDTO> AddCommentAsync(int userId,CommentDTO comment);
-        public Task EditLikeOnCommentAsync(int commentId,int userId);
+        public Task<bool> EditLikeOnCommentAsync(int commentId,int userId);
     }
 }

@@ -64,7 +64,7 @@ namespace WebApiTest
                 var cls = new Repository<Person>(dbContext);
                
 
-                Assert.Throws<Exception>(() => cls.GetById(0));
+                Assert.Null( cls.GetById(0));
             }
         }
 
