@@ -12,24 +12,27 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public CommentRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        public void DeleteComment(int id)
+        #region TODO: Przeniesc do generycznego
+        public bool DeleteComment(int id, int userId)
         {
-           
-
             try
             {
-                
-                 dbContext.Remove(dbContext.Find<Comment>(id));
+                dbContext.Remove(dbContext.Find<Comment>(id));
                 dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"The Comment of {id} could not be deleted: {ex.Message}");
-            }
-            return;
-        }
+                return true;
 
-        public Task EditLikeOnComment(int commentId)
+
+            }
+            catch
+            {
+                return false;
+            }
+           
+        }
+        #endregion
+
+        public Task EditLikeOnComment(int commentId, int userId)
+
         {
             throw new NotImplementedException();
         }

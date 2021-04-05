@@ -9,6 +9,7 @@ namespace WebApi.Database.Mapper
 {
     public class Mapper
     {
+      
         public static Person Map(PersonDTO personDTO)
         {
             Person person = new Person();
@@ -61,7 +62,8 @@ namespace WebApi.Database.Mapper
         public static CommentDTO Map(Comment comment)
         {
             CommentDTO commentDTO = new CommentDTO();
-            commentDTO.CommentID = comment.CommentID;
+
+           
             commentDTO.UserID = comment.UserID;
             commentDTO.PostID = comment.PostID;
             commentDTO.DateTime = comment.DateTime;
@@ -70,6 +72,31 @@ namespace WebApi.Database.Mapper
 
         }
         public static Comment Map(CommentDTO commentDTO)
+        {
+            Comment comment = new Comment();
+         
+            comment.UserID = commentDTO.UserID;
+            comment.PostID = commentDTO.PostID;
+            comment.DateTime = commentDTO.DateTime;
+            comment.Content = commentDTO.Content;
+            return comment;
+
+        }
+        public static CommentDTOOutput MapOutput(Comment comment)
+        {
+            CommentDTOOutput commentDTO = new CommentDTOOutput();
+
+            commentDTO.CommentID = comment.CommentID;
+            commentDTO.UserID = comment.UserID;
+            commentDTO.PostID = comment.PostID;
+            commentDTO.DateTime = comment.DateTime;
+            commentDTO.Content = comment.Content;
+            return commentDTO;
+
+        }
+
+        public static Comment Map(CommentDTOOutput commentDTO)
+
         {
             Comment comment = new Comment();
             comment.CommentID = commentDTO.CommentID;
@@ -102,6 +129,30 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
+
+        public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)
+        {
+            List<CommentDTOOutput> list = new List<CommentDTOOutput>();
+            foreach (var comment in comments)
+            {
+                list.Add(MapOutput(comment));
+            }
+
+            return list.AsQueryable();
+        }
+
+
+        public static IQueryable<Comment> Map(IQueryable<CommentDTOOutput> comments)
+        {
+            List<Comment> list = new List<Comment>();
+            foreach (var comment in comments)
+            {
+                list.Add(Map(comment));
+            }
+
+            return list.AsQueryable();
+        }
+
 
     }
 

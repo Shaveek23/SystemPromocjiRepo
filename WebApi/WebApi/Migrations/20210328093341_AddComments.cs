@@ -7,7 +7,7 @@ namespace WebApi.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //CZY TO USUNAC - dodane bo juz była omyłkowo stworzona 
+
             migrationBuilder.DropTable(
                 name: "Comment");
             migrationBuilder.CreateTable(

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.DTO
 {
-    public class CommentDTO
+    public class CommentDTOOutput
     {
-        
         [Required]
+        public int CommentID { get; set; }
+
         public int UserID { get; set; }
         [Required]
         public int PostID { get; set; }
@@ -18,6 +19,5 @@ namespace WebApi.Models.DTO
         [Required]
         [MaxLength(255)]
         public string Content { get; set; }
-
     }
 }
