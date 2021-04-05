@@ -5,17 +5,25 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
 using WebApi.Services.Services_Interfaces;
 
 
+
+
+
 namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/comment")]
+
     public class CommentController : ControllerBase
+
     {
         private readonly ICommentService _commentService;
         private readonly ILogger<CommentController> _logger;
@@ -25,6 +33,7 @@ namespace WebApi.Controllers
             _logger = logger;
         }
         [HttpGet]
+
         public ActionResult<IQueryable<CommentDTOOutput>> GetAll([Required][FromHeader] int userId)
         {
             var result = _commentService.GetAll(userId);
@@ -77,7 +86,7 @@ namespace WebApi.Controllers
             var result = await _commentService.EditLikeOnCommentAsync(id, userId);
             if (!result) return NotFound();
             return Ok();
-        }
+
 
 
     }

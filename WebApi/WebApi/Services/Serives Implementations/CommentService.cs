@@ -10,7 +10,9 @@ using WebApi.Services.Services_Interfaces;
 
 namespace WebApi.Services.Serives_Implementations
 {
+
     public class CommentService : ICommentService
+
     {
         private readonly ICommentRepository _commentRepository;
 
@@ -18,6 +20,7 @@ namespace WebApi.Services.Serives_Implementations
         {
             _commentRepository = commentRepository;
         }
+
 
         public async Task<CommentDTOOutput> AddCommentAsync(int userId, CommentDTO comment)
         {
@@ -44,6 +47,7 @@ namespace WebApi.Services.Serives_Implementations
         }
 
         public Task<bool> EditLikeOnCommentAsync(int commentId, int userId)
+
         {
             throw new NotImplementedException();
         }
@@ -61,6 +65,7 @@ namespace WebApi.Services.Serives_Implementations
             var result = _commentRepository.GetById(commentId);
             if (result == null) return null;
             return Mapper.MapOutput(result);
+
         }
 
         public IQueryable<int> GetLikedUsers(int commentId)

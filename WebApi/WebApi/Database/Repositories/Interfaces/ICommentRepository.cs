@@ -15,6 +15,7 @@ namespace WebApi.Database.Repositories.Interfaces
         Task<IQueryable<int> >GetLikedUsersAsync(int id);
        bool  DeleteComment(int id,int userId);
        Task EditLikeOnComment(int commentId,int userId);
+
    
     }
 }

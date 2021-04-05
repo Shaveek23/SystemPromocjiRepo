@@ -14,12 +14,14 @@ namespace WebApiTest.ServiceTest
 {
     public class CommentServiceTest
     {
+
         const int UserId = 1;
         List<Comment> comments = new List<Comment>
         {
             new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test" },
              new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test2" },
             new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test3" }
+
 
         };
 
@@ -32,7 +34,9 @@ namespace WebApiTest.ServiceTest
             mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns(expected);
 
             var commentService = new CommentService(mockICommentRepository.Object);
+
             var actual = commentService.GetById(expectedID, UserId);
+
 
             Assert.True(actual != null);
             Assert.Equal(expected.CommentID, actual.CommentID);
@@ -50,6 +54,7 @@ namespace WebApiTest.ServiceTest
             int expectedID = 0;
             var expected = comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
             var mockICommentRepository = new Mock<ICommentRepository>();
+
             mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns((Comment)(null));
 
             var commentService = new CommentService(mockICommentRepository.Object);
@@ -57,6 +62,7 @@ namespace WebApiTest.ServiceTest
 
 
             Assert.Null(actual);
+
 
 
 
@@ -69,7 +75,9 @@ namespace WebApiTest.ServiceTest
             mockICommentRepository.Setup(x => x.GetAll()).Returns(expected.AsQueryable());
 
             var commentService = new CommentService(mockICommentRepository.Object);
+
             var actual = commentService.GetAll(UserId).ToList();
+
 
             Assert.True(expected.All(item => actual.Any(actualItem => item.CommentID == actualItem.CommentID &&
               item.UserID == actualItem.UserID && item.Content == actualItem.Content &&
@@ -78,6 +86,7 @@ namespace WebApiTest.ServiceTest
 
 
         }
+
 
         [Fact]
         #region TODO
@@ -98,8 +107,10 @@ namespace WebApiTest.ServiceTest
         #endregion
         [Fact]
         #region TODO
+
         public void GetLikedUsers_InValidCall()
         {
+
 
 
             Assert.True(true);
@@ -107,11 +118,13 @@ namespace WebApiTest.ServiceTest
         #endregion
         [Fact]
 
+
         public void AddComment_ValidCall()
         {
 
             int initLength = comments.Count();
             var expected = comments;
+
             var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
             var newComment = new CommentDTOOutput() { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
             expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" });
@@ -126,10 +139,14 @@ namespace WebApiTest.ServiceTest
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result;
 
+
             Assert.Equal(newComment.Content, actual.Content);
             Assert.Equal(newComment.DateTime, actual.DateTime);
             Assert.Equal(newComment.PostID, actual.PostID);
             Assert.Equal(newComment.UserID, actual.UserID);
+
+
+
 
 
 
@@ -217,6 +234,7 @@ namespace WebApiTest.ServiceTest
             Assert.Equal(newComment.UserID, actual.UserID);
 
         }
+
         [Fact]
         #region TODO: Nw czy to moze byc w ten sposob, ale nw jak zwrocic null z taska
         public void EditComment_InValidCall()
@@ -250,4 +268,5 @@ namespace WebApiTest.ServiceTest
         #endregion
 
     }
+
 }

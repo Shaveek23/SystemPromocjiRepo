@@ -9,6 +9,7 @@ namespace WebApi.Services.Services_Interfaces
 {
     public interface ICommentService
     {
+
         public IQueryable<CommentDTOOutput> GetAll(int userId);
         public CommentDTOOutput GetById(int commentId,int userId);
         public IQueryable<int> GetLikedUsers(int commentId);
@@ -16,5 +17,6 @@ namespace WebApi.Services.Services_Interfaces
         public bool DeleteComment(int  commentId,int userId);
         public Task<CommentDTOOutput> AddCommentAsync(int userId,CommentDTO comment);
         public Task<bool> EditLikeOnCommentAsync(int commentId,int userId);
+
     }
 }

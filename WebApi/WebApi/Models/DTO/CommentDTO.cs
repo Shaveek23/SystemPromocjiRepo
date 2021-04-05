@@ -19,6 +19,5 @@ namespace WebApi.Models.DTO
         [MaxLength(255)]
         public string Content { get; set; }
 
-       
     }
 }

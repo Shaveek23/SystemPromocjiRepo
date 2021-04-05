@@ -62,6 +62,7 @@ namespace WebApi.Database.Mapper
         public static CommentDTO Map(Comment comment)
         {
             CommentDTO commentDTO = new CommentDTO();
+
            
             commentDTO.UserID = comment.UserID;
             commentDTO.PostID = comment.PostID;
@@ -84,6 +85,7 @@ namespace WebApi.Database.Mapper
         public static CommentDTOOutput MapOutput(Comment comment)
         {
             CommentDTOOutput commentDTO = new CommentDTOOutput();
+
             commentDTO.CommentID = comment.CommentID;
             commentDTO.UserID = comment.UserID;
             commentDTO.PostID = comment.PostID;
@@ -92,7 +94,9 @@ namespace WebApi.Database.Mapper
             return commentDTO;
 
         }
+
         public static Comment Map(CommentDTOOutput commentDTO)
+
         {
             Comment comment = new Comment();
             comment.CommentID = commentDTO.CommentID;
@@ -125,6 +129,7 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
+
         public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)
         {
             List<CommentDTOOutput> list = new List<CommentDTOOutput>();
@@ -147,6 +152,7 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
+
 
     }
 

@@ -12,6 +12,7 @@ namespace WebApiTest
 {
     public class CommentRepositoryTest
     {
+
         const int UserId = 1;
         void SeedComment(DatabaseContext dbContext)
         {
@@ -22,6 +23,7 @@ namespace WebApiTest
             dbContext.SaveChanges();
         }
 
+
         [Fact]
         public void GetById_ValidCall()
         {
@@ -30,9 +32,11 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
+
 
                 int expectedID = 1;
                 var expected = dbContext.Comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
@@ -57,6 +61,7 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
@@ -64,6 +69,7 @@ namespace WebApiTest
                 int expectedID = -1;
                 var cls = new CommentRepository(dbContext);
                 Assert.Null(cls.GetById(expectedID));
+
 
             }
         }
@@ -75,9 +81,11 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
+
 
 
 
@@ -91,6 +99,7 @@ namespace WebApiTest
 
             }
         }
+
         #region TODO
         [Fact]
         public void GetAll_InValidCall()
@@ -126,6 +135,7 @@ namespace WebApiTest
         }
         #endregion
         #region TODO: 
+
         [Fact]
         public void GetLikedUsers_InValidCall()
         {
@@ -134,6 +144,7 @@ namespace WebApiTest
 
         }
         #endregion
+
         [Fact]
         public void AddComment_ValidCall()
         {
@@ -142,12 +153,14 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
 
                 int initLength = dbContext.Comments.Count();
                 var expected = new Comment() { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+
 
                 var cls = new CommentRepository(dbContext);
 
@@ -165,6 +178,7 @@ namespace WebApiTest
 
             }
         }
+
         #region TODO: 
         [Fact]
         //Dodaje istniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
@@ -195,6 +209,7 @@ namespace WebApiTest
         #endregion
         [Fact]
 
+
         public void DeleteComment_ValidCall()
         {
             var options = new DbContextOptionsBuilder<DatabaseContext>()
@@ -202,15 +217,18 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
+
 
                 int initLength = dbContext.Comments.Count();
                 int commentToDeleteId = 1;
 
 
                 var cls = new CommentRepository(dbContext);
+
 
                 var result = cls.DeleteComment(commentToDeleteId, UserId);
 
@@ -221,17 +239,21 @@ namespace WebApiTest
 
 
 
+
             }
 
 
 
         }
         [Fact]
+
         //usuwam nieistniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
+
         public void DeleteComment_InValidCall()
         {
 
             var options = new DbContextOptionsBuilder<DatabaseContext>()
+
              .UseInMemoryDatabase(databaseName: "DeleteComment_InValidCall").Options;
             using (var dbContext = new DatabaseContext(options))
             {
@@ -240,14 +262,17 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
 
+
                 int initLength = dbContext.Comments.Count();
                 int commentToDeleteId = -1;
 
 
                 var cls = new CommentRepository(dbContext);
 
+
                 Assert.False(cls.DeleteComment(commentToDeleteId, UserId));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
+
 
 
 
@@ -261,15 +286,19 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 SeedComment(dbContext);
+
             }
             using (var dbContext = new DatabaseContext(options))
             {
 
 
 
+
                 string expectedText = "zedytowany tekst";
 
+
                 var expected = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = expectedText };
+
                 var cls = new CommentRepository(dbContext);
 
                 var actual = cls.UpdateAsync(expected).Result;
@@ -286,6 +315,7 @@ namespace WebApiTest
 
         }
         [Fact]
+
         //edytuje nieistniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
         public void EditComment_InValidCall()
         {
@@ -329,5 +359,6 @@ namespace WebApiTest
             Assert.Equal(1, 1);
         }
         #endregion
+
     }
 }

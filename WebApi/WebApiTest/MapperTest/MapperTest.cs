@@ -134,6 +134,7 @@ namespace WebApiTest.MapperTest
 
              };
         }
+
         public static IEnumerable<object[]> CommentDTOOutputDataList()
         {
             yield return new object[]
@@ -148,15 +149,18 @@ namespace WebApiTest.MapperTest
 
              };
         }
+
         public static IEnumerable<object[]> CommentDTODataList()
         {
             yield return new object[]
             {
                 new List<CommentDTO>
                 {
+
                     new CommentDTO() { UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
                     new CommentDTO() {  UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
                     new CommentDTO() {  UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
+
                     new CommentDTO()
                 }
 
@@ -164,9 +168,11 @@ namespace WebApiTest.MapperTest
         }
         public static IEnumerable<object[]> CommentDTOData()
         {
+
             yield return new object[] { new CommentDTO() { UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
             yield return new object[] { new CommentDTO() { UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
             yield return new object[] { new CommentDTO() { UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
+
             yield return new object[] { new CommentDTO() };
         }
         public static IEnumerable<object[]> CommentPOCOData()
@@ -176,6 +182,7 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
             yield return new object[] { new Comment() };
         }
+
         public static IEnumerable<object[]> CommentDTOOutputData()
         {
             yield return new object[] { new CommentDTOOutput() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
@@ -184,12 +191,14 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new CommentDTOOutput() };
         }
 
+
         [Theory]
         [MemberData(nameof(CommentPOCOData))]
         public void CommentPOCOToDTOMapping(Comment input)
         {
 
             CommentDTO result = Mapper.Map(input);
+
 
 
 
@@ -220,6 +229,7 @@ namespace WebApiTest.MapperTest
             Comment result = Mapper.Map(input);
 
 
+
             Assert.Equal(input.CommentID, result.CommentID);
             Assert.Equal(input.Content, result.Content);
             Assert.Equal(input.DateTime, result.DateTime);
@@ -232,6 +242,8 @@ namespace WebApiTest.MapperTest
         {
 
             Comment result = Mapper.Map(input);
+
+
 
 
 
@@ -249,6 +261,7 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
+
 
 
                 isItem.Content == result.Content &&
@@ -285,6 +298,7 @@ namespace WebApiTest.MapperTest
 
             Assert.True(result.All(result => input.Any(isItem =>
 
+
                 isItem.CommentID == result.CommentID &&
                 isItem.Content == result.Content &&
                 isItem.DateTime == result.DateTime &&
@@ -301,6 +315,8 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
+
+
 
 
                 isItem.Content == result.Content &&
