@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using WebApi.Database;
 using WebApi.Database.Repositories.Implementations;
 using WebApi.Database.Repositories.Interfaces;
+using WebApi.Middlewares;
 using WebApi.Services.Serives_Implementations;
 using WebApi.Services.Services_Interfaces;
 
@@ -52,10 +53,7 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ErrorWrappingMiddleware>();
 
             app.UseHttpsRedirection();
 

@@ -143,7 +143,7 @@ namespace WebApiTest.ControllerTest
         [InlineData(1, 1, 1, "test")]
         [InlineData(2, 2, 2, "test2")]
         [InlineData(3, 3, 3, "test3")]
-        public void AddCommentDTO_Test(int c_id, int u_id, int p_id, string content)
+        public void AddCommentDTO_Test(int? c_id, int? u_id, int? p_id, string content)
         {
 
 
@@ -167,7 +167,7 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             var expected = c_id;
-            var actual = controller.AddComment(new CommentDTO
+            ActionResult<int> actual = controller.AddComment(new CommentDTO
             {
 
 
@@ -176,9 +176,12 @@ namespace WebApiTest.ControllerTest
                 DateTime = date,
                 Content = content
 
-            }, UserId).Result;
-            var val = ((CommentDTOOutput)((OkObjectResult)actual.Result).Value).CommentID;
-            Assert.Equal(expected, val);
+            }, UserId).Result.Result;
+
+            int res = actual.Value;
+
+            Assert.Equal(actual, expected);
+       
 
 
         }
@@ -222,7 +225,8 @@ namespace WebApiTest.ControllerTest
             var actual = controller.AddComment(newCommentInput, UserId);
             var val = ((BadRequestResult)actual.Result.Result).StatusCode;
 
-            Assert.Equal(400, val);        }
+            Assert.Equal(400, val);        
+        }
 
 
       

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using WebApi.Database;
 using WebApi.Database.Repositories.Implementations;
+using WebApi.Exceptions;
 using WebApi.Models.POCO;
 using Xunit;
 
@@ -68,7 +69,7 @@ namespace WebApiTest
 
                 int expectedID = -1;
                 var cls = new CommentRepository(dbContext);
-                Assert.Null(cls.GetById(expectedID));
+                Assert.Throws<ResourceNotFoundException>(() => cls.GetById(expectedID));
 
 
             }
@@ -181,7 +182,7 @@ namespace WebApiTest
 
         #region TODO: 
         [Fact]
-        //Dodaje istniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
+        //Dodaje istniejace id -> sprawdzam czy rzuca nowy wyjątek i czy nie zmieniła sie ilosc komentarzy w bazie
         public void AddComment_InValidCall()
         {
             var options = new DbContextOptionsBuilder<DatabaseContext>()
@@ -198,12 +199,8 @@ namespace WebApiTest
 
                 var cls = new CommentRepository(dbContext);
 
-                var actual = cls.AddAsync(expected).Result;
-                Assert.Null(actual);
+                Assert.ThrowsAsync<AddAsyncFailedException>(() => cls.AddAsync(expected));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
-
-
-
             }
         }
         #endregion
@@ -247,7 +244,7 @@ namespace WebApiTest
         }
         [Fact]
 
-        //usuwam nieistniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
+        //usuwam nieistniejace id -> sprawdzam czy rzuca wyjątek i czy nie zmieniła sie ilosc komentarzy w bazie
 
         public void DeleteComment_InValidCall()
         {
@@ -270,14 +267,11 @@ namespace WebApiTest
                 var cls = new CommentRepository(dbContext);
 
 
-                Assert.False(cls.DeleteComment(commentToDeleteId, UserId));
+                Assert.Throws<DeleteFailException>(() => cls.DeleteComment(commentToDeleteId, UserId));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
-
-
-
-
             }
         }
+
         [Fact]
         public void EditComment_ValidCall()
         {
@@ -316,7 +310,7 @@ namespace WebApiTest
         }
         [Fact]
 
-        //edytuje nieistniejace id -> sprawdzam czy zwraca null i czy nie zmieniła sie ilosc komentarzy w bazie
+        //edytuje nieistniejace id -> sprawdzam czy rzuca wyjątek i czy nie zmieniła sie ilosc komentarzy w bazie
         public void EditComment_InValidCall()
         {
             var options = new DbContextOptionsBuilder<DatabaseContext>()
@@ -327,21 +321,14 @@ namespace WebApiTest
             }
             using (var dbContext = new DatabaseContext(options))
             {
-
-
-
                 string expectedText = "zedytowany tekst";
 
                 int initLength = dbContext.Comments.Count();
                 var expected = new Comment() { CommentID = 100, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = expectedText };
                 var cls = new CommentRepository(dbContext);
 
-                var actual = cls.UpdateAsync(expected).Result;
-                Assert.Null(actual);
+                Assert.ThrowsAsync<UpdateAsyncFailException>(() => cls.UpdateAsync(expected));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
-
-
-
             }
         }
 

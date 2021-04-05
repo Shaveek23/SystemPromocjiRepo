@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Exceptions;
 
 namespace WebApi.Database
 {
@@ -16,56 +17,34 @@ namespace WebApi.Database
 
         public TEntity GetById(int id)
         {
-            try
-            {
-
-
                 var result = dbContext.Find<TEntity>(id);
+                if (result == null)
+                    throw new ResourceNotFoundException("Requested resource has not been found.");
 
-                if (result != null) return result;
-                throw new Exception();
-            }
-            catch
-            {
-                return null;
-            }
+                return result;
         }
 
         public IQueryable<TEntity> GetAll()
         {
-            try
-            {
-                return dbContext.Set<TEntity>();
-            }
-            catch
-            {
-                return null;
-
-            }
+            return dbContext.Set<TEntity>();
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             if (entity == null)
-            {
-                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
-            }
+                throw new AddAsyncFailedException($"{nameof(AddAsync)} entity must not be null");
+
 
             try
             {
-
                 await dbContext.AddAsync(entity);
                 await dbContext.SaveChangesAsync();
 
                 return entity;
             }
-
-            catch (Exception ex)
+            catch (Exception)
             {
-
-
-                return null;
-
+                throw new AddAsyncFailedException($"Fail when adding a new {nameof(AddAsync)} resource item");
             }
         }
 
@@ -73,8 +52,8 @@ namespace WebApi.Database
         {
             if (entity == null)
             {
-                //throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
-                return null;
+                throw new UpdateAsyncFailException($"{nameof(UpdateAsync)} entity must not be null");
+                
             }
 
             try
@@ -87,7 +66,7 @@ namespace WebApi.Database
             }
             catch
             {
-                return null;
+                throw new UpdateAsyncFailException($"Fail when updating a {nameof(UpdateAsync)} resource item");
             }
         }
     }

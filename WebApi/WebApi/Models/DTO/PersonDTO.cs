@@ -15,7 +15,7 @@ namespace WebApi.Models.DTO
     public class PersonDTO : IValidatableObject // interface with Validate method
     {
         [Required]  // more information about attributes: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0#validation-attributes
-        public int PersonID { get; set; } 
+        public int? PersonID { get; set; } // with nullable type this field in json is Required
 
         [Required]
         [MaxLength(30)] // in accordance to the limits in databaseContext

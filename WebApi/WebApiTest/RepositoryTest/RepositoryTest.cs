@@ -10,6 +10,7 @@ using System.Linq;
 using Xunit;
 using Microsoft.EntityFrameworkCore;
 using System;
+using WebApi.Exceptions;
 
 namespace WebApiTest
 {
@@ -63,8 +64,7 @@ namespace WebApiTest
 
                 var cls = new Repository<Person>(dbContext);
                
-
-                Assert.Null( cls.GetById(0));
+                Assert.Throws<ResourceNotFoundException>( () => cls.GetById(0));
             }
         }
 

@@ -9,15 +9,20 @@ namespace WebApi.Models.DTO
     public class CommentDTOOutput
     {
         [Required]
-        public int CommentID { get; set; }
+        public int? CommentID { get; set; }
 
-        public int UserID { get; set; }
         [Required]
-        public int PostID { get; set; }
+        public int? UserID { get; set; }
+
         [Required]
-        public DateTime DateTime { get; set; }
+        public int? PostID { get; set; }
+
+        [Required]
+        public DateTime? DateTime { get; set; }
+
         [Required]
         [MaxLength(255)]
+        [MinLength(1)]
         public string Content { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace WebApi.Database.Mapper
         {
             Person person = new Person();
 
-            person.PersonID = personDTO.PersonID;
+            person.PersonID = personDTO.PersonID.Value;
             person.FirstName = personDTO.FirstName;
             person.LastName = personDTO.LastName;
             person.City = personDTO.City;
@@ -75,9 +75,9 @@ namespace WebApi.Database.Mapper
         {
             Comment comment = new Comment();
          
-            comment.UserID = commentDTO.UserID;
-            comment.PostID = commentDTO.PostID;
-            comment.DateTime = commentDTO.DateTime;
+            comment.UserID = commentDTO.UserID.Value;
+            comment.PostID = commentDTO.PostID.Value;
+            comment.DateTime = commentDTO.DateTime.Value;
             comment.Content = commentDTO.Content;
             return comment;
 
@@ -99,10 +99,10 @@ namespace WebApi.Database.Mapper
 
         {
             Comment comment = new Comment();
-            comment.CommentID = commentDTO.CommentID;
-            comment.UserID = commentDTO.UserID;
-            comment.PostID = commentDTO.PostID;
-            comment.DateTime = commentDTO.DateTime;
+            comment.CommentID = commentDTO.CommentID.Value;
+            comment.UserID = commentDTO.UserID.Value;
+            comment.PostID = commentDTO.PostID.Value;
+            comment.DateTime = commentDTO.DateTime.Value;
             comment.Content = commentDTO.Content;
             return comment;
 

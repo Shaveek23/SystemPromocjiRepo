@@ -32,19 +32,18 @@ namespace WebApi.Controllers
             _commentService = commentService;
             _logger = logger;
         }
-        [HttpGet]
 
+        [HttpGet]
         public ActionResult<IQueryable<CommentDTOOutput>> GetAll([Required][FromHeader] int userId)
         {
             var result = _commentService.GetAll(userId);
-            if (result == null) return NotFound();
             return Ok(result);
         }
+
         [HttpGet("{id}")]
         public ActionResult<CommentDTOOutput> GetById([FromRoute] int id, [Required][FromHeader] int userId)
         {
             var result = _commentService.GetById(id, userId);
-            if (result == null) return NotFound();
             return Ok(result);
         }
 
@@ -53,40 +52,37 @@ namespace WebApi.Controllers
         {
 
             var result = await _commentService.AddCommentAsync(userId, comment);
-            if (result == null) return BadRequest();
-            return Ok(result);
+            return Ok(result.CommentID);
 
         }
+
         [HttpDelete("{id}")]
         public ActionResult DeleteComment([FromRoute] int id, [Required][FromHeader] int userId)
         {
-            var result = _commentService.DeleteComment(id, userId);
-            if (!result) return NotFound();
+            _commentService.DeleteComment(id, userId);
             return Ok();
 
         }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
         {
-
-            var result = await _commentService.EditCommentAsync(id, userId, comment);
-            if (result == null) return NotFound();
+            await _commentService.EditCommentAsync(id, userId, comment);
             return Ok();
         }
+
         [HttpGet("{id}/likedUsers")]
         public ActionResult<IQueryable<int>> GetLikedUsers([FromRoute] int id)
         {
             var result = _commentService.GetLikedUsers(id);
-            if (result == null) return NotFound();
             return Ok(result);
         }
+
         [HttpPut("{id}/likedUsers")]
         public async Task<ActionResult> EditLikeOnComment([FromRoute] int id, [Required][FromHeader] int userId)
         {
-            var result = await _commentService.EditLikeOnCommentAsync(id, userId);
-            if (!result) return NotFound();
+            await _commentService.EditLikeOnCommentAsync(id, userId);
             return Ok();
-
         }
 
     }

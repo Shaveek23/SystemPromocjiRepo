@@ -10,13 +10,17 @@ namespace WebApi.Models.DTO
     {
         
         [Required]
-        public int UserID { get; set; }
+        public int? UserID { get; set; }
+
         [Required]
-        public int PostID { get; set; }
+        public int? PostID { get; set; }
+
         [Required]
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
+
         [Required]
         [MaxLength(255)]
+        [MinLength(1)]
         public string Content { get; set; }
 
     }

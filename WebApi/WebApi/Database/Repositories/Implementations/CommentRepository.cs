@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Database.Repositories.Interfaces;
+using WebApi.Exceptions;
 using WebApi.Models.POCO;
 
 namespace WebApi.Database.Repositories.Implementations
@@ -20,19 +21,16 @@ namespace WebApi.Database.Repositories.Implementations
                 dbContext.Remove(dbContext.Find<Comment>(id));
                 dbContext.SaveChanges();
                 return true;
-
-
             }
             catch
             {
-                return false;
+                throw new DeleteFailException("Fail when trying to delete the comment");
             }
            
         }
         #endregion
 
         public Task EditLikeOnComment(int commentId, int userId)
-
         {
             throw new NotImplementedException();
         }

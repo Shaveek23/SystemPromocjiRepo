@@ -21,7 +21,6 @@ namespace WebApiTest.MapperTest
                     new Person { PersonID = 1, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Bis" },
                     new Person { PersonID = 3, Address = "Skaryszewska 12" },
                     new Person { PersonID = 4, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Cis " },
-                    new Person()
                 }
 
              };
@@ -35,7 +34,6 @@ namespace WebApiTest.MapperTest
                     new PersonDTO { PersonID = 1, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Bis" },
                     new PersonDTO { PersonID = 3, Address = "Skaryszewska 12" },
                     new PersonDTO { PersonID = 4, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Cis " },
-                    new PersonDTO ()
                 }
 
              };
@@ -47,7 +45,6 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new PersonDTO { PersonID = 1, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Bis" } };
             yield return new object[] { new PersonDTO { PersonID = 3, Address = "Skaryszewska 12" } };
             yield return new object[] { new PersonDTO { PersonID = 4, Address = "Koszykowa   343", City = "Kraków", FirstName = "Daniel", LastName = "Cis " } };
-            yield return new object[] { new PersonDTO() };
         }
 
         public static IEnumerable<object[]> PersonPOCOData()
@@ -55,7 +52,6 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new Person { PersonID = 1, Address = "Koszykowa 3", City = "Warszawa", FirstName = "Damian", LastName = "Bis" } };
             yield return new object[] { new Person { PersonID = 3, Address = "Skaryszewska 12" } };
             yield return new object[] { new Person { PersonID = 4, Address = "Koszykowa   343", City = "Kraków", FirstName = "Daniel", LastName = "Cis " } };
-            yield return new object[] { new Person() };
         }
 
 
@@ -129,7 +125,6 @@ namespace WebApiTest.MapperTest
                     new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
                     new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
                     new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
-                    new Comment()
                 }
 
              };
@@ -144,7 +139,6 @@ namespace WebApiTest.MapperTest
                     new CommentDTOOutput() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
                     new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
                     new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
-                    new CommentDTOOutput()
                 }
 
              };
@@ -160,8 +154,6 @@ namespace WebApiTest.MapperTest
                     new CommentDTO() { UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
                     new CommentDTO() {  UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
                     new CommentDTO() {  UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
-
-                    new CommentDTO()
                 }
 
              };
@@ -173,14 +165,12 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new CommentDTO() { UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
             yield return new object[] { new CommentDTO() { UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
 
-            yield return new object[] { new CommentDTO() };
         }
         public static IEnumerable<object[]> CommentPOCOData()
         {
             yield return new object[] { new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
             yield return new object[] { new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
             yield return new object[] { new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
-            yield return new object[] { new Comment() };
         }
 
         public static IEnumerable<object[]> CommentDTOOutputData()
@@ -188,7 +178,6 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new CommentDTOOutput() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
             yield return new object[] { new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
             yield return new object[] { new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
-            yield return new object[] { new CommentDTOOutput() };
         }
 
 
@@ -320,9 +309,9 @@ namespace WebApiTest.MapperTest
 
 
                 isItem.Content == result.Content &&
-                isItem.DateTime == result.DateTime &&
-                isItem.PostID == result.PostID &&
-                isItem.UserID == result.UserID
+                isItem.DateTime.Value == result.DateTime &&
+                isItem.PostID.Value == result.PostID &&
+                isItem.UserID.Value == result.UserID
 
             )));
         }
