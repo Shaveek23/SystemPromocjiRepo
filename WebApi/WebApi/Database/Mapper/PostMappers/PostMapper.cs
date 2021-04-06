@@ -50,7 +50,6 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<PostDTO> Map(IQueryable<Post> posts)
         {
-            int x = posts.Count();
             List<PostDTO> list = new List<PostDTO>();
             foreach (var post in posts)
             {

@@ -7,6 +7,8 @@ namespace WebApi.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+            name: "Posts");
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
@@ -17,8 +19,6 @@ namespace WebApi.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPromoted = table.Column<bool>(type: "bit", nullable: false),
-                    Localization = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ShopName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserID = table.Column<int>(type: "int", nullable: false)
                 },

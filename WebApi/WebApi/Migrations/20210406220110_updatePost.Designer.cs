@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210406220110_updatePost")]
+    partial class updatePost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,7 +74,6 @@ namespace WebApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
@@ -82,9 +83,7 @@ namespace WebApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -92,38 +91,6 @@ namespace WebApi.Migrations
                     b.HasKey("PostID");
 
                     b.ToTable("Posts");
-
-                    b.HasData(
-                        new
-                        {
-                            PostID = 1,
-                            CategoryID = 1,
-                            Content = "Oto mój pierwszy post!",
-                            Date = new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 1",
-                            UserID = 1
-                        },
-                        new
-                        {
-                            PostID = 2,
-                            CategoryID = 1,
-                            Content = "Oto mój drugi post!",
-                            Date = new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 2",
-                            UserID = 2
-                        },
-                        new
-                        {
-                            PostID = 3,
-                            CategoryID = 1,
-                            Content = "Oto mój trzeci post!",
-                            Date = new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 3",
-                            UserID = 3
-                        });
                 });
 #pragma warning restore 612, 618
         }

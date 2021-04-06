@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
       
-        [HttpGet("/ByUser/{UserID}")]
+        [HttpGet("byUser/{UserID}")]
         public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID) 
         {
             var result = _postService.GetAllOfUser(UserID);
@@ -54,16 +54,16 @@ namespace WebApi.Controllers
 
 
         [HttpDelete("{postID}")]
-        public ActionResult<Task> Delete([Required][FromHeader] int userID, [FromRoute] int postID)//, [FromBody] DateTime dateTime) - nie wiem czemu z tym nie działa. Może trzeba zoribć DTO na datetime?
+        public async Task<IActionResult> Delete([Required][FromHeader] int userID, [FromRoute] int postID)//, [FromBody] DateTime dateTime) - nie wiem czemu z tym nie działa. Może trzeba zoribć DTO na datetime?
         {
-            _postService.DeletePostAsync(postID);
+            await _postService.DeletePostAsync(postID);
             return Ok();
         }
 
         [HttpPut("{postID}")]
-        public ActionResult<Task> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
+        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
-            var result = _postService.EditPostAsync(postID, body);
+            var result = await _postService.EditPostAsync(postID, body);
             if (result == null) return NotFound();
             else return Ok(result);
         }
@@ -75,10 +75,10 @@ namespace WebApi.Controllers
         //Zmieniłem na:
         [HttpPost]
         //I tak nie potrzebujemy postID w endpoincie, bo dopiero je tworzymy.
-        public ActionResult<Task<int>> Create([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
-            var result = _postService.AddPostAsync(body, userID);
-            if (result == null) return NotFound();
+            var result = await _postService.AddPostAsync(body, userID);
+            if (result < 0) return NotFound(); //Maybe another 'if' in future
             else return Ok(result);
         }
 

@@ -34,6 +34,7 @@ namespace WebApi.Services.Serives_Implementations
         public async Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
+            createdPost.UserID = userID;
             createdPost = await _postRepository.AddAsync(createdPost);
             return createdPost.PostID;
         }
