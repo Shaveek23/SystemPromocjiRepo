@@ -35,11 +35,11 @@ namespace WebApiTest.ControllerTest
 
 
         [Theory]
-        [InlineData(0, "Konrad Gaweda", 1, "RTV", "MyTitle", "Content", 41, false, false)]
-        [InlineData(1, "Jan Kowalski", 11, "RTV", "MyTitle1", "Conte nt1 ", 11, false, true)]
-        [InlineData(4, "Jan Gawęda", 1, "RTV", "MyTitle2", " Co ntent2 ", 33, true, false)]
-        [InlineData(7, "Konrad Kowalski", 32, "RTV",  "MyTitle3", "Conten t3", 441, true, true)]
-        public void GetAll_Test(int in_id, string in_author, int in_authorID, string in_category, 
+        [InlineData(0, "Konrad Gaweda", 1, 1, "MyTitle", "Content", 41, false, false)]
+        [InlineData(1, "Jan Kowalski", 11, 2, "MyTitle1", "Conte nt1 ", 11, false, true)]
+        [InlineData(4, "Jan Gawęda", 1, 4, "MyTitle2", " Co ntent2 ", 33, true, false)]
+        [InlineData(7, "Konrad Kowalski", 32, 8,  "MyTitle3", "Conten t3", 441, true, true)]
+        public void GetAll_Test(int in_id, string in_author, int in_authorID, int in_category, 
             string in_title, string in_content, int in_likesCount, bool in_isLiked, bool in_isPromoted)
         {
             List<PostDTO> posts = new List<PostDTO>();
@@ -62,7 +62,7 @@ namespace WebApiTest.ControllerTest
                 id = in_id + 1,
                 author = in_author + " Second",
                 authorID = in_authorID + 1,
-                category = in_category + "321",
+                category = in_category + 32,
                 title = in_title+ " One",
                 content = in_content + " Three",
                 likesCount = in_likesCount + 14,
@@ -86,12 +86,13 @@ namespace WebApiTest.ControllerTest
         }
 
 
+
         [Theory]
-        [InlineData(0, "Konrad Gaweda", 1, "RTV", "MyTitle", "Content", 41, false, false)]
-        [InlineData(1, "Jan Kowalski", 11, "RTV", "MyTitle1", "Conte nt1 ", 11, false, true)]
-        [InlineData(4, "Jan Gawęda", 1, "RTV", "MyTitle2", " Co ntent2 ", 33, true, false)]
-        [InlineData(7, "Konrad Kowalski", 32, "RTV", "MyTitle3", "Conten t3", 441, true, true)]
-        public void GetAllOfUser_Test(int in_id, string in_author, int in_authorID, string in_category,
+        [InlineData(0, "Konrad Gaweda", 1, 1, "MyTitle", "Content", 41, false, false)]
+        [InlineData(1, "Jan Kowalski", 11, 2, "MyTitle1", "Conte nt1 ", 11, false, true)]
+        [InlineData(4, "Jan Gawęda", 1, 4, "MyTitle2", " Co ntent2 ", 33, true, false)]
+        [InlineData(7, "Konrad Kowalski", 32, 8, "MyTitle3", "Conten t3", 441, true, true)]
+        public void GetAllOfUser_Test(int in_id, string in_author, int in_authorID, int in_category,
             string in_title, string in_content, int in_likesCount, bool in_isLiked, bool in_isPromoted)
         {
             List<PostDTO> posts = new List<PostDTO>();
@@ -114,7 +115,7 @@ namespace WebApiTest.ControllerTest
                 id = in_id + 1,
                 author = in_author + " Second",
                 authorID = in_authorID + 1,
-                category = in_category + "321",
+                category = in_category + 31,
                 title = in_title + " One",
                 content = in_content + " Three",
                 likesCount = in_likesCount + 14,
@@ -128,7 +129,7 @@ namespace WebApiTest.ControllerTest
                 id = in_id,
                 author = in_author + " Second2",
                 authorID = in_authorID,
-                category = in_category + "3",
+                category = in_category + 3,
                 title = in_title + " Onedsa",
                 content = in_content + " Three",
                 likesCount = in_likesCount + 4,
@@ -153,12 +154,12 @@ namespace WebApiTest.ControllerTest
 
 
         [Theory]
-        [InlineData(0, "Konrad Gaweda", 1, "RTV", "MyTitle", "Content", 41, false, false)]
-        [InlineData(1, "Jan Kowalski", 11, "RTV", "MyTitle1", "Conte nt1 ", 11, false, true)]
-        [InlineData(4, "Jan Gawęda", 1, "RTV", "MyTitle2", " Co ntent2 ", 33, true, false)]
-        [InlineData(7, "Konrad Kowalski", 32, "RTV", "MyTitle3", "Conten t3", 441, true, true)]
+        [InlineData(0, "Konrad Gaweda", 1, 1, "MyTitle", "Content", 41, false, false)]
+        [InlineData(1, "Jan Kowalski", 11, 2, "MyTitle1", "Conte nt1 ", 11, false, true)]
+        [InlineData(4, "Jan Gawęda", 1, 4, "MyTitle2", " Co ntent2 ", 33, true, false)]
+        [InlineData(7, "Konrad Kowalski", 32, 8, "MyTitle3", "Conten t3", 441, true, true)]
 
-        public void GetById_Test(int in_id, string in_author, int in_authorID, string in_category,
+        public void GetById_Test(int in_id, string in_author, int in_authorID, int in_category,
             string in_title, string in_content, int in_likesCount, bool in_isLiked, bool in_isPromoted)
         {
             //Arrange

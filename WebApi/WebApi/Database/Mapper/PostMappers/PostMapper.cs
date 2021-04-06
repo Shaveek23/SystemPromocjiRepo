@@ -13,15 +13,15 @@ namespace WebApi.Database.Mapper
         {
             Post post = new Post();
 
-            post.PostID = postDTO.id;
-            post.UserID = postDTO.authorID;
-            post.Date = postDTO.datetime;
+            if (postDTO.id.HasValue) post.PostID = postDTO.id.Value;
+            if (postDTO.authorID.HasValue) post.UserID = postDTO.authorID.Value;
+            if (postDTO.category.HasValue) post.CategoryID = postDTO.category.Value;
+            if (postDTO.datetime.HasValue) post.Date = postDTO.datetime.Value;
+            if (postDTO.isPromoted.HasValue) post.IsPromoted = postDTO.isPromoted.Value;
+
+
             post.Title = postDTO.title;
             post.Content = postDTO.content;
-            post.IsPromoted = postDTO.isPromoted;
-
-            //TODO:
-            post.CategoryID = 1;// search category name in database to find its ID?
 
             return post;
         }
@@ -36,11 +36,11 @@ namespace WebApi.Database.Mapper
             postDTO.title = post.Title;
             postDTO.content = post.Content;
             postDTO.isPromoted = post.IsPromoted;
+            postDTO.category = post.CategoryID;
 
             //TODO:
             //These fields should be found in database:
             postDTO.author = "Jan";
-            postDTO.category = "kategoria pod indeksem 1";
             postDTO.likesCount = 5;
             postDTO.isLikedByUser = false;
             //postDTO.comments = ....

@@ -30,18 +30,17 @@ namespace WebApi.Controllers
         public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
         {
             var result = _postService.GetAll();
-            if (result != null) return Ok(result);
-            else return NotFound();
+            if (result == null) return NotFound();
+            else return Ok(result);
         }
 
       
-        //[HttpGet("{UserID}")]
-        [HttpGet]
-        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromQuery] int UserID) //[FromHeader] int headerID
+        [HttpGet("/ByUser/{UserID}")]
+        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID) 
         {
             var result = _postService.GetAllOfUser(UserID);
-            if (result != null) return Ok(result);
-            else return NotFound();
+            if (result == null) return NotFound();
+            else return Ok(result);
         }
 
 
@@ -49,8 +48,8 @@ namespace WebApi.Controllers
         public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
             var result = _postService.GetById(postID);
-            if (result != null) return Ok(result);
-            else return NotFound();
+            if (result == null) return NotFound();
+            else return Ok(result);
         }
 
 
@@ -65,19 +64,22 @@ namespace WebApi.Controllers
         public ActionResult<Task> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
             var result = _postService.EditPostAsync(postID, body);
-            if (result != null) return Ok();
-            else return NotFound();
+            if (result == null) return NotFound();
+            else return Ok(result);
         }
 
-        [HttpPost("{postID}")]
-        //Zmieniłbym na:
-        //[HttpPost]
-        //Bo i tak nie potrzebujemy postID, bo dopiero je tworzymy.
+
+        //TODO:
+        //Trzeba napisać na grupe od specyfikcji że zmienił się endpoint
+        //[HttpPost("{postID}")]
+        //Zmieniłem na:
+        [HttpPost]
+        //I tak nie potrzebujemy postID w endpoincie, bo dopiero je tworzymy.
         public ActionResult<Task<int>> Create([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = _postService.AddPostAsync(body, userID);
-            if (result != null) return Ok(result);
-            else return NotFound();
+            if (result == null) return NotFound();
+            else return Ok(result);
         }
 
 

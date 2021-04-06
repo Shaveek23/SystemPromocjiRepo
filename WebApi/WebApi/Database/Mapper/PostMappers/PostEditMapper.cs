@@ -14,11 +14,14 @@ namespace WebApi.Database.Mapper.PostMappers
         {
             Post post = new Post();
 
-            post.CategoryID = postEditDTO.category;
-            post.Content = postEditDTO.content;
-            post.Date = postEditDTO.dateTime;
+            if (postEditDTO.category.HasValue) post.CategoryID = postEditDTO.category.Value;
+            if (postEditDTO.dateTime.HasValue) post.Date = postEditDTO.dateTime.Value;
+            if (postEditDTO.isPromoted.HasValue) post.IsPromoted = postEditDTO.isPromoted.Value;
+
             post.Title = postEditDTO.title;
-            post.IsPromoted = postEditDTO.isPromoted;
+            post.Content = postEditDTO.content;
+
+
 
             //TODO:
             //post.CategoryID = search category name in database to find its ID?

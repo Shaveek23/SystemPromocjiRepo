@@ -31,10 +31,9 @@ namespace WebApiTest.MapperTest.PostMappersTest
             {
                 new List<PostDTO>
                 {
-                    new PostDTO { title ="Title123", author = "Janek", authorID =5, category = "RTV", content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTO { title ="Title123", author = "Janek", authorID =5, datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTO { author = "Janek", authorID =5, category = "RTV", datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTO ()
+                    new PostDTO { title ="Title123", author = "Janek", authorID =5, category = 1, content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostDTO { title ="Title123", author = "Janek", authorID =5, category=1, datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostDTO { author = "Janek", authorID =5, category = 2, id=13, datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
                 }
 
              };
@@ -43,10 +42,9 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         public static IEnumerable<object[]> PostDTOData()
         {
-            yield return new object[] { new PostDTO { title = "Title123", author = "Janek", authorID = 5, category = "RTV", content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
-            yield return new object[] { new PostDTO { title = "Title123", author = "Janek", authorID = 5, datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
-            yield return new object[] { new PostDTO { author = "Janek", authorID = 5, category = "RTV", datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
-            yield return new object[] { new PostDTO() };
+            yield return new object[] { new PostDTO { title = "Title123", author = "Janek", authorID = 5, category = 1, content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
+            yield return new object[] { new PostDTO { title = "Title123", author = "Janek", authorID = 5, category = 10, datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
+            yield return new object[] { new PostDTO { author = "Janek", authorID = 5, category = 2,  id=12 , datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
         }
 
         public static IEnumerable<object[]> PostPOCOData()
@@ -81,12 +79,12 @@ namespace WebApiTest.MapperTest.PostMappersTest
         {
             Post result = PostMapper.Map(input);
 
-            Assert.Equal(input.id, result.PostID);
-            Assert.Equal(input.authorID, result.UserID);
+            Assert.Equal(input.id.Value, result.PostID);
+            Assert.Equal(input.authorID.Value, result.UserID);
             Assert.Equal(input.datetime, result.Date);
             Assert.Equal(input.title, result.Title);
             Assert.Equal(input.content, result.Content);
-            Assert.Equal(input.isPromoted, result.IsPromoted);
+            Assert.Equal(input.isPromoted.Value, result.IsPromoted);
         }
 
 

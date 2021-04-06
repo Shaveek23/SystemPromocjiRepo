@@ -22,6 +22,8 @@ namespace WebApi.Database.Repositories.Implementations
         public Task<Post> EditPostAsync(int id, PostEditDTO body)
         {
             var postToEdit = dbContext.Posts.SingleOrDefault(post => post.PostID == id);
+            //TODO:
+            //Zmienić zwracany wyjątek na jeden z tych zaimplementowanych przez golika.
             if (postToEdit == null)
             {
                 throw new ArgumentNullException($"{nameof(AddAsync)} there is no post with given post ID.");
@@ -30,9 +32,9 @@ namespace WebApi.Database.Repositories.Implementations
             {
                 postToEdit.Title = body.title;
                 postToEdit.Content = body.content;
-                postToEdit.CategoryID = body.category;
-                postToEdit.Date = body.dateTime;
-                postToEdit.IsPromoted = body.isPromoted;
+                postToEdit.CategoryID = body.category.Value;
+                postToEdit.Date = body.dateTime.Value;
+                postToEdit.IsPromoted = body.isPromoted.Value;
             }
             return UpdateAsync(postToEdit);
         }

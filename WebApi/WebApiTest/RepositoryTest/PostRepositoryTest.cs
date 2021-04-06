@@ -98,9 +98,9 @@ namespace WebApiTest
                 var expected = dbContext.Posts.Where(x => x.PostID == changedPostID).FirstOrDefault();
                 expected.Title = editBody.title;
                 expected.Content = editBody.content;
-                expected.CategoryID = editBody.category;
-                expected.Date = editBody.dateTime;
-                expected.IsPromoted = editBody.isPromoted;
+                expected.CategoryID = editBody.category.Value;
+                expected.Date = editBody.dateTime.Value;
+                expected.IsPromoted = editBody.isPromoted.Value;
 
 
 

@@ -15,11 +15,11 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         public string content { get; set; }
         [Required]
-        public int category { get; set; }
+        public int? category { get; set; }
         [Required]
-        public bool isPromoted { get; set; }
+        public bool? isPromoted { get; set; }
         [Required]
-        public DateTime dateTime { get; set; }
+        public DateTime? dateTime { get; set; }
 
     }
 }
