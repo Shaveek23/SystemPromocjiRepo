@@ -17,6 +17,7 @@ namespace WebApi.Database
 
         }
         virtual public DbSet<Person> Persons { get; set; }
+        virtual public DbSet<Post> Posts { get; set; }
         virtual public DbSet<Comment> Comments { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,6 +26,8 @@ namespace WebApi.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            
             base.OnModelCreating(modelBuilder);
             // configuring Person in database
             modelBuilder.Entity<Person>(entity =>
@@ -65,6 +68,25 @@ namespace WebApi.Database
 
             });
 
+            modelBuilder.Entity<Post>(entity =>
+            {
+                modelBuilder.Entity<Post>().ToTable("Posts");
+                modelBuilder.Entity<Post>().HasKey(p => p.PostID);
+                modelBuilder.Entity<Post>().Property(p => p.PostID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<Post>().Property(p => p.UserID).IsRequired();
+                modelBuilder.Entity<Post>().Property(p => p.CategoryID).IsRequired();
+                modelBuilder.Entity<Post>().Property(p => p.Date).IsRequired();
+                modelBuilder.Entity<Post>().Property(p => p.Title).IsRequired().HasMaxLength(50);
+                modelBuilder.Entity<Post>().Property(p => p.Content).IsRequired();
+                modelBuilder.Entity<Post>().Property(p => p.IsPromoted).IsRequired();
+
+                modelBuilder.Entity<Post>().HasData
+                (
+                  new Post { PostID = 1, UserID = 1, CategoryID = 1, Title = "tytuł 1", Content = "Oto mój pierwszy post!", Date = new DateTime(2021, 3, 11, 12, 23, 46), IsPromoted = false },
+                  new Post { PostID = 2, UserID = 2, CategoryID = 1, Title = "tytuł 2", Content = "Oto mój drugi post!", Date = new DateTime(2021, 6, 21, 11, 2, 44), IsPromoted = false },
+                  new Post { PostID = 3, UserID = 3, CategoryID = 1, Title = "tytuł 3", Content = "Oto mój trzeci post!", Date = new DateTime(2021, 4, 11, 1, 21, 4), IsPromoted = false }
+                );
+            });
         }
 
     }

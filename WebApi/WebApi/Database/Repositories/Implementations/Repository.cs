@@ -15,6 +15,8 @@ namespace WebApi.Database
             dbContext = databaseContext;
         }
 
+        // TODO:
+        // WYJĄTKI NIE SĄ RZUCANE !!!
         public TEntity GetById(int id)
         {
                 var result = dbContext.Find<TEntity>(id);
@@ -67,6 +69,27 @@ namespace WebApi.Database
             catch
             {
                 throw new UpdateAsyncFailException($"Fail when updating a {nameof(UpdateAsync)} resource item");
+            }
+        }
+
+
+        public async Task<TEntity> RemoveAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+            }
+
+            try
+            {
+                dbContext.Remove(entity);
+                await dbContext.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be removed: {ex.Message}");
             }
         }
     }

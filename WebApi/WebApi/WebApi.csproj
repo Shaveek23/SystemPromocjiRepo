@@ -8,6 +8,45 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210312140625_AddPeople.cs" />
     <Compile Remove="Migrations\20210312140625_AddPeople.Designer.cs" />
+    <Compile Remove="Migrations\20210329185615_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329185615_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210329200756_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329200756_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210329201144_AddPsts.cs" />
+    <Compile Remove="Migrations\20210329201144_AddPsts.Designer.cs" />
+    <Compile Remove="Migrations\20210329201210_AddPosts.cs" />
+    <Compile Remove="Migrations\20210329201210_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330193606_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330193606_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330194128_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330194128_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210330201145_AddPosts.cs" />
+    <Compile Remove="Migrations\20210330201145_AddPosts.Designer.cs" />
+    <Compile Remove="Migrations\20210401080355_New.cs" />
+    <Compile Remove="Migrations\20210401080355_New.Designer.cs" />
+    <Compile Remove="Migrations\20210401080816_AddPersonAndPost.cs" />
+    <Compile Remove="Migrations\20210401080816_AddPersonAndPost.Designer.cs" />
+    <Compile Remove="Migrations\20210402204811_PostUpdate.cs" />
+    <Compile Remove="Migrations\20210402204811_PostUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20210402212858_AddResources.cs" />
+    <Compile Remove="Migrations\20210402212858_AddResources.Designer.cs" />
+    <Compile Remove="Migrations\20210403160620_AddPost.cs" />
+    <Compile Remove="Migrations\20210403160620_AddPost.Designer.cs" />
+    <Compile Remove="Migrations\20210403162209_helpMigration.cs" />
+    <Compile Remove="Migrations\20210403162209_helpMigration.Designer.cs" />
+    <Compile Remove="Migrations\20210403162311_RemovePost.cs" />
+    <Compile Remove="Migrations\20210403162311_RemovePost.Designer.cs" />
+    <Compile Remove="Migrations\20210403162415_addPost.cs" />
+    <Compile Remove="Migrations\20210403162415_addPost.Designer.cs" />
+    <Compile Remove="Migrations\20210403163233_removePost.cs" />
+    <Compile Remove="Migrations\20210403163233_removePost.Designer.cs" />
+    <Compile Remove="Migrations\20210403163653_RepairPost.cs" />
+    <Compile Remove="Migrations\20210403163653_RepairPost.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210312140625_AddPeople.cs" />
+    <Compile Remove="Migrations\20210312140625_AddPeople.Designer.cs" />
     <Compile Remove="Migrations\20210328091920_AddComments.cs" />
     <Compile Remove="Migrations\20210328091920_AddComments.Designer.cs" />
   </ItemGroup>

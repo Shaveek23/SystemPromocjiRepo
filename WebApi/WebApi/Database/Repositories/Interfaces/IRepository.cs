@@ -14,5 +14,7 @@ namespace WebApi.Database
         Task<TEntity> AddAsync(TEntity entity);
 
         Task<TEntity> UpdateAsync(TEntity entity);
+
+        Task<TEntity> RemoveAsync(TEntity entity);
     }
 }
