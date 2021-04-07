@@ -3,74 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210330202146_AddPosts")]
+    partial class AddPosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("WebApi.Models.POCO.Comment", b =>
-                {
-                    b.Property<int>("CommentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<DateTime>("DateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PostID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("CommentID");
-
-                    b.ToTable("Comment");
-
-                    b.HasData(
-                        new
-                        {
-                            CommentID = 1,
-                            Content = "tralalala ",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 418, DateTimeKind.Local).AddTicks(6952),
-                            PostID = 1,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 2,
-                            Content = "tralalala pararara",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2920),
-                            PostID = 2,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 3,
-                            Content = "tu ti tu rum tu tu",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2972),
-                            PostID = 1,
-                            UserID = 2
-                        });
-                });
 
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>
                 {
@@ -134,6 +83,15 @@ namespace WebApi.Migrations
                     b.Property<bool>("IsPromoted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Localization")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ShopName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -152,8 +110,10 @@ namespace WebApi.Migrations
                             PostID = 1,
                             CategoryID = 1,
                             Content = "Oto mój pierwszy post!",
-                            Date = new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 3, 30, 22, 21, 46, 588, DateTimeKind.Local).AddTicks(5085),
                             IsPromoted = false,
+                            Localization = "Warszawa",
+                            ShopName = "Sklep1",
                             Title = "tytuł 1",
                             UserID = 1
                         },
@@ -162,8 +122,10 @@ namespace WebApi.Migrations
                             PostID = 2,
                             CategoryID = 1,
                             Content = "Oto mój drugi post!",
-                            Date = new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 3, 30, 22, 21, 46, 590, DateTimeKind.Local).AddTicks(8303),
                             IsPromoted = false,
+                            Localization = "Kraków",
+                            ShopName = "Sklep2",
                             Title = "tytuł 2",
                             UserID = 2
                         },
@@ -172,8 +134,10 @@ namespace WebApi.Migrations
                             PostID = 3,
                             CategoryID = 1,
                             Content = "Oto mój trzeci post!",
-                            Date = new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 3, 30, 22, 21, 46, 590, DateTimeKind.Local).AddTicks(8366),
                             IsPromoted = false,
+                            Localization = "Poznań",
+                            ShopName = "Sklep3",
                             Title = "tytuł 3",
                             UserID = 3
                         });
