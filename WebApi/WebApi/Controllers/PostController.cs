@@ -30,17 +30,15 @@ namespace WebApi.Controllers
         public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
         {
             var result = _postService.GetAll();
-            if (result == null) return NotFound();
-            else return Ok(result);
+            return Ok(result);
         }
 
       
         [HttpGet("byUser/{UserID}")]
-        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID) 
+        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
         {
             var result = _postService.GetAllOfUser(UserID);
-            if (result == null) return NotFound();
-            else return Ok(result);
+            return Ok(result);
         }
 
 
@@ -48,13 +46,12 @@ namespace WebApi.Controllers
         public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
             var result = _postService.GetById(postID);
-            if (result == null) return NotFound();
-            else return Ok(result);
+            return Ok(result);
         }
 
 
         [HttpDelete("{postID}")]
-        public async Task<IActionResult> Delete([Required][FromHeader] int userID, [FromRoute] int postID)//, [FromBody] DateTime dateTime) - nie wiem czemu z tym nie działa. Może trzeba zoribć DTO na datetime?
+        public async Task<IActionResult> Delete([Required][FromHeader] int userID, [FromRoute] int postID)
         {
             await _postService.DeletePostAsync(postID);
             return Ok();
@@ -64,22 +61,18 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
         {
             var result = await _postService.EditPostAsync(postID, body);
-            if (result == null) return NotFound();
-            else return Ok(result);
+            return Ok();
         }
 
 
         //TODO:
         //Trzeba napisać na grupe od specyfikcji że zmienił się endpoint
-        //[HttpPost("{postID}")]
-        //Zmieniłem na:
+        // z [HttpPost("{postID}")] - błąd w dokumentacji
         [HttpPost]
-        //I tak nie potrzebujemy postID w endpoincie, bo dopiero je tworzymy.
         public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = await _postService.AddPostAsync(body, userID);
-            if (result < 0) return NotFound(); //Maybe another 'if' in future
-            else return Ok(result);
+            return Ok(result);
         }
 
 

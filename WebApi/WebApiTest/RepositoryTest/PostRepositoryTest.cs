@@ -26,52 +26,6 @@ namespace WebApiTest
             dbContext.Add(new Post { PostID = 2, UserID = 5, CategoryID = 5, Title = "Title32321", Date = new DateTime(2000, 10, 10, 11, 4, 41), IsPromoted = false });
             dbContext.SaveChanges();
         }
-        [Fact]
-        public void GetPostByIdAsync_ValidCall()
-        {
-            var options = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseInMemoryDatabase(databaseName: "GetPostByIdAsync_ValidCall").Options;
-
-            using (var dbContext = new DatabaseContext(options))
-            {
-                SeedPost(dbContext);
-                int expectedID = 1;
-                var expected = dbContext.Posts.Where(x => x.PostID == expectedID).FirstOrDefault();
-
-                var cls = new PostRepository(dbContext);
-                var actual = cls.GetPostByIdAsync(expectedID);
-
-                Assert.True(actual != null);
-                Assert.Equal(expected.PostID, actual.Result.PostID);
-                Assert.Equal(expected.UserID, actual.Result.UserID);
-                Assert.Equal(expected.CategoryID, actual.Result.CategoryID);
-                Assert.Equal(expected.Date, actual.Result.Date);
-                Assert.Equal(expected.Title, actual.Result.Title);
-                Assert.Equal(expected.Content, actual.Result.Content);
-                Assert.Equal(expected.IsPromoted, actual.Result.IsPromoted);
-
-            }
-        }
-
-        [Fact]
-        public void GetPostByIdAsync_InvalidCall_NoId()
-        {
-            var options = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseInMemoryDatabase(databaseName: "GetPostByIdAsync_InvalidCall_NoId").Options;
-
-            using (var dbContext = new DatabaseContext(options))
-            {
-                SeedPost(dbContext);
-                int expectedID = 0;
-                var expected = dbContext.Posts.Where(x => x.PostID == expectedID).FirstOrDefault();
-
-                var cls = new PostRepository(dbContext);
-                var actual = cls.GetPostByIdAsync(expectedID);
-
-                Assert.True(actual != null);
-                Assert.True(actual.Result == null);
-            }
-        }
 
         [Fact]
         public void EditPostAsync_ValidCall()

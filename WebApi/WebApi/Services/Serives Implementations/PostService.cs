@@ -41,7 +41,7 @@ namespace WebApi.Services.Serives_Implementations
 
         public IQueryable<PostDTO> GetAllOfUser(int userID)
         {
-            return PostMapper.Map(_postRepository.GetAll().Where(post => post.UserID == userID));
+            return PostMapper.Map(_postRepository.GetAll().Where(post => post.UserID == userID)); // takie rzeczy w repozytorium
         }
 
         public async Task DeletePostAsync(int id)

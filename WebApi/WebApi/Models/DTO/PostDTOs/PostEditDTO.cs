@@ -11,6 +11,7 @@ namespace WebApi.Models.DTO.PostDTOs
     {
         [Required]
         [MaxLength(50)]
+        [MinLength(1)]
         public string title { get; set; }
         [Required]
         public string content { get; set; }

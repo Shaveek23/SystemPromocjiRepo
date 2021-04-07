@@ -43,6 +43,11 @@ namespace WebApi.Middlewares
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 message = e.Message;
             }
+            catch (EditPostFailException e)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                message = e.Message;
+            }
             catch (Exception e)
             {
                 context.Response.StatusCode = 500;
