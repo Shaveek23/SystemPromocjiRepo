@@ -30,6 +30,7 @@ namespace WallProject
                 { c.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/api/"); });
             services.AddControllersWithViews();
             services.AddScoped<IWallService, WallService>();
+            services.AddScoped<IPostService, PostService>();    //dependency postow
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
