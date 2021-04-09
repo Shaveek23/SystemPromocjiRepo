@@ -24,7 +24,7 @@ namespace WallProject.Services.Serives_Implementations
         public async Task<List<PostViewModel>> GetAllAsync()
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync("post/{postId}");
+            var result = await client.GetAsync("post/byUser/0");
 
             if (result != null)
             {
@@ -57,7 +57,7 @@ namespace WallProject.Services.Serives_Implementations
         }
 
         [HttpGet]
-        [Route("post/{userId}")] //tu nie jestem pewny czy ten route dziala inaczej niz gdybym dal postId
+        [Route("user/post/{userId}")] //route w dokumentacji nie ma sensu
         public async Task<List<PostViewModel>> GetByUserIdAsync(int userId)
         {
             var client = _clientFactory.CreateClient("webapi");

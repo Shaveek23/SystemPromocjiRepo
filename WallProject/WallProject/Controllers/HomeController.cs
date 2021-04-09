@@ -14,11 +14,12 @@ namespace WallProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IWallService _service;
-
-        public HomeController(ILogger<HomeController> logger, IWallService service)
+        private readonly IPostService _postService;
+        public HomeController(ILogger<HomeController> logger, IWallService service, IPostService postService)
         {
-            _logger = logger;
+           _logger = logger;
            _service = service;
+           _postService = postService;
         }
 
         public async Task<IActionResult> WallAsync()
@@ -28,7 +29,7 @@ namespace WallProject.Controllers
             WallViewModel wall = new WallViewModel();
             wall.Owner = user;
             //Bedzie uzupełniane jak beda w bazie
-            wall.Posts = new List<PostViewModel>();
+            wall.Posts = _postService.GetAllAsync().Result;
             return View(wall);
         }
 

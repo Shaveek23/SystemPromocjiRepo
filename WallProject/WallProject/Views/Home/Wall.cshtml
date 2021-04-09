@@ -99,12 +99,12 @@
                             @foreach (var posts in Model.Posts)
                             {
                                 <div class="fb-user-details">
-                                    <h3><a href="#" class="#">@posts.Owner.firstName</a></h3>
-                                    <p>@posts.Time+ " "+@posts.Localization</p>
+                                    <h3><a href="#" class="#">@posts.author</a></h3>
+                                    <p>@posts.datetime</p>
                                 </div>
                                 <div class="clearfix"></div>
                                 <p class="fb-user-status">
-                                    @posts.Content
+                                    @posts.content
                                 </p>
                                 <div class="fb-status-container fb-border">
                                     <div class="fb-time-action">
@@ -115,28 +115,9 @@
                                 </div>
                                 <div class="fb-status-container fb-border fb-gray-bg">
                                     <div class="fb-time-action like-info">
-                                        <a href="#">@posts.Likes people like this</a>
+                                        <a href="#">@posts.likesCount people like this</a>
                                     </div>
-                                    <ul class="fb-comments">
-                                        @foreach (var comment in posts.Comments)
-                                        {
-                                            <li>
-                                                @*<a href="#" class="cmt-thumb">
-                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                                    </a>*@
-                                                <div class="cmt-details">
-                                                    <a href="#">@comment.Owner</a>
-                                                    <span> @comment.Content </span>
 
-                                                    <a href="#">@comment.Likes people like this</a>
-                                                    <span> </span>
-                                                    <p>@comment.Time<a href="#" class="like-link">Like</a></p>
-
-                                                </div>
-                                            </li>
-
-                                        }
-                                    </ul>
                                     <div class="clearfix"></div>
                                 </div>
                             }

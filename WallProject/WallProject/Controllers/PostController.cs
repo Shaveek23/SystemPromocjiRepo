@@ -12,10 +12,6 @@ namespace WallProject.Controllers
 {
     public class PostController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         private readonly ILogger<PostController> _logger;
         private readonly IPostService _postService;

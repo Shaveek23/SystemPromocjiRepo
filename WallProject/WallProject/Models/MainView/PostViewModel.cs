@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,12 +8,17 @@ namespace WallProject.Models
 {
     public class PostViewModel
     {
-        public int Likes { get; set; }
-        public PersonViewModel Owner { get; set; }
-        public DateTime Time { get; set; }
-        public string Content { get; set; }
-        public List<CommentViewModel> Comments { get; set; }
-        public bool IsPromoted { get; set; }
-        public string Localization { get; set; }
+        public int? id { get; set; }
+
+        public string title { get; set; }
+        public string content { get; set; }
+        public DateTime? datetime { get; set; }
+
+        public int? category { get; set; }
+        public bool? isPromoted { get; set; }
+        public string author { get; set; }
+        public int? authorID { get; set; }
+        public int? likesCount { get; set; }
+        public bool? isLikedByUser { get; set; }
     }
 }
