@@ -9,5 +9,6 @@ namespace WebApi.Database.Repositories.Interfaces
     public interface IPersonRepository : IRepository<Person>
     {
         Task<Person> GetPersonByIdAsync(int id);
+      
     }
 }

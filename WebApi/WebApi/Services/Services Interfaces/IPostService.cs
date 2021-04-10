@@ -19,5 +19,6 @@ namespace WebApi.Services.Services_Interfaces
         public Task<Post> EditPostAsync(int id, PostEditDTO body);
         public IQueryable<int> GetLikes(int postID);
         public Task EditLikeStatusAsync(int commentID, bool like);
+       public IQueryable<CommentDTOOutput> GetAllComments(int postID,int  userID);
     }
 }

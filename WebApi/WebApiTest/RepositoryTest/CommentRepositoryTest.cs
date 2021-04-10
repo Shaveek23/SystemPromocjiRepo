@@ -227,7 +227,7 @@ namespace WebApiTest
                 var cls = new CommentRepository(dbContext);
 
 
-                var result = cls.DeleteComment(commentToDeleteId, UserId);
+                var result = cls.Delete(commentToDeleteId, UserId);
 
 
 
@@ -267,7 +267,7 @@ namespace WebApiTest
                 var cls = new CommentRepository(dbContext);
 
 
-                Assert.Throws<DeleteFailException>(() => cls.DeleteComment(commentToDeleteId, UserId));
+                Assert.Throws<DeleteFailException>(() => cls.Delete(commentToDeleteId, UserId));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
             }
         }

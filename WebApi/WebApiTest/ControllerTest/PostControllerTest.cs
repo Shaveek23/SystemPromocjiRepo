@@ -211,7 +211,50 @@ namespace WebApiTest.ControllerTest
             Assert.Equal(expected.isLikedByUser, actual.isLikedByUser);
             Assert.Equal(expected.isPromoted, actual.isPromoted);
         }
+        [Theory]
+        [InlineData(1)]
+        public void GetPostCommentsTest(int postID)
+        {
+          
+            int UserId = 1;
+            var commentsList = new List<CommentDTOOutput>
+            { new CommentDTOOutput{
+                CommentID=1,
+                PostID=postID,
+                UserID=1,
+                Content="porzadny kontent",
+                DateTime=datetime1
+            } ,
+            new CommentDTOOutput{
+                CommentID=2,
+                PostID=postID,
+                UserID=2,
+                Content="mniej porzadny kontent",
+                DateTime=datetime2
+            } ,
+            new CommentDTOOutput{
+                CommentID=3,
+                PostID=postID,
+                UserID=1,
+                Content="slaby kontent",
+                DateTime=datetime3
+            } ,
+            };
+           
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(commentsList.AsQueryable());
+          
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+        
+            var expected = commentsList.AsQueryable();
 
+            //Act
+            var actual = ((IQueryable<CommentDTOOutput>)((OkObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
+            //Asset
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
+
+        }
         //TODO:
         //public void DeletePost_Test
         //public PostLikesDTO GetPostLikes

@@ -16,5 +16,6 @@ namespace WebApi.Database
         Task<TEntity> UpdateAsync(TEntity entity);
 
         Task<TEntity> RemoveAsync(TEntity entity);
+        public bool Delete(int entityID, int userId);
     }
 }

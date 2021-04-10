@@ -186,7 +186,7 @@ namespace WebApiTest.ServiceTest
         {
             var mockICommentRepository = new Mock<ICommentRepository>();
             var id = comments[0].CommentID;
-            mockICommentRepository.Setup(x => x.DeleteComment(id, UserId)).Returns(true);
+            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns(true);
 
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.DeleteComment(id, UserId);
@@ -202,7 +202,7 @@ namespace WebApiTest.ServiceTest
         {
             var mockICommentRepository = new Mock<ICommentRepository>();
             var id = 1000;
-            mockICommentRepository.Setup(x => x.DeleteComment(id, UserId)).Returns(false);
+            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns(false);
 
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.DeleteComment(id, UserId);

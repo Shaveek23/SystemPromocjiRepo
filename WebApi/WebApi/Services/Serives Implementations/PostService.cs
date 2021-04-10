@@ -15,6 +15,7 @@ namespace WebApi.Services.Serives_Implementations
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
+        
 
         public PostService(IPostRepository postRepository)
         {
@@ -50,8 +51,9 @@ namespace WebApi.Services.Serives_Implementations
         }
 
         public async Task<Post> EditPostAsync(int id, PostEditDTO body)
-        { 
-            return await _postRepository.EditPostAsync(id, body);
+        {
+            Post post = PostEditMapper.Map(body);
+            return await _postRepository.UpdateAsync(post);
         }
 
         public IQueryable<int> GetLikes(int postID)
@@ -62,6 +64,12 @@ namespace WebApi.Services.Serives_Implementations
         public async Task EditLikeStatusAsync(int commentID, bool like)
         {
             throw new NotImplementedException();
+        }
+
+        public IQueryable<CommentDTOOutput> GetAllComments(int postID, int userID)
+        {
+            var result = _postRepository.GetAllComments(postID);
+            return Mapper.MapOutput(result);
         }
     }
 }

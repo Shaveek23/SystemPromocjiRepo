@@ -16,23 +16,17 @@ namespace WebApi.Database.Repositories.Implementations
 
         #region TO DO :  zintegorować z generyczną metodą UpdateAsync
 
-        public Task<Post> EditPostAsync(int id, PostEditDTO body)
+      
+
+        public IQueryable<Comment> GetAllComments(int postID)
         {
-            var postToEdit = dbContext.Posts.SingleOrDefault(post => post.PostID == id);
-           
-            if (postToEdit == null)
+            var comments = dbContext.Comments.Where(comment => comment.PostID == postID);
+            //Wydaje mi sie ze nie trzeba zwracac wyjatky - brak komentarzy to nie bład
+            if(comments==null)
             {
-                throw new EditPostFailException($"{nameof(AddAsync)} there is no post with given post ID.");
+                return (IQueryable<Comment>)(new List<Comment>());
             }
-            else
-            {
-                postToEdit.Title = body.title;
-                postToEdit.Content = body.content;
-                postToEdit.CategoryID = body.category.Value;
-                postToEdit.Date = body.dateTime.Value;
-                postToEdit.IsPromoted = body.isPromoted.Value;
-            }
-            return UpdateAsync(postToEdit);
+            return comments;
         }
 
         #endregion

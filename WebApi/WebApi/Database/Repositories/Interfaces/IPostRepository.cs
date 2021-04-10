@@ -9,6 +9,7 @@ namespace WebApi.Database.Repositories.Interfaces
 {
     public interface IPostRepository : IRepository<Post>
     {
-        public Task<Post> EditPostAsync(int id, PostEditDTO body);
+       
+        IQueryable<Comment> GetAllComments(int postID);
     }
 }

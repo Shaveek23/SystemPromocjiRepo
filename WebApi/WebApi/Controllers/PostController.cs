@@ -79,11 +79,13 @@ namespace WebApi.Controllers
         //TODO:
 
         //I need Comment DTO to implement this endpoint
-        //[HttpGet("{postID}/comments")]
-        //public IQueryable<CommentDTO> GetPostComments([FromHeader] int userID, [FromQuery] )
-        //{
-        //    return _postService.GetAllComments(PostID);
-        //}
+        [HttpGet("{postID}/comments")]
+        public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([FromHeader] int userID,[FromRoute] int postID)
+        {
+            var result= _postService.GetAllComments(postID,userID);
+
+            return Ok(result);
+        }
 
 
         //I need Like-Post Table in database

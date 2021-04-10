@@ -90,5 +90,20 @@ namespace WebApi.Database
                 throw new Exception($"{nameof(entity)} could not be removed: {ex.Message}");
             }
         }
+
+        public bool Delete(int entityID,int userId)
+        {
+            try
+            {
+                dbContext.Remove(dbContext.Find<TEntity>(entityID));
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                throw new DeleteFailException("Fail when trying to delete the resource item");
+            }
+        }
+      
     }
 }

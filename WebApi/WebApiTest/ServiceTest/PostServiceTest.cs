@@ -65,10 +65,10 @@ namespace WebApiTest.ServiceTest
         }
 
         [Fact]
-        public void EditComment_ValidCall()
+        public void EditPost_ValidCall()
         {
             int postID = 1;
-            DateTime currentTime = new DateTime(2000,10,10,10,10,42);
+            DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
             var newPostDTO = new PostEditDTO
             {
                 title = "newtitle",
@@ -90,7 +90,7 @@ namespace WebApiTest.ServiceTest
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();
-            mockIPostRepository.Setup(x => x.EditPostAsync(postID, newPostDTO)).Returns(Task.Run(() => expectedPost));
+            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>())).Returns(Task.Run(() => expectedPost));
 
 
             var postService = new PostService(mockIPostRepository.Object);
@@ -104,5 +104,44 @@ namespace WebApiTest.ServiceTest
             Assert.Equal(actual.IsPromoted, expectedPost.IsPromoted);
             Assert.Equal(actual.Date, expectedPost.Date);
         }
+        [Fact]
+        public void GetAllComments_ValisCall()
+        {
+            int postID = 1;
+            int userId = 1;
+            var mockIPostRepository = new Mock<IPostRepository>();
+            DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
+            var commentsList = new List<Comment>
+            { new Comment{
+                CommentID=1,
+                PostID=postID,
+                UserID=1,
+                Content="porzadny kontent",
+                DateTime=currentTime
+            } ,
+            new Comment{
+                CommentID=2,
+                PostID=postID,
+                UserID=2,
+                Content="mniej porzadny kontent",
+                DateTime=currentTime
+            } ,
+            new Comment{
+                CommentID=3,
+                PostID=postID,
+                UserID=1,
+                Content="slaby kontent",
+                DateTime=currentTime
+            } ,
+            };
+            mockIPostRepository.Setup(x => x.GetAllComments(postID)).Returns(commentsList.AsQueryable());
+            var postService = new PostService(mockIPostRepository.Object);
+            var actual = postService.GetAllComments(postID, userId).ToList();
+            var expected = commentsList;
+            Assert.True(actual != null);
+            Assert.Equal(expected.Count, actual.Count);
+        }
+
     }
+    
 }

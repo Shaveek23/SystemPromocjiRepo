@@ -34,7 +34,7 @@ namespace WebApi.Services.Serives_Implementations
 
         public bool DeleteComment(int commentId, int userId)
         {
-            return _commentRepository.DeleteComment(commentId, userId);
+            return _commentRepository.Delete(commentId, userId);
         }
 
         public async Task<CommentDTOOutput> EditCommentAsync(int commentId, int userId, CommentDTO comment)

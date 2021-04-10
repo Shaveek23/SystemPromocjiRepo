@@ -13,22 +13,7 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public CommentRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        #region TODO: Przeniesc do generycznego
-        public bool DeleteComment(int id, int userId)
-        {
-            try
-            {
-                dbContext.Remove(dbContext.Find<Comment>(id));
-                dbContext.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                throw new DeleteFailException("Fail when trying to delete the comment");
-            }
-           
-        }
-        #endregion
+   
 
         public Task EditLikeOnComment(int commentId, int userId)
         {
