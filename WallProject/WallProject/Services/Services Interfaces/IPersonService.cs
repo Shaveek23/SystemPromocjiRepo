@@ -6,8 +6,9 @@ using WallProject.Models;
 
 namespace WallProject.Services.Services_Interfaces
 {
-    public interface IWallService
+    public interface IPersonService
     {
-        public Task<WallViewModel> getWall(int userID);
+        public Task<PersonViewModel> getById(int userID);
+        public Task<List<PersonViewModel>> getAll();
     }
 }

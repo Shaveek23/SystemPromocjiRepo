@@ -14,31 +14,25 @@ namespace WallProject.Services.Serives_Implementations
     {
         //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
         private readonly IHttpClientFactory clientFactory;
-        public WallService(IHttpClientFactory clientFactory)
+        private readonly IPostService _postService;
+        private readonly IPersonService _personService;
+        public WallService(IHttpClientFactory clientFactory, IPostService postService, IPersonService personService)
         {
-
             this.clientFactory = clientFactory;
-           
-
+            _postService = postService;
+            _personService = personService;
         }
       
         [HttpGet]
-        async public Task<PersonViewModel> getUser()
+        async public Task<WallViewModel> getWall(int userID)
         {
             var client = clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync("person");
-           
-            if(result!=null)
-            {
-                var jsonString = await result.Content.ReadAsStringAsync();
-                
-               var user= JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonString);
-                if(user!=null)
-                return user[0];
-            }
-          
 
-            return null;
+            WallViewModel wallVM = new WallViewModel();
+            wallVM.Owner = await _personService.getById(userID);
+            wallVM.Posts = await _postService.getAll(userID);
+
+            return wallVM;
         }
     }
 }

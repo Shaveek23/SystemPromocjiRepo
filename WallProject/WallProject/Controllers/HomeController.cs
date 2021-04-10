@@ -14,24 +14,24 @@ namespace WallProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IWallService _service;
+        private readonly ICommentService _commentService;
+        private readonly IPostService _postService;
 
-        public HomeController(ILogger<HomeController> logger, IWallService service)
+        public HomeController(ILogger<HomeController> logger, IWallService service, ICommentService commentService, IPostService postService)
         {
             _logger = logger;
-           _service = service;
+            _service = service;
+            _commentService = commentService;
+            _postService = postService;
         }
 
         public async Task<IActionResult> WallAsync()
         {
-           
-            PersonViewModel user= await _service.getUser();
-            WallViewModel wall = new WallViewModel();
-            wall.Owner = user;
-            //Bedzie uzupełniane jak beda w bazie
-            wall.Posts = new List<PostViewModel>();
+            WallViewModel wall = await _service.getWall(1);
             return View(wall);
         }
 
+        [Route("privacy")]
         public IActionResult Privacy()
         {
             return View();
@@ -42,5 +42,13 @@ namespace WallProject.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [Route("getWall/{userID}")]
+        public async Task<IActionResult> UserWall([FromRoute] int userID)
+        {
+            WallViewModel wall = await _service.getWall(userID);
+            return View(wall);
+        }
+
     }
 }
