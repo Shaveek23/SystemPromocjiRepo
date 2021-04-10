@@ -76,12 +76,10 @@ namespace WebApi.Controllers
         }
 
 
-        //TODO:
-
-        //I need Comment DTO to implement this endpoint
         [HttpGet("{postID}/comments")]
-        public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([FromHeader] int userID,[FromRoute] int postID)
+        public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID,[Required][FromRoute] int postID)
         {
+            // tutaj trzebaby chyba użyć _commentService
             var result= _postService.GetAllComments(postID,userID);
 
             return Ok(result);

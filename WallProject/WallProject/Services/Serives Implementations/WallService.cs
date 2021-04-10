@@ -16,10 +16,7 @@ namespace WallProject.Services.Serives_Implementations
         private readonly IHttpClientFactory clientFactory;
         public WallService(IHttpClientFactory clientFactory)
         {
-
             this.clientFactory = clientFactory;
-           
-
         }
       
         [HttpGet]

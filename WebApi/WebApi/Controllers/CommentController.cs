@@ -5,9 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
@@ -71,19 +68,21 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet("{id}/likedUsers")]
-        public ActionResult<IQueryable<int>> GetLikedUsers([FromRoute] int id)
-        {
-            var result = _commentService.GetLikedUsers(id);
-            return Ok(result);
-        }
+        #region TO DO: implement those endpoints
+        //[HttpGet("{id}/likedUsers")]
+        //public ActionResult<IQueryable<int>> GetLikedUsers([FromRoute] int id)
+        //{
+        //    var result = _commentService.GetLikedUsers(id);
+        //    return Ok(result);
+        //}
 
-        [HttpPut("{id}/likedUsers")]
-        public async Task<ActionResult> EditLikeOnComment([FromRoute] int id, [Required][FromHeader] int userId)
-        {
-            await _commentService.EditLikeOnCommentAsync(id, userId);
-            return Ok();
-        }
+        //[HttpPut("{id}/likedUsers")]
+        //public async Task<ActionResult> EditLikeOnComment([FromRoute] int id, [Required][FromHeader] int userId)
+        //{
+        //    await _commentService.EditLikeOnCommentAsync(id, userId);
+        //    return Ok();
+        //}
+        #endregion
 
     }
 

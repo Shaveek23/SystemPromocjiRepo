@@ -53,6 +53,7 @@ namespace WebApi.Services.Serives_Implementations
         public async Task<Post> EditPostAsync(int id, PostEditDTO body)
         {
             Post post = PostEditMapper.Map(body);
+            post.PostID = id;
             return await _postRepository.UpdateAsync(post);
         }
 

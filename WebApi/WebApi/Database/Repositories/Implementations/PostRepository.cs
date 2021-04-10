@@ -14,21 +14,16 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public PostRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        #region TO DO :  zintegorować z generyczną metodą UpdateAsync
-
-      
-
+        // To chyba powinno być w CommentRepository albo w ogole jako metoda generyczna GetAllOfUser(user id) - wtedy kazdy zasob by musiał być skojarzony z jakimś userId zeby dzialalo dla każdego
         public IQueryable<Comment> GetAllComments(int postID)
         {
             var comments = dbContext.Comments.Where(comment => comment.PostID == postID);
-            //Wydaje mi sie ze nie trzeba zwracac wyjatky - brak komentarzy to nie bład
-            if(comments==null)
+            if (comments==null)
             {
                 return (IQueryable<Comment>)(new List<Comment>());
             }
             return comments;
         }
 
-        #endregion
     }
 }
