@@ -21,37 +21,49 @@ namespace WallProject.Services.Serives_Implementations
         }
 
         [HttpGet]
-        async public Task<CommentViewModel> getById(int commentID)
+        async public Task<CommentViewModel> getById(int commentID, int userID)
         {
             var client = clientFactory.CreateClient("webapi");
-            client.DefaultRequestHeaders.Add("userID", "1");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"comment/{commentID}");
 
-            if (result != null)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonString = await result.Content.ReadAsStringAsync();
 
-                var comment = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
-                if (comment != null)
-                    return CommentMapper.Map(comment);
+                var commentDTO = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
+                if (commentDTO != null)
+                {
+                    CommentViewModel commentVM = CommentMapper.Map(commentDTO);
+                    commentVM.Likes = await getCommentLikes(commentDTO.commentID);
+                }
             }
             return null;
         }
 
         [HttpGet]
-        async public Task<List<CommentViewModel>> getAll()
+        async public Task<List<CommentViewModel>> getAll(int userID)
         {
             var client = clientFactory.CreateClient("webapi");
-            client.DefaultRequestHeaders.Add("userID", "1");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync("comments");
 
-            if (result != null)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonString = await result.Content.ReadAsStringAsync();
-
-                var comment = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                if (comment != null)
-                    return CommentMapper.Map(comment);
+                var commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                if (commentsDTO != null)
+                {
+                    List<CommentViewModel> commentsVM = new List<CommentViewModel>();
+                    CommentViewModel commentVM;
+                    foreach (var commentDTO in commentsDTO)
+                    {
+                        commentVM = CommentMapper.Map(commentDTO);
+                        commentVM.Likes = await getCommentLikes(commentDTO.commentID);
+                        commentsVM.Add(commentVM);
+                    }
+                    return commentsVM;
+                }
             }
             return null;
         }
@@ -61,15 +73,37 @@ namespace WallProject.Services.Serives_Implementations
             var client = clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"post/{postID}/comments");
-            if (result != null)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonString = await result.Content.ReadAsStringAsync();
-
-                var comments = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                if (comments != null)
-                    return CommentMapper.Map(comments);
+                var commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                if (commentsDTO != null)
+                {
+                    List<CommentViewModel> commentsVM = new List<CommentViewModel>();
+                    CommentViewModel commentVM;
+                    foreach(var commentDTO in commentsDTO)
+                    {
+                        commentVM = CommentMapper.Map(commentDTO);
+                        commentVM.Likes = await getCommentLikes(commentDTO.commentID);
+                        commentsVM.Add(commentVM);
+                    }
+                    return commentsVM;
+                }
             }
             return null;
+        }
+
+        async public Task<int> getCommentLikes(int commentID)
+        {
+            var client = clientFactory.CreateClient("webapi");
+            var result = await client.GetAsync($"comment/{commentID}/likedUsers");
+            if (result.IsSuccessStatusCode)
+            {
+                var jsonString = await result.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<int>(jsonString);
+            }
+            Random rand = new Random();
+            return rand.Next(1, 10); //na czas prezentacji, potem zmienić na 0
         }
     }
 }

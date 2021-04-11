@@ -7,8 +7,9 @@ namespace WallProject.Models
 {
     public class CommentViewModel
     {
-        public int Likes; //ERR: nie otrzymuje tego z api
+        public int Likes;
         public PersonViewModel Owner;
+        public string OwnerName; //do wyświetlenia userID w ramach prezentacji
         public DateTime Time;
         public string Content;
     }

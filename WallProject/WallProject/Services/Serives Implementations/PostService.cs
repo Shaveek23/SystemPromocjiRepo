@@ -30,7 +30,7 @@ namespace WallProject.Services.Serives_Implementations
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync("post");
 
-            if (result != null)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonString = await result.Content.ReadAsStringAsync();
 
@@ -59,7 +59,7 @@ namespace WallProject.Services.Serives_Implementations
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"post/{postID}");
 
-            if (result != null)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonString = await result.Content.ReadAsStringAsync();
 

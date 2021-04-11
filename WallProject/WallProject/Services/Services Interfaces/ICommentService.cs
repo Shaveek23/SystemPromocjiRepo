@@ -8,8 +8,9 @@ namespace WallProject.Services.Services_Interfaces
 {
     public interface ICommentService
     {
-        public Task<CommentViewModel> getById(int commentID);
-        public Task<List<CommentViewModel>> getAll();
+        public Task<CommentViewModel> getById(int commentID, int userID);
+        public Task<List<CommentViewModel>> getAll(int userID);
         public Task<List<CommentViewModel>> getByPostId(int postID, int userID);
+        public Task<int> getCommentLikes(int commentID);
     }
 }

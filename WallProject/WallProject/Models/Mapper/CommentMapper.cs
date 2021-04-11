@@ -13,7 +13,8 @@ namespace WallProject.Models.Mapper
             CommentViewModel commentVM = new CommentViewModel
             {
                 Content = commentDTO.content,
-                Time = commentDTO.dateTime
+                Time = commentDTO.dateTime,
+                OwnerName = commentDTO.userID.ToString()
             };
 
             return commentVM;
