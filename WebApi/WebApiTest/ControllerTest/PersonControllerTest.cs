@@ -56,8 +56,8 @@ namespace WebApiTest.ControllerTest
             };
 
             //Act
-            var actual = controller.Get(0);
-            int idActual = actual.Value;
+            var actual = (ObjectResult)controller.Get(0).Result;
+            int idActual =(int) ((PersonDTO)(actual.Value)).PersonID;
 
             //Assert
             Assert.Equal(expected.PersonID, idActual);
@@ -98,7 +98,8 @@ namespace WebApiTest.ControllerTest
 
             var expected = people;
             //Act
-            var actual = controller.GetAll().Value.ToList();
+            var actual = ((IQueryable<PersonDTO>)((ObjectResult)controller.GetAll().Result).Value);
+            var val = actual.ToList();
 
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -138,10 +139,12 @@ namespace WebApiTest.ControllerTest
                 City = city,
                 FirstName = firstName,
                 LastName = lastName
-            }).Result.Value;
+            }).Result.Result;
 
+            var val = (int)((ObjectResult)actual).Value;
             //Assert
-            Assert.Equal(expected.PersonID, actual);
+            Assert.Equal(expected.PersonID, val);
+            
 
         }
 

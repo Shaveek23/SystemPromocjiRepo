@@ -56,7 +56,8 @@ namespace WebApiTest.ControllerTest
             };
 
 
-            var actual = controller.GetById(c_id, UserId).Value;
+            var actual = (CommentDTOOutput)((ObjectResult)controller.GetById(c_id, UserId).Result).Value;
+
 
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.DateTime, actual.DateTime);
@@ -112,7 +113,7 @@ namespace WebApiTest.ControllerTest
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             var expected = comments;
 
-            var actual = ((OkObjectResult)controller.GetAll(UserId).Result).Value;
+            var actual =((ServiceResult<IQueryable<CommentDTOOutput>>) ((OkObjectResult)controller.GetAll(UserId).Result).Value).Result;
             var val = ((IQueryable<CommentDTOOutput>)actual).ToList();
             Assert.True(expected.All(shouldItem => val.Any(isItem => isItem == shouldItem)));
 
@@ -139,7 +140,7 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             var expected = c_id;
-            int actual = controller.AddComment(new CommentDTO
+            var actual = controller.AddComment(new CommentDTO
             {
 
 
@@ -148,10 +149,10 @@ namespace WebApiTest.ControllerTest
                 DateTime = date,
                 Content = content
 
-            }, UserId).Result.Value;
-            
+            }, UserId).Result.Result;
+            var val = (int)((ObjectResult)actual).Value;
 
-            Assert.Equal(actual, expected);
+            Assert.Equal(val, expected);
        
 
 
@@ -204,8 +205,8 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             mockService.Setup(x => x.DeleteComment(c_id, UserId)).Returns(new ServiceResult<bool>(true));
-            var actual = controller.DeleteComment(c_id, UserId);
-            Assert.Equal(typeof(OkResult), actual.GetType());
+            var actual = (bool)((ObjectResult)controller.DeleteComment(c_id, UserId).Result).Value;
+            Assert.True(actual);
 
         }
         
@@ -244,7 +245,8 @@ namespace WebApiTest.ControllerTest
                 Content = content
 
             }).Result;
-            Assert.Equal(typeof(OkResult), actual.GetType());
+            var val = (bool)((ObjectResult)actual.Result).Value;
+            Assert.True(val);
 
         }
         
