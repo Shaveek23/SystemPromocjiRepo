@@ -7,6 +7,7 @@ using WebApi.Database.Repositories.Interfaces;
 using WebApi.Exceptions;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
+using WebApi.Services;
 
 namespace WebApi.Database.Repositories.Implementations
 {
@@ -15,14 +16,14 @@ namespace WebApi.Database.Repositories.Implementations
         public PostRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
         // To chyba powinno być w CommentRepository albo w ogole jako metoda generyczna GetAllOfUser(user id) - wtedy kazdy zasob by musiał być skojarzony z jakimś userId zeby dzialalo dla każdego
-        public IQueryable<Comment> GetAllComments(int postID)
+        public ServiceResult<IQueryable<Comment>> GetAllComments(int postID)
         {
             var comments = dbContext.Comments.Where(comment => comment.PostID == postID);
-            if (comments==null)
+            if (comments == null)
             {
-                return (IQueryable<Comment>)(new List<Comment>());
+                return new ServiceResult<IQueryable<Comment>>((IQueryable<Comment>)(new List<Comment>()));
             }
-            return comments;
+            return new ServiceResult<IQueryable<Comment>>(comments);
         }
 
     }

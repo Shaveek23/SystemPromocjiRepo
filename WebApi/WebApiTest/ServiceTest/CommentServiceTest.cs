@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.DTO;
 using WebApi.Models.POCO;
+using WebApi.Services;
 using WebApi.Services.Serives_Implementations;
 using Xunit;
 
@@ -31,11 +32,11 @@ namespace WebApiTest.ServiceTest
             int expectedID = 1;
             var expected = comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns(expected);
+            mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns(new ServiceResult<Comment>(expected));
 
             var commentService = new CommentService(mockICommentRepository.Object);
 
-            var actual = commentService.GetById(expectedID, UserId);
+            var actual = commentService.GetById(expectedID, UserId).Result;
 
 
             Assert.True(actual != null);
@@ -55,28 +56,28 @@ namespace WebApiTest.ServiceTest
             var expected = comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
             var mockICommentRepository = new Mock<ICommentRepository>();
 
-            mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns((Comment)(null));
+            mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns(new ServiceResult<Comment>(null, System.Net.HttpStatusCode.BadRequest, "Something went wrong"));
 
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.GetById(expectedID, UserId);
 
 
-            Assert.Null(actual);
-
-
-
+            Assert.Null(actual.Result);
+            Assert.Equal(404, (int)actual.Code);
+            Assert.Equal("Something went wrong", actual.Message);
 
         }
+
         [Fact]
         public void GetAll_ValidCall()
         {
             var expected = comments;
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.GetAll()).Returns(expected.AsQueryable());
+            mockICommentRepository.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<Comment>>(expected.AsQueryable()));
 
             var commentService = new CommentService(mockICommentRepository.Object);
 
-            var actual = commentService.GetAll(UserId).ToList();
+            var actual = commentService.GetAll(UserId).Result.ToList();
 
 
             Assert.True(expected.All(item => actual.Any(actualItem => item.CommentID == actualItem.CommentID &&

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Models.POCO;
+using WebApi.Services;
 
 namespace WebApi.Database.Repositories.Interfaces
 {
@@ -11,9 +12,9 @@ namespace WebApi.Database.Repositories.Interfaces
     {
 
         //TODO:Zamienic na Users
-       Task<IQueryable<int> >GetLikedUsersAsync(int id);
+        Task<ServiceResult<IQueryable<int>>> GetLikedUsersAsync(int id);
  
-       Task EditLikeOnComment(int commentId,int userId);
+       Task<ServiceResult<Comment>> EditLikeOnComment(int commentId,int userId);
 
    
     }

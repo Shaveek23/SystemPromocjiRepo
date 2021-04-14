@@ -73,7 +73,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAll()).Returns(posts.AsQueryable());
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
@@ -140,7 +140,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(posts.Where(p=>p.authorID == in_authorID).AsQueryable());
+            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.Where(p=>p.authorID == in_authorID).AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
@@ -164,7 +164,7 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetById(in_id)).Returns(new PostDTO
+            mockService.Setup(x => x.GetById(in_id)).Returns( new ServiceResult<PostDTO>(new PostDTO
             {
                 id = in_id,
                 author = in_author,
@@ -176,7 +176,7 @@ namespace WebApiTest.ControllerTest
                 datetime = datetime1,
                 isLikedByUser = in_isLiked,
                 isPromoted = in_isPromoted
-            });
+            }));
 
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
@@ -242,7 +242,7 @@ namespace WebApiTest.ControllerTest
             };
            
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(commentsList.AsQueryable());
+            mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(commentsList.AsQueryable()));
           
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);

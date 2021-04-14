@@ -11,9 +11,6 @@ using WebApi.Models.DTO;
 using WebApi.Services.Services_Interfaces;
 
 
-
-
-
 namespace WebApi.Controllers
 {
     [ApiController]
@@ -41,7 +38,7 @@ namespace WebApi.Controllers
         public ActionResult<CommentDTOOutput> GetById([FromRoute] int id, [Required][FromHeader] int userId)
         {
             var result = _commentService.GetById(id, userId);
-            return Ok(result);
+            return new ControllerResult<CommentDTOOutput>(result).GetResponse();
         }
 
         [HttpPost]
@@ -49,23 +46,23 @@ namespace WebApi.Controllers
         {
 
             var result = await _commentService.AddCommentAsync(userId, comment);
-            return Ok(result.CommentID);
+            return new ControllerResult<int?>(result).GetResponse();
 
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteComment([FromRoute] int id, [Required][FromHeader] int userId)
+        public ActionResult<bool> DeleteComment([FromRoute] int id, [Required][FromHeader] int userId)
         {
-            _commentService.DeleteComment(id, userId);
-            return Ok();
+            var result = _commentService.DeleteComment(id, userId);
+            return new ControllerResult<bool>(result).GetResponse();
 
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
+        public async Task<ActionResult<bool>> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
         {
-            await _commentService.EditCommentAsync(id, userId, comment);
-            return Ok();
+            var result = await _commentService.EditCommentAsync(id, userId, comment);
+            return new ControllerResult<bool>(result).GetResponse();
         }
 
         #region TO DO: implement those endpoints

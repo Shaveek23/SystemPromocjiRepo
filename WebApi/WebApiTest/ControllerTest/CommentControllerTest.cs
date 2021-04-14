@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApi.Controllers;
 using WebApi.Models.DTO;
+using WebApi.Services;
 using WebApi.Services.Services_Interfaces;
 using Xunit;
 
@@ -31,7 +32,7 @@ namespace WebApiTest.ControllerTest
             DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<ICommentService>();
-            mockService.Setup(x => x.GetById(c_id, UserId)).Returns(new CommentDTOOutput
+            mockService.Setup(x => x.GetById(c_id, UserId)).Returns(new ServiceResult<CommentDTOOutput>( new CommentDTOOutput
 
             {
                 CommentID = c_id,
@@ -39,7 +40,7 @@ namespace WebApiTest.ControllerTest
                 PostID = p_id,
                 DateTime = date,
                 Content = content
-            });
+            }));
 
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
@@ -103,7 +104,7 @@ namespace WebApiTest.ControllerTest
             });
             var mockService = new Mock<ICommentService>();
 
-            mockService.Setup(x => x.GetAll(UserId)).Returns(comments.AsQueryable());
+            mockService.Setup(x => x.GetAll(UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
 
 
@@ -130,14 +131,7 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.AddCommentAsync(UserId, It.IsAny<CommentDTO>())).Returns(Task.Run(() =>
             {
-                return new CommentDTOOutput
-                {
-                    CommentID = c_id,
-                    UserID = u_id,
-                    PostID = p_id,
-                    DateTime = date,
-                    Content = content
-                };
+                return new ServiceResult<int?>(c_id);
             }));
 
 
@@ -211,7 +205,7 @@ namespace WebApiTest.ControllerTest
 
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
-            mockService.Setup(x => x.DeleteComment(c_id, UserId)).Returns(true);
+            mockService.Setup(x => x.DeleteComment(c_id, UserId)).Returns(new ServiceResult<bool>(true));
             var actual = controller.DeleteComment(c_id, UserId);
             Assert.Equal(typeof(OkResult), actual.GetType());
 
@@ -230,14 +224,8 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.EditCommentAsync(c_id, UserId, It.IsAny<CommentDTO>())).Returns(Task.Run(() =>
               {
-                  return new CommentDTOOutput
-                  {
-                      CommentID = c_id,
-                      UserID = u_id,
-                      PostID = p_id,
-                      DateTime = date,
-                      Content = content
-                  };
+                  return new ServiceResult<bool>(true);
+
               }));
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
