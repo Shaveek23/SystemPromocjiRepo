@@ -43,7 +43,7 @@ namespace WebApiTest
                 var expected = dbContext.Comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
 
                 var cls = new CommentRepository(dbContext);
-                var actual = cls.GetById(expectedID);
+                var actual = cls.GetById(expectedID).Result;
 
                 Assert.True(actual != null);
                 Assert.Equal(expected.CommentID, actual.CommentID);
@@ -69,7 +69,7 @@ namespace WebApiTest
 
                 int expectedID = -1;
                 var cls = new CommentRepository(dbContext);
-                Assert.Throws<ResourceNotFoundException>(() => cls.GetById(expectedID));
+                Assert.Null(cls.GetById(expectedID).Result);
 
 
             }
@@ -86,14 +86,10 @@ namespace WebApiTest
             }
             using (var dbContext = new DatabaseContext(options))
             {
-
-
-
-
                 var expected = dbContext.Comments.ToList();
 
                 var cls = new CommentRepository(dbContext);
-                var actual = cls.GetAll();
+                var actual = cls.GetAll().Result;
 
                 Assert.True(actual != null);
                 Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -165,7 +161,7 @@ namespace WebApiTest
 
                 var cls = new CommentRepository(dbContext);
 
-                var actual = cls.AddAsync(expected).Result;
+                var actual = cls.AddAsync(expected).Result.Result;
 
                 Assert.True(actual != null);
                 Assert.Equal(expected.CommentID, actual.CommentID);
@@ -227,20 +223,12 @@ namespace WebApiTest
                 var cls = new CommentRepository(dbContext);
 
 
-                var result = cls.Delete(commentToDeleteId, UserId);
-
-
+                var result = cls.Delete(commentToDeleteId, UserId).Result;
 
                 Assert.Equal(dbContext.Comments.Count(), initLength - 1);
                 Assert.True(result);
 
-
-
-
             }
-
-
-
         }
         [Fact]
 
@@ -261,13 +249,10 @@ namespace WebApiTest
 
 
                 int initLength = dbContext.Comments.Count();
-                int commentToDeleteId = -1;
 
 
                 var cls = new CommentRepository(dbContext);
 
-
-                Assert.Throws<DeleteFailException>(() => cls.Delete(commentToDeleteId, UserId));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
             }
         }
@@ -285,9 +270,6 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
 
-
-
-
                 string expectedText = "zedytowany tekst";
 
 
@@ -295,15 +277,13 @@ namespace WebApiTest
 
                 var cls = new CommentRepository(dbContext);
 
-                var actual = cls.UpdateAsync(expected).Result;
+                var actual = cls.UpdateAsync(expected).Result.Result;
                 Assert.Equal(expected.CommentID, actual.CommentID);
                 Assert.Equal(expected.Content, actual.Content);
                 Assert.Equal(expected.DateTime, actual.DateTime);
                 Assert.Equal(expected.PostID, actual.PostID);
                 Assert.Equal(expected.UserID, actual.UserID);
                 Assert.True(actual != null);
-
-
 
             }
 

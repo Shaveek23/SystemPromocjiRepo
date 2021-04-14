@@ -103,17 +103,17 @@ namespace WebApi.Database
             }
         }
 
-        public ServiceResult<TEntity> Delete(int entityID,int userId)
+        public ServiceResult<bool> Delete(int entityID,int userId)
         {
             try
             {
                 dbContext.Remove(dbContext.Find<TEntity>(entityID));
                 dbContext.SaveChanges();
-                return new ServiceResult<TEntity>(null);
+                return new ServiceResult<bool>(true);
             }
             catch
             {
-                return ServiceResult<TEntity>.GetInternalErrorResult();
+                return ServiceResult<bool>.GetEntityNullResult();
             }
         }
       

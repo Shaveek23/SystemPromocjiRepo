@@ -56,7 +56,7 @@ namespace WebApiTest.ControllerTest
             };
 
 
-            var actual = (CommentDTOOutput)((OkObjectResult)controller.GetById(c_id, UserId).Result).Value;
+            var actual = controller.GetById(c_id, UserId).Value;
 
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.DateTime, actual.DateTime);
@@ -139,7 +139,7 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
             var expected = c_id;
-            ActionResult<int> actual = controller.AddComment(new CommentDTO
+            int actual = controller.AddComment(new CommentDTO
             {
 
 
@@ -148,12 +148,10 @@ namespace WebApiTest.ControllerTest
                 DateTime = date,
                 Content = content
 
-            }, UserId).Result;
-
-            var res = ((OkObjectResult)actual.Result).Value;
+            }, UserId).Result.Value;
             
 
-            Assert.Equal(res, expected);
+            Assert.Equal(actual, expected);
        
 
 

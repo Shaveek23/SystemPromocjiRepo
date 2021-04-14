@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Database;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.DTO;
 using WebApi.Models.POCO;
@@ -38,14 +39,12 @@ namespace WebApiTest.ServiceTest
 
             var actual = commentService.GetById(expectedID, UserId).Result;
 
-
             Assert.True(actual != null);
             Assert.Equal(expected.CommentID, actual.CommentID);
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.DateTime, actual.DateTime);
             Assert.Equal(expected.PostID, actual.PostID);
             Assert.Equal(expected.UserID, actual.UserID);
-
 
         }
 
@@ -63,7 +62,7 @@ namespace WebApiTest.ServiceTest
 
 
             Assert.Null(actual.Result);
-            Assert.Equal(404, (int)actual.Code);
+            Assert.Equal(400, (int)actual.Code);
             Assert.Equal("Something went wrong", actual.Message);
 
         }
@@ -87,7 +86,6 @@ namespace WebApiTest.ServiceTest
 
 
         }
-
 
         [Fact]
         #region TODO
@@ -131,29 +129,15 @@ namespace WebApiTest.ServiceTest
             expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" });
             var mockICommentRepository = new Mock<ICommentRepository>();
 
-            mockICommentRepository.Setup(x => x.AddAsync(It.IsAny<Comment>())).Returns(Task.Run(() =>
-            {
-                return new Comment() { CommentID = 0, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
-            }));
+            mockICommentRepository.Setup(x => x.AddAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(
+                 new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" }
+            )));
 
 
             var commentService = new CommentService(mockICommentRepository.Object);
-            var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result;
+            var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result.Result;
 
-
-            Assert.Equal(newComment.Content, actual.Content);
-            Assert.Equal(newComment.DateTime, actual.DateTime);
-            Assert.Equal(newComment.PostID, actual.PostID);
-            Assert.Equal(newComment.UserID, actual.UserID);
-
-
-
-
-
-
-
-
-
+            Assert.Equal(newComment.PostID, actual);
 
         }
 
@@ -162,19 +146,14 @@ namespace WebApiTest.ServiceTest
 
         public void AddComment_InValidCall()
         {
-
-
             var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
             var newComment = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
 
-            mockICommentRepository.Setup(x => x.AddAsync(newComment)).Returns(Task.Run(() =>
-            {
-                return new Comment();
-            }));
+            mockICommentRepository.Setup(x => x.AddAsync(newComment)).Returns(Task.Run(() => new ServiceResult<Comment>(null, System.Net.HttpStatusCode.NotFound, "Not found")));
 
-
+           var r =  mockICommentRepository.Object.AddAsync(newComment);
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result;
 
@@ -187,14 +166,12 @@ namespace WebApiTest.ServiceTest
         {
             var mockICommentRepository = new Mock<ICommentRepository>();
             var id = comments[0].CommentID;
-            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns(true);
+            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns( new ServiceResult<bool>(true));
 
             var commentService = new CommentService(mockICommentRepository.Object);
-            var actual = commentService.DeleteComment(id, UserId);
+            var actual = commentService.DeleteComment(id, UserId).Result;
 
             Assert.True(actual);
-
-
         }
 
         [Fact]
@@ -203,10 +180,10 @@ namespace WebApiTest.ServiceTest
         {
             var mockICommentRepository = new Mock<ICommentRepository>();
             var id = 1000;
-            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns(false);
+            mockICommentRepository.Setup(x => x.Delete(id, UserId)).Returns(new ServiceResult<bool>(false, System.Net.HttpStatusCode.BadRequest, "Server Internal error"));
 
             var commentService = new CommentService(mockICommentRepository.Object);
-            var actual = commentService.DeleteComment(id, UserId);
+            var actual = commentService.DeleteComment(id, UserId).Result;
 
             Assert.False(actual);
         }
@@ -215,25 +192,17 @@ namespace WebApiTest.ServiceTest
 
         public void EditComment_ValidCall()
         {
-
-
             var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
             var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => newComment));
+            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(newComment)));
 
 
             var commentService = new CommentService(mockICommentRepository.Object);
-            var actual = commentService.EditCommentAsync(newComment.CommentID, UserId, newCommentDTO).Result;
+            var actual = commentService.EditCommentAsync(newComment.CommentID, UserId, newCommentDTO).Result.Result;
 
-            Assert.True(actual != null);
-
-            Assert.Equal(newComment.Content, actual.Content);
-            Assert.Equal(newComment.DateTime, actual.DateTime);
-            Assert.Equal(newComment.PostID, actual.PostID);
-            Assert.Equal(newComment.UserID, actual.UserID);
-
+            Assert.True(actual);
         }
 
         [Fact]
@@ -244,13 +213,13 @@ namespace WebApiTest.ServiceTest
             var newComment = new Comment() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.UpdateAsync(newComment)).Returns(Task.Run(() => new Comment()));
+            mockICommentRepository.Setup(x => x.UpdateAsync(newComment)).Returns(Task.Run(() => new ServiceResult<Comment>(null, System.Net.HttpStatusCode.BadRequest, "Bad request")));
 
 
             var commentService = new CommentService(mockICommentRepository.Object);
             var actual = commentService.EditCommentAsync(newComment.CommentID, UserId, newCommentDTO).Result;
 
-            Assert.Null(actual);
+            Assert.NotNull(actual.Message);
         }
         #endregion
         [Fact]

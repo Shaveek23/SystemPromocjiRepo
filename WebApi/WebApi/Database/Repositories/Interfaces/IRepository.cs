@@ -18,6 +18,6 @@ namespace WebApi.Database
 
         Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity);
 
-        ServiceResult<TEntity> Delete(int entityID, int userId);
+        ServiceResult<bool> Delete(int entityID, int userId);
     }
 }
