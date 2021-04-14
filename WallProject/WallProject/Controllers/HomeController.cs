@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WallProject.Models;
+using WallProject.Services;
 using WallProject.Services.Services_Interfaces;
 
 namespace WallProject.Controllers
@@ -27,8 +28,11 @@ namespace WallProject.Controllers
 
         public async Task<IActionResult> WallAsync()
         {
-            WallViewModel wall = await _service.getWall(1);
-            return View(wall);
+            ServiceResult<WallViewModel> wall = await _service.getWall(1);
+            if (wall.IsOk())
+                return View(wall.Result);
+            else
+                return View("Privacy");
         }
 
         [Route("privacy")]
@@ -46,8 +50,12 @@ namespace WallProject.Controllers
         [Route("getWall/{userID}")]
         public async Task<IActionResult> UserWall([FromRoute] int userID)
         {
-            WallViewModel wall = await _service.getWall(userID);
-            return View(wall);
+            ServiceResult<WallViewModel> wall = await _service.getWall(userID);
+            if (wall.IsOk())
+                return View(wall.Result);
+            else
+                return View("Privacy", wall.Message);
+
         }
 
     }

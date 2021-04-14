@@ -24,55 +24,54 @@ namespace WallProject.Services.Serives_Implementations
             _personService = personService; //TO DO: tutaj będzie podstawiany userService, narazie korzystamy z Person
         }
 
-        public async Task<List<PostViewModel>> getAll(int userID)
+        public async Task<ServiceResult<List<PostViewModel>>> getAll(int userID)
         {
             var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync("post");
+            var jsonString = await result.Content.ReadAsStringAsync();
 
             if (result.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
-
                 var postsDTO = JsonConvert.DeserializeObject<List<PostDTO>>(jsonString);
-                if (postsDTO != null)
-                {
+                
                     List<PostViewModel> postsVM = new List<PostViewModel>();
-                    PostViewModel postVM;
                     foreach(PostDTO postDTO in postsDTO)
                     {
-                        postVM = PostMapper.Map(postDTO);
-                        postVM.Comments = await _commentService.getByPostId(postDTO.id, userID);
-                        //postVM.Owner = await _personService.getById(userID);
-                        postsVM.Add(postVM);
+                        var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
+                        if (!commentsResult.IsOk())
+                            return new ServiceResult<List<PostViewModel>>(null, commentsResult.Code, commentsResult.Message);
+                        else
+                            postsVM.Add(Mapper.Map(postDTO, commentsResult.Result));
                     }
-                    return postsVM;
-                }
+                return new ServiceResult<List<PostViewModel>>(postsVM, result.StatusCode, null);
             }
-            return null;
+            else
+            {
+                return ServiceResult<List<PostViewModel>>.GetMessage(jsonString, result.StatusCode);
+            }
         }
 
-        [HttpGet]
-        async public Task<PostViewModel> getById(int postID, int userID)
+        async public Task<ServiceResult<PostViewModel>> getById(int postID, int userID)
         {
             var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"post/{postID}");
+            var jsonString = await result.Content.ReadAsStringAsync();
 
             if (result.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
-
-                var post = JsonConvert.DeserializeObject<PostDTO>(jsonString);
-                if (post != null)
-                {
-                    PostViewModel postVM = PostMapper.Map(post); 
-                    postVM.Comments = await _commentService.getByPostId(postID, userID);
-                    //postVM.Owner = await _personService.getById(userID);
-                    return postVM;
-                }
+                var postDTO = JsonConvert.DeserializeObject<PostDTO>(jsonString);
+                var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
+                if (!commentsResult.IsOk())
+                    return new ServiceResult<PostViewModel>(null, commentsResult.Code, commentsResult.Message);
+                else
+                    return new ServiceResult<PostViewModel>(Mapper.Map(postDTO, commentsResult.Result));
             }
-            return null;
+            else
+            {
+                return ServiceResult<PostViewModel>.GetMessage(jsonString, result.StatusCode);
+            }
         }
     }
 }

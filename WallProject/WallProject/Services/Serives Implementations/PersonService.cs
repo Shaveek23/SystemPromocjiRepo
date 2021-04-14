@@ -13,44 +13,28 @@ namespace WallProject.Services.Serives_Implementations
     public class PersonService : IPersonService
     {
         //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
-        private readonly IHttpClientFactory clientFactory;
+        private readonly IHttpClientFactory _clientFactory;
         public PersonService(IHttpClientFactory clientFactory)
         {
-            this.clientFactory = clientFactory;
+            _clientFactory = clientFactory;
         }
 
-        [HttpGet]
-        async public Task<PersonViewModel> getById(int userID)
+        async public Task<ServiceResult<PersonViewModel>> getById(int userID)
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             var result = await client.GetAsync($"person/{userID}");
+            var jsonString = await result.Content.ReadAsStringAsync();
 
-            if (result != null)
-            {
-                var jsonString = await result.Content.ReadAsStringAsync();
-
-                var user = JsonConvert.DeserializeObject<PersonViewModel>(jsonString);
-                if (user != null)
-                    return user;
-            }
-            return null;
+            return new ServiceResult<PersonViewModel>(jsonString, result.StatusCode);
         }
 
-        [HttpGet]
-        async public Task<List<PersonViewModel>> getAll()
+        async public Task<ServiceResult<List<PersonViewModel>>> getAll()
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             var result = await client.GetAsync("person");
+            var jsonString = await result.Content.ReadAsStringAsync();
 
-            if (result != null)
-            {
-                var jsonString = await result.Content.ReadAsStringAsync();
-
-                var users = JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonString);
-                if (users != null)
-                    return users;
-            }
-            return null;
+            return new ServiceResult<List<PersonViewModel>>(jsonString, result.StatusCode);
         }
     }
 }

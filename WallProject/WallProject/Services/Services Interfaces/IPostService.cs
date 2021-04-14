@@ -8,7 +8,7 @@ namespace WallProject.Services.Services_Interfaces
 {
     public interface IPostService
     {
-        public Task<PostViewModel> getById(int postID, int userID);
-        public Task<List<PostViewModel>> getAll(int userID);
+        public Task<ServiceResult<PostViewModel>> getById(int postID, int userID);
+        public Task<ServiceResult<List<PostViewModel>>> getAll(int userID);
     }
 }

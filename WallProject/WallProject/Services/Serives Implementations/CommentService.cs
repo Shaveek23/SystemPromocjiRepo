@@ -14,96 +14,91 @@ namespace WallProject.Services.Serives_Implementations
 {
     public class CommentService : ICommentService
     {
-        private readonly IHttpClientFactory clientFactory;
+        //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
+        private readonly IHttpClientFactory _clientFactory;
         public CommentService(IHttpClientFactory clientFactory)
         {
-            this.clientFactory = clientFactory;
+            _clientFactory = clientFactory;
         }
 
-        [HttpGet]
-        async public Task<CommentViewModel> getById(int commentID, int userID)
+        async public Task<ServiceResult<CommentViewModel>> getById(int commentID, int userID)
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"comment/{commentID}");
 
+            var jsonString = await result.Content.ReadAsStringAsync();
+
             if (result.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
-
                 var commentDTO = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
-                if (commentDTO != null)
-                {
-                    CommentViewModel commentVM = CommentMapper.Map(commentDTO);
-                    commentVM.Likes = await getCommentLikes(commentDTO.commentID);
-                }
+                ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
+                return new ServiceResult<CommentViewModel>(Mapper.Map(commentDTO, likes.Result));
             }
-            return null;
+            else
+            {
+                return ServiceResult<CommentViewModel>.GetMessage(jsonString, result.StatusCode);
+            }
         }
 
-        [HttpGet]
-        async public Task<List<CommentViewModel>> getAll(int userID)
+        async public Task<ServiceResult<List<CommentViewModel>>> getAll(int userID)
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
-            var result = await client.GetAsync("comments");
+            var result = await client.GetAsync($"comments");
+            var jsonString = await result.Content.ReadAsStringAsync();
 
             if (result.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
-                var commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                if (commentsDTO != null)
+                List<CommentViewModel> commentsVM = new List<CommentViewModel>();
+                List<CommentDTO> commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                foreach (var commentDTO in commentsDTO)
                 {
-                    List<CommentViewModel> commentsVM = new List<CommentViewModel>();
-                    CommentViewModel commentVM;
-                    foreach (var commentDTO in commentsDTO)
-                    {
-                        commentVM = CommentMapper.Map(commentDTO);
-                        commentVM.Likes = await getCommentLikes(commentDTO.commentID);
-                        commentsVM.Add(commentVM);
-                    }
-                    return commentsVM;
+                    ServiceResult<int?> likes =  await getCommentLikes(commentDTO.commentID);
+                    commentsVM.Add(Mapper.Map(commentDTO, likes.Result));
                 }
+                return new ServiceResult<List<CommentViewModel>>(commentsVM);
             }
-            return null;
+            else
+            {
+                return ServiceResult<List<CommentViewModel>>.GetMessage(jsonString, result.StatusCode);
+            }
         }
 
-        async public Task<List<CommentViewModel>> getByPostId(int postID, int userID)
+        async public Task<ServiceResult<List<CommentViewModel>>> getByPostId(int postID, int userID)
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
             var result = await client.GetAsync($"post/{postID}/comments");
+            var jsonString = await result.Content.ReadAsStringAsync();
+
             if (result.IsSuccessStatusCode)
             {
-                var jsonString = await result.Content.ReadAsStringAsync();
-                var commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                if (commentsDTO != null)
+                List<CommentViewModel> commentsVM = new List<CommentViewModel>();
+                List<CommentDTO> commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                foreach (var commentDTO in commentsDTO)
                 {
-                    List<CommentViewModel> commentsVM = new List<CommentViewModel>();
-                    CommentViewModel commentVM;
-                    foreach(var commentDTO in commentsDTO)
-                    {
-                        commentVM = CommentMapper.Map(commentDTO);
-                        commentVM.Likes = await getCommentLikes(commentDTO.commentID);
-                        commentsVM.Add(commentVM);
-                    }
-                    return commentsVM;
+                    ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
+                    commentsVM.Add(Mapper.Map(commentDTO, likes.Result));
                 }
+                return new ServiceResult<List<CommentViewModel>>(commentsVM);
             }
-            return null;
+            else
+            {
+                return ServiceResult<List<CommentViewModel>>.GetMessage(jsonString, result.StatusCode);
+            }
         }
 
-        async public Task<int> getCommentLikes(int commentID)
+        async public Task<ServiceResult<int?>> getCommentLikes(int commentID)
         {
-            var client = clientFactory.CreateClient("webapi");
+            var client = _clientFactory.CreateClient("webapi");
             var result = await client.GetAsync($"comment/{commentID}/likedUsers");
-            if (result.IsSuccessStatusCode)
-            {
-                var jsonString = await result.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<int>(jsonString);
-            }
+            var jsonString = await result.Content.ReadAsStringAsync();
+
+            //return new ServiceResult<int?>(jsonString, result.StatusCode);
+
             Random rand = new Random();
-            return rand.Next(1, 10); //na czas prezentacji, potem zmienić na 0
+            return new ServiceResult<int?>(rand.Next(1, 10)); //na czas prezentacji, potem zmienić na 0
         }
     }
 }
