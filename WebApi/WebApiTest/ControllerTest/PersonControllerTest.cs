@@ -35,14 +35,14 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IPersonService>();
-            mockService.Setup(x => x.GetById(0)).Returns(new PersonDTO
+            mockService.Setup(x => x.GetById(0)).Returns(new ServiceResult<PersonDTO>(new PersonDTO
             {
                 PersonID = id,
                 Address = address,
                 City = city,
                 FirstName = firstName,
                 LastName = lastName
-            });
+            }));
             var mockLogger = new Mock<ILogger<PersonController>>();
             var controller = new PersonController(mockLogger.Object, mockService.Object);
 
@@ -57,13 +57,10 @@ namespace WebApiTest.ControllerTest
 
             //Act
             var actual = controller.Get(0);
+            int idActual = actual.Value;
 
             //Assert
-            Assert.Equal(expected.PersonID, actual.PersonID);
-            Assert.Equal(expected.FirstName, actual.FirstName);
-            Assert.Equal(expected.LastName, actual.LastName);
-            Assert.Equal(expected.Address, actual.Address);
-            Assert.Equal(expected.City, actual.City);
+            Assert.Equal(expected.PersonID, idActual);
 
         }
 
@@ -95,13 +92,13 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPersonService>();
-            mockService.Setup(x => x.GetAll()).Returns(people.AsQueryable());
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<PersonDTO>>(people.AsQueryable()));
             var mockLogger = new Mock<ILogger<PersonController>>();
             var controller = new PersonController(mockLogger.Object, mockService.Object);
 
             var expected = people;
             //Act
-            var actual = controller.GetAll().ToList();
+            var actual = controller.GetAll().Value.ToList();
 
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -118,15 +115,9 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IPersonService>();
             mockService.Setup(x => x.AddPersonAsync(It.IsAny<PersonDTO>())).Returns(Task.Run(()=>
             {
-                return new PersonDTO
-                {
-                    PersonID = id,
-                    Address = address,
-                    City = city,
-                    FirstName = firstName,
-                    LastName = lastName
-                };
+                return new ServiceResult<int?>(id);
             }));
+
             var mockLogger = new Mock<ILogger<PersonController>>();
             var controller = new PersonController(mockLogger.Object, mockService.Object);
 
@@ -147,14 +138,10 @@ namespace WebApiTest.ControllerTest
                 City = city,
                 FirstName = firstName,
                 LastName = lastName
-            }).Result ;
+            }).Result.Value;
 
             //Assert
-            Assert.Equal(expected.FirstName, actual.FirstName);
-            Assert.Equal(expected.PersonID, actual.PersonID);
-            Assert.Equal(expected.LastName, actual.LastName);
-            Assert.Equal(expected.Address, actual.Address);
-            Assert.Equal(expected.City, actual.City);
+            Assert.Equal(expected.PersonID, actual);
 
         }
 

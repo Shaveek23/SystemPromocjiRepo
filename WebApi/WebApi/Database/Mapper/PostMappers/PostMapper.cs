@@ -28,6 +28,8 @@ namespace WebApi.Database.Mapper
 
         public static PostDTO Map(Post post)
         {
+            if (post == null)
+                return null;
             PostDTO postDTO = new PostDTO();
 
             postDTO.id = post.PostID;
@@ -50,6 +52,9 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<PostDTO> Map(IQueryable<Post> posts)
         {
+            if (posts == null)
+                return null;
+
             List<PostDTO> list = new List<PostDTO>();
             foreach (var post in posts)
             {

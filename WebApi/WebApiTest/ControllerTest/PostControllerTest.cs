@@ -73,7 +73,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAll()).Returns(posts.AsQueryable());
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
@@ -140,7 +140,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(posts.Where(p=>p.authorID == in_authorID).AsQueryable());
+            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.Where(p=>p.authorID == in_authorID).AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
@@ -164,7 +164,7 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetById(in_id)).Returns(new PostDTO
+            mockService.Setup(x => x.GetById(in_id)).Returns( new ServiceResult<PostDTO>(new PostDTO
             {
                 id = in_id,
                 author = in_author,
@@ -176,7 +176,7 @@ namespace WebApiTest.ControllerTest
                 datetime = datetime1,
                 isLikedByUser = in_isLiked,
                 isPromoted = in_isPromoted
-            });
+            }));
 
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
@@ -211,7 +211,50 @@ namespace WebApiTest.ControllerTest
             Assert.Equal(expected.isLikedByUser, actual.isLikedByUser);
             Assert.Equal(expected.isPromoted, actual.isPromoted);
         }
+        [Theory]
+        [InlineData(1)]
+        public void GetPostCommentsTest(int postID)
+        {
+          
+            int UserId = 1;
+            var commentsList = new List<CommentDTOOutput>
+            { new CommentDTOOutput{
+                CommentID=1,
+                PostID=postID,
+                UserID=1,
+                Content="porzadny kontent",
+                DateTime=datetime1
+            } ,
+            new CommentDTOOutput{
+                CommentID=2,
+                PostID=postID,
+                UserID=2,
+                Content="mniej porzadny kontent",
+                DateTime=datetime2
+            } ,
+            new CommentDTOOutput{
+                CommentID=3,
+                PostID=postID,
+                UserID=1,
+                Content="slaby kontent",
+                DateTime=datetime3
+            } ,
+            };
+           
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(commentsList.AsQueryable()));
+          
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+        
+            var expected = commentsList.AsQueryable();
 
+            //Act
+            var actual = ((IQueryable<CommentDTOOutput>)((OkObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
+            //Asset
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
+
+        }
         //TODO:
         //public void DeletePost_Test
         //public PostLikesDTO GetPostLikes

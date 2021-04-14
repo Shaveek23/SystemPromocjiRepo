@@ -15,53 +15,73 @@ namespace WebApi.Services.Serives_Implementations
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
+        
 
         public PostService(IPostRepository postRepository)
         {
             _postRepository = postRepository;
         }
 
-        public IQueryable<PostDTO> GetAll()
+        public ServiceResult<IQueryable<PostDTO>> GetAll()
         {
-            return PostMapper.Map(_postRepository.GetAll());
+            var result = _postRepository.GetAll();
+            return new ServiceResult<IQueryable<PostDTO>>(PostMapper.Map(result.Result), result.Code, result.Message);
         }
 
-        public PostDTO GetById(int id)
+        public ServiceResult<PostDTO> GetById(int id)
         {
-            return PostMapper.Map(_postRepository.GetById(id));
+            var result = _postRepository.GetById(id);
+            return new ServiceResult<PostDTO>(PostMapper.Map(result.Result), result.Code, result.Message);
         }
 
-        public async Task<int> AddPostAsync(PostEditDTO newPostDTO, int userID)
+        public async Task<ServiceResult<int?>> AddPostAsync(PostEditDTO newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
             createdPost.UserID = userID;
-            createdPost = await _postRepository.AddAsync(createdPost);
-            return createdPost.PostID;
+            var result = await _postRepository.AddAsync(createdPost);
+            return new ServiceResult<int?>(result.Result?.PostID, result.Code, result.Message);
         }
 
-        public IQueryable<PostDTO> GetAllOfUser(int userID)
+        public ServiceResult<IQueryable<PostDTO>> GetAllOfUser(int userID)
         {
-            return PostMapper.Map(_postRepository.GetAll().Where(post => post.UserID == userID)); // takie rzeczy w repozytorium
+            var serviceResult = _postRepository.GetAll();
+            var result = serviceResult.Result?.Where(post => post.UserID == userID); // LINQ w repozytorium !!!
+            return new ServiceResult<IQueryable<PostDTO>>(PostMapper.Map(result), serviceResult.Code, serviceResult.Message);  
         }
 
-        public async Task DeletePostAsync(int id)
+        public async Task<ServiceResult<bool>> DeletePostAsync(int id)
         {
-            await _postRepository.RemoveAsync(_postRepository.GetById(id));
+            var GetResult = _postRepository.GetById(id);
+
+            if (!GetResult.IsOk())
+                return new ServiceResult<bool>(false, GetResult.Code, GetResult.Message);
+
+            var RemoveResult = await _postRepository.RemoveAsync(GetResult.Result);
+            return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
 
-        public async Task<Post> EditPostAsync(int id, PostEditDTO body)
-        { 
-            return await _postRepository.EditPostAsync(id, body);
+        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostEditDTO body)
+        {
+            Post post = PostEditMapper.Map(body);
+            post.PostID = id;
+            var result = await _postRepository.UpdateAsync(post);
+            return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public IQueryable<int> GetLikes(int postID)
+        public ServiceResult<IQueryable<int>> GetLikes(int postID)
         {
             throw new NotImplementedException();
         }
 
-        public async Task EditLikeStatusAsync(int commentID, bool like)
+        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int commentID, bool like)
         {
             throw new NotImplementedException();
+        }
+
+        public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID, int userID)
+        {
+            var result = _postRepository.GetAllComments(postID);
+            return new ServiceResult<IQueryable<CommentDTOOutput>>(Mapper.MapOutput(result.Result), result.Code, result.Message);
         }
     }
 }
