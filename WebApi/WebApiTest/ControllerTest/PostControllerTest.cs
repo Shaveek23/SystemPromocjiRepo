@@ -80,7 +80,7 @@ namespace WebApiTest.ControllerTest
             var expected = posts;
 
             //Act
-            var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.GetAll(userID).Result).Value).ToList();
+            var actual = ((IQueryable<PostDTO>)((ObjectResult)controller.GetAll(userID).Result).Value);
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
         }
@@ -146,7 +146,8 @@ namespace WebApiTest.ControllerTest
 
             var expected = new List<PostDTO> { posts[0], posts[2] };
             //Act
-            var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.GetUserPosts(in_authorID).Result).Value).ToList();
+            var actual=((IQueryable<PostDTO>)((ObjectResult)controller.GetUserPosts(in_authorID).Result).Value).ToList();
+           
 
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -196,7 +197,7 @@ namespace WebApiTest.ControllerTest
             };
 
             //Act
-            var actual = (PostDTO)(((OkObjectResult)controller.Get(userID, in_id).Result).Value);
+            var actual = (PostDTO)(((ObjectResult)controller.Get(userID, in_id).Result).Value);
             //var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.Get(userID, in_id).Result).Value).ToList();
 
             //Assert
@@ -250,7 +251,7 @@ namespace WebApiTest.ControllerTest
             var expected = commentsList.AsQueryable();
 
             //Act
-            var actual = ((IQueryable<CommentDTOOutput>)((OkObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
+            var actual = ((IQueryable<CommentDTOOutput>)((ObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
 
