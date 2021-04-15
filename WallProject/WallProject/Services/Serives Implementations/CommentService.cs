@@ -89,6 +89,11 @@ namespace WallProject.Services.Serives_Implementations
             }
         }
 
+        //TO DO: teoretycznie powinno to zwracać listę ID uzytkowinków którzy polajkwoali
+        // ale narazie zwraca jakby Count tej listy, ale skoro nie zwracamy tego z WallApi
+        // to zwracam  tutaj random 
+        // można poprawić w Api to że zapytanie o Comment będzie zwracać odrazu ilość lików
+        // jak to jest w przypadku Posta
         async public Task<ServiceResult<int?>> getCommentLikes(int commentID)
         {
             var client = _clientFactory.CreateClient("webapi");
