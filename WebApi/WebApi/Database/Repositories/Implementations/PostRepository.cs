@@ -7,6 +7,7 @@ using WebApi.Database.Repositories.Interfaces;
 using WebApi.Exceptions;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
+using WebApi.Services;
 
 namespace WebApi.Database.Repositories.Implementations
 {
@@ -14,27 +15,16 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public PostRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        #region TO DO :  zintegorować z generyczną metodą UpdateAsync
-
-        public Task<Post> EditPostAsync(int id, PostEditDTO body)
+        // To chyba powinno być w CommentRepository albo w ogole jako metoda generyczna GetAllOfUser(user id) - wtedy kazdy zasob by musiał być skojarzony z jakimś userId zeby dzialalo dla każdego
+        public ServiceResult<IQueryable<Comment>> GetAllComments(int postID)
         {
-            var postToEdit = dbContext.Posts.SingleOrDefault(post => post.PostID == id);
-           
-            if (postToEdit == null)
+            var comments = dbContext.Comments.Where(comment => comment.PostID == postID);
+            if (comments == null)
             {
-                throw new EditPostFailException($"{nameof(AddAsync)} there is no post with given post ID.");
+                return new ServiceResult<IQueryable<Comment>>((IQueryable<Comment>)(new List<Comment>()));
             }
-            else
-            {
-                postToEdit.Title = body.title;
-                postToEdit.Content = body.content;
-                postToEdit.CategoryID = body.category.Value;
-                postToEdit.Date = body.dateTime.Value;
-                postToEdit.IsPromoted = body.isPromoted.Value;
-            }
-            return UpdateAsync(postToEdit);
+            return new ServiceResult<IQueryable<Comment>>(comments);
         }
 
-        #endregion
     }
 }

@@ -19,23 +19,25 @@ namespace WebApi.Services.Serives_Implementations
             _personRepository = personRepository;
         }
 
-        public IQueryable<PersonDTO> GetAll()
-        { 
-            return Mapper.Map(_personRepository.GetAll());
-        }
-
-        public PersonDTO GetById(int id)
+        public ServiceResult<IQueryable<PersonDTO>> GetAll()
         {
-            return Mapper.Map(_personRepository.GetById(id));
+            var result = _personRepository.GetAll();
+            return new ServiceResult<IQueryable<PersonDTO>>(Mapper.Map(result.Result), result.Code, result.Message);
         }
 
-        public async Task<PersonDTO> AddPersonAsync(PersonDTO newPersonDTO)
+        public ServiceResult<PersonDTO> GetById(int id)
+        {
+            var result = _personRepository.GetById(id);
+            return new ServiceResult<PersonDTO>(Mapper.Map(result.Result), result.Code, result.Message);
+        }
+
+        public async Task<ServiceResult<int?>> AddPersonAsync(PersonDTO newPersonDTO)
         {
             Person newPerson = Mapper.Map(newPersonDTO);
-            Person createdPerson =  await _personRepository.AddAsync(newPerson);
-            return Mapper.Map(createdPerson);
+            var result =  await _personRepository.AddAsync(newPerson);
+            return new ServiceResult<int?>(result.Result?.PersonID, result.Code, result.Message);
         }
 
-
+       
     }
 }

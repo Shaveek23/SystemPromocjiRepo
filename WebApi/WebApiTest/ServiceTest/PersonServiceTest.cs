@@ -11,6 +11,7 @@ using System.Linq;
 using WebApi.Database;
 using WebApi.Services.Serives_Implementations;
 using WebApi.Database.Mapper;
+using WebApi.Services;
 
 namespace WebApiTest
 {
@@ -28,10 +29,10 @@ namespace WebApiTest
             var expected = persons;
             var mockIPersonRepository = new Mock<IPersonRepository>();
             mockIPersonRepository.Setup(x => x.GetAll())
-                .Returns(persons.AsQueryable());
+                .Returns(new ServiceResult<IQueryable<Person>>(persons.AsQueryable()));
 
             var personService = new PersonService(mockIPersonRepository.Object);
-            var actual = personService.GetAll().ToList();
+            var actual = personService.GetAll().Result.ToList();
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);
@@ -44,10 +45,10 @@ namespace WebApiTest
             var expected = persons.Where(x => x.PersonID == expectedId).FirstOrDefault();
             var mockIPersonRepository = new Mock<IPersonRepository>();
             mockIPersonRepository.Setup(x => x.GetById(expectedId))
-                .Returns(expected);
+                .Returns(new ServiceResult<Person>(expected));
 
             var personService = new PersonService(mockIPersonRepository.Object);
-            var actual = personService.GetById(expectedId);
+            var actual = personService.GetById(expectedId).Result;
 
             Assert.True(actual != null);
             Assert.Equal(expected.FirstName, actual.FirstName);
@@ -62,16 +63,15 @@ namespace WebApiTest
             var expectedId = 0;
             var mockIPersonRepository = new Mock<IPersonRepository>();
             mockIPersonRepository.Setup(x => x.GetById(expectedId))
-                .Returns(new Person { });
+                .Returns(new ServiceResult<Person>(null, System.Net.HttpStatusCode.BadRequest, "Something went wrong"));
 
             var personService = new PersonService(mockIPersonRepository.Object);
             var actual = personService.GetById(expectedId);
 
-            Assert.True(actual.PersonID == 0);
-            Assert.Null(actual.FirstName);
-            Assert.Null(actual.LastName);
-            Assert.Null(actual.Address);
-            Assert.Null(actual.City);
+            Assert.Null(actual.Result);
+            Assert.Equal(404, (int)actual.Code);
+            Assert.Equal("Something went wrong", actual.Message);
+
         }
 
     }

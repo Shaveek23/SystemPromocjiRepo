@@ -10,13 +10,13 @@ namespace WebApi.Services.Services_Interfaces
     public interface ICommentService
     {
 
-        public IQueryable<CommentDTOOutput> GetAll(int userId);
-        public CommentDTOOutput GetById(int commentId,int userId);
-        public IQueryable<int> GetLikedUsers(int commentId);
-        public Task<CommentDTOOutput> EditCommentAsync(int commentId,int userId, CommentDTO comment);
-        public bool DeleteComment(int  commentId,int userId);
-        public Task<CommentDTOOutput> AddCommentAsync(int userId,CommentDTO comment);
-        public Task<bool> EditLikeOnCommentAsync(int commentId,int userId);
+        public ServiceResult<IQueryable<CommentDTOOutput>> GetAll(int userId);
+        public ServiceResult<CommentDTOOutput> GetById(int commentId,int userId);
+        public ServiceResult<IQueryable<int>> GetLikedUsers(int commentId);
+        public Task<ServiceResult<bool>> EditCommentAsync(int commentId,int userId, CommentDTO comment);
+        public ServiceResult<bool> DeleteComment(int  commentId,int userId);
+        public Task<ServiceResult<int?>> AddCommentAsync(int userId,CommentDTO comment);
+        public Task<ServiceResult<bool>> EditLikeOnCommentAsync(int commentId,int userId);
 
     }
 }

@@ -14,6 +14,7 @@ using WebApi.Database.Mapper;
 using WebApi.Models.DTO.PostDTOs;
 using System.Threading.Tasks;
 using WebApi.Models.DTO;
+using WebApi.Services;
 
 namespace WebApiTest.ServiceTest
 {
@@ -34,10 +35,10 @@ namespace WebApiTest.ServiceTest
             var expected = posts;
             var mockIPostRepository = new Mock<IPostRepository>();
             mockIPostRepository.Setup(x => x.GetAll())
-                .Returns(posts.AsQueryable());
+                .Returns(new ServiceResult<IQueryable<Post>>(posts.AsQueryable()));
 
             var postService = new PostService(mockIPostRepository.Object);
-            var actual = postService.GetAll().ToList();
+            var actual = postService.GetAll().Result.ToList();
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);
@@ -47,28 +48,29 @@ namespace WebApiTest.ServiceTest
         public void GetById_ValidCall()
         {
             var expectedId = 1;
-            var expected = posts.Where(x => x.PostID == expectedId).FirstOrDefault();
+            var expected = new ServiceResult<Post>(posts.Where(x => x.PostID == expectedId).FirstOrDefault());
             var mockIPostRepository = new Mock<IPostRepository>();
             mockIPostRepository.Setup(x => x.GetById(expectedId))
                 .Returns(expected);
 
             var postService = new PostService(mockIPostRepository.Object);
-            var actual = postService.GetById(expectedId);
+            var actual = postService.GetById(expectedId).Result;
+            var expected2 = expected.Result;
 
             Assert.True(actual != null);
-            Assert.Equal(expected.PostID, actual.id);
-            Assert.Equal(expected.UserID, actual.authorID);
-            Assert.Equal(expected.Title, actual.title);
-            Assert.Equal(expected.Content, actual.content);
-            Assert.Equal(expected.IsPromoted, actual.isPromoted);
-            Assert.Equal(expected.Date, actual.datetime);
+            Assert.Equal(expected2.PostID, actual.id);
+            Assert.Equal(expected2.UserID, actual.authorID);
+            Assert.Equal(expected2.Title, actual.title);
+            Assert.Equal(expected2.Content, actual.content);
+            Assert.Equal(expected2.IsPromoted, actual.isPromoted);
+            Assert.Equal(expected2.Date, actual.datetime);
         }
 
         [Fact]
-        public void EditComment_ValidCall()
+        public void EditPost_ValidCall()
         {
             int postID = 1;
-            DateTime currentTime = new DateTime(2000,10,10,10,10,42);
+            DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
             var newPostDTO = new PostEditDTO
             {
                 title = "newtitle",
@@ -90,19 +92,53 @@ namespace WebApiTest.ServiceTest
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();
-            mockIPostRepository.Setup(x => x.EditPostAsync(postID, newPostDTO)).Returns(Task.Run(() => expectedPost));
+            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>())).Returns(Task.Run(() => new ServiceResult<Post>(expectedPost)));
 
 
             var postService = new PostService(mockIPostRepository.Object);
-            var actual = postService.EditPostAsync(postID, newPostDTO).Result;
+            var actual = postService.EditPostAsync(postID, newPostDTO).Result.Result;
+            Assert.True(actual);
 
-            Assert.True(actual != null);
-            Assert.Equal(actual.PostID, expectedPost.PostID);
-            Assert.Equal(actual.UserID, expectedPost.UserID);
-            Assert.Equal(actual.Title, expectedPost.Title);
-            Assert.Equal(actual.Content, expectedPost.Content);
-            Assert.Equal(actual.IsPromoted, expectedPost.IsPromoted);
-            Assert.Equal(actual.Date, expectedPost.Date);
         }
+
+        [Fact]
+        public void GetAllComments_ValisCall()
+        {
+            int postID = 1;
+            int userId = 1;
+            var mockIPostRepository = new Mock<IPostRepository>();
+            DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
+            var commentsList = new List<Comment>
+            { new Comment{
+                CommentID=1,
+                PostID=postID,
+                UserID=1,
+                Content="porzadny kontent",
+                DateTime=currentTime
+            } ,
+            new Comment{
+                CommentID=2,
+                PostID=postID,
+                UserID=2,
+                Content="mniej porzadny kontent",
+                DateTime=currentTime
+            } ,
+            new Comment{
+                CommentID=3,
+                PostID=postID,
+                UserID=1,
+                Content="slaby kontent",
+                DateTime=currentTime
+            } ,
+            };
+            mockIPostRepository.Setup(x => x.GetAllComments(postID)).Returns(new ServiceResult<IQueryable<Comment>>(commentsList.AsQueryable()));
+            var postService = new PostService(mockIPostRepository.Object);
+            var actual = postService.GetAllComments(postID, userId).Result.ToList();
+            var expected = commentsList;
+            Assert.True(actual != null);
+            Assert.Equal(expected.Count, actual.Count);
+        }
+
     }
+    
 }

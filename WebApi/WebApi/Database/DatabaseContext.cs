@@ -57,6 +57,7 @@ namespace WebApi.Database
                 modelBuilder.Entity<Comment>().Property(p => p.PostID).IsRequired();
                 modelBuilder.Entity<Comment>().Property(p => p.UserID).IsRequired();
                 modelBuilder.Entity<Comment>().Property(p => p.Content).IsRequired().HasMaxLength(255);
+               
 
                 modelBuilder.Entity<Comment>().HasData
                 (

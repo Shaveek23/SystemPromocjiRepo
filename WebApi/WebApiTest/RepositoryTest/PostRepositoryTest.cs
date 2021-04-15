@@ -26,82 +26,39 @@ namespace WebApiTest
             dbContext.Add(new Post { PostID = 2, UserID = 5, CategoryID = 5, Title = "Title32321", Date = new DateTime(2000, 10, 10, 11, 4, 41), IsPromoted = false });
             dbContext.SaveChanges();
         }
+        void SeedComment(DatabaseContext dbContext)
+        {
+            dbContext.Add(new Comment() { CommentID = 1, UserID = 1, PostID = 2, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test" });
+            dbContext.Add(new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test2" });
+            dbContext.Add(new Comment() { CommentID = 5, UserID = 2, PostID = 2, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "test21" });
+           
 
+            dbContext.SaveChanges();
+        }
         [Fact]
-        public void EditPostAsync_ValidCall()
+        public void GetAllComments_ValisCall()
         {
             var options = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseInMemoryDatabase(databaseName: "EditPostAsync_ValidCall").Options;
-
-            var editBody = new PostEditDTO
-            {
-                title = "newtitle",
-                content = "newcontent",
-                category = 5,
-                dateTime = DateTime.UtcNow,
-                isPromoted = true
-            };
-
+                 .UseInMemoryDatabase(databaseName: "GetAllComments_ValidCall").Options;
             using (var dbContext = new DatabaseContext(options))
             {
-                SeedPost(dbContext);
+                SeedComment(dbContext);
 
-                int changedPostID = 1;
+                int PostID = 2;
 
-
-                var expected = dbContext.Posts.Where(x => x.PostID == changedPostID).FirstOrDefault();
-                expected.Title = editBody.title;
-                expected.Content = editBody.content;
-                expected.CategoryID = editBody.category.Value;
-                expected.Date = editBody.dateTime.Value;
-                expected.IsPromoted = editBody.isPromoted.Value;
+                var expected = dbContext.Comments.Where(x => x.PostID == PostID);          
 
 
 
                 var cls = new PostRepository(dbContext);
-                var actual = cls.EditPostAsync(changedPostID, editBody);
+                var actual = cls.GetAllComments(PostID).Result;
 
                 Assert.True(actual != null);
-                Assert.Equal(expected.PostID, actual.Result.PostID);
-                Assert.Equal(expected.UserID, actual.Result.UserID);
-                Assert.Equal(expected.CategoryID, actual.Result.CategoryID);
-                Assert.Equal(expected.Date, actual.Result.Date);
-                Assert.Equal(expected.Title, actual.Result.Title);
-                Assert.Equal(expected.Content, actual.Result.Content);
-                Assert.Equal(expected.IsPromoted, actual.Result.IsPromoted);
+                Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
             }
+
         }
 
-
-        //TODO: Repair
-
-        //[Fact]
-        //public void EditPostAsync_InvalidCall_noId()
-        //{
-        //    var options = new DbContextOptionsBuilder<DatabaseContext>()
-        //        .UseInMemoryDatabase(databaseName: "EditPostAsync_InvalidCall_noId").Options;
-
-        //    var editBody = new PostEditDTO
-        //    {
-        //        title = "newtitle",
-        //        content = "newcontent",
-        //        category = 5,
-        //        dateTime = DateTime.UtcNow,
-        //        isPromoted = true
-        //    };
-
-        //    using (var dbContext = new DatabaseContext(options))
-        //    {
-        //        SeedPost(dbContext);
-
-        //        int changedPostID = 0;
-
-        //        var cls = new PostRepository(dbContext);
-        //        var actual = cls.EditPostAsync(changedPostID, editBody);
-
-        //        Assert.True(actual != null);
-        //        Assert.True(actual.Result == null);
-        //    }
-        //}
+        
     }
 }

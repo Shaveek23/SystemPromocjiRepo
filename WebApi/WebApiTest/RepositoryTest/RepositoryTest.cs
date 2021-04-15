@@ -40,7 +40,7 @@ namespace WebApiTest
                 dbContext.SaveChanges();
 
                 var cls = new Repository<Person>(dbContext);
-                var actual = cls.GetById(expected.PersonID);
+                var actual = cls.GetById(expected.PersonID).Result;
 
                 Assert.True(actual != null);
                 Assert.Equal(expected.FirstName, actual.FirstName);
@@ -79,7 +79,7 @@ namespace WebApiTest
                 SeedPerson(dbContext);
                 var expected = dbContext.Persons.ToList().Count;
                 var cls = new Repository<Person>(dbContext);
-                var actual = cls.GetAll();
+                var actual = cls.GetAll().Result;
                 Assert.True(actual != null);
                 Assert.True(actual.ToList().Count == expected);
             }
@@ -94,7 +94,7 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 var cls = new Repository<Person>(dbContext);
-                var actual = cls.GetAll();
+                var actual = cls.GetAll().Result;
                 Assert.True(actual != null);
                 Assert.True(actual.ToList().Count == 0);
             }

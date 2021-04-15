@@ -28,26 +28,6 @@ namespace WebApi.Middlewares
                 await _next.Invoke(context);
                 return;
             }
-            catch (ResourceNotFoundException e)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound; //czy 204 no content?
-                message = e.Message;
-            }
-            catch (AddAsyncFailedException e)
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                message = e.Message;
-            }
-            catch (DeleteFailException e)
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                message = e.Message;
-            }
-            catch (EditPostFailException e)
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                message = e.Message;
-            }
             catch (Exception e)
             {
                 context.Response.StatusCode = 500;

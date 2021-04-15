@@ -25,6 +25,9 @@ namespace WebApi.Database.Mapper
 
         public static PersonDTO Map(Person person)
         {
+            if (person == null)
+                return null;
+
             PersonDTO personDTO = new PersonDTO();
 
             personDTO.PersonID = person.PersonID;
@@ -38,6 +41,8 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<PersonDTO> Map(IQueryable<Person> people)
         {
+            if (people == null)
+                return null;
             List<PersonDTO> list = new List<PersonDTO>(); 
             foreach (var person in people)
             {
@@ -50,6 +55,8 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<Person> Map(IQueryable<PersonDTO> people)
         {
+            if (people == null)
+                return null;
             List<Person> list = new List<Person>();
             foreach (var person in people)
             {
@@ -84,6 +91,9 @@ namespace WebApi.Database.Mapper
         }
         public static CommentDTOOutput MapOutput(Comment comment)
         {
+            if (comment == null)
+                return null;
+
             CommentDTOOutput commentDTO = new CommentDTOOutput();
 
             commentDTO.CommentID = comment.CommentID;
@@ -132,6 +142,9 @@ namespace WebApi.Database.Mapper
 
         public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)
         {
+            if (comments == null)
+                return null;
+
             List<CommentDTOOutput> list = new List<CommentDTOOutput>();
             foreach (var comment in comments)
             {
@@ -153,7 +166,23 @@ namespace WebApi.Database.Mapper
             return list.AsQueryable();
         }
 
+        public static PostDTO Map(Post post)
+        {
+            if (post == null)
+                return null;
 
+            return new PostDTO
+            {
+                authorID = post.UserID,
+                category = post.CategoryID,
+                content = post.Content,
+                datetime = post.Date,
+                id = post.PostID,
+                isPromoted = post.IsPromoted,
+                title = post.Title
+
+            };
+        }
     }
 
 }
