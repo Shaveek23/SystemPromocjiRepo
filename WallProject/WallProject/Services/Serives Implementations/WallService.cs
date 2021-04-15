@@ -23,8 +23,6 @@ namespace WallProject.Services.Serives_Implementations
       
         async public Task<ServiceResult<WallViewModel>> getWall(int userID)
         {
-            var p = await _postService.getById(1,1);
-
             var Owner = await _personService.getById(userID);
             if (!Owner.IsOk()) return new ServiceResult<WallViewModel>(null, Owner.Code, Owner.Message);
             var Posts = await _postService.getAll(userID);
