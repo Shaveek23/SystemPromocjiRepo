@@ -31,11 +31,11 @@ namespace WebApi.Services
             return new ServiceResult<T>(default(T), HttpStatusCode.NotFound, "Requested resource has not been found.");
         }
 
-        public T Result { get; }
+        public T Result { get; set; }
 
-        public HttpStatusCode Code { get; }
+        public HttpStatusCode Code { get; set; }
 
-        public string Message { get; }
+        public string Message { get; set; }
 
         public bool IsOk()
         {
