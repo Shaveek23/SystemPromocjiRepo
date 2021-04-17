@@ -1,0 +1,168 @@
+﻿@model WallProject.Models.WallViewModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<link rel="stylesheet" type="text/css" href="~/css/Wall.css" media="screen" />
+<head>
+    <meta charset="utf-8">
+
+    <!--  All snippets are MIT license http://bootdey.com/license -->
+    <title>social network wall - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="panel-header"> <h1 class="text-header">System Promocji</h1></div>
+        </div>
+        @*filtry*@
+        <div class="row">
+            <div class="col-sm-3">
+
+                <div class="filters">
+
+                    <div class="panel">
+
+                        <!-- BEGIN FILTERS -->
+                        <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
+                        <hr>
+
+                        <!-- BEGIN FILTER BY CATEGORY -->
+                        <h4>By category:</h4>
+                        <div class="checkbox">
+                            <label><input type="checkbox" class="icheck"> Application</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" class="icheck"> Design</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" class="icheck"> Desktop</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" class="icheck"> Management</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" class="icheck"> Mobile</label>
+                        </div>
+                        <!-- END FILTER BY CATEGORY -->
+
+                        <div class="padding"></div>
+
+                        <!-- BEGIN FILTER BY DATE -->
+                        <h4>By date:</h4>
+                        <h5>From </h5>
+                        <input class="form-control form-control-inline" type="date" value="2011-08-19" id="example-date-input">
+                        <h5>to </h5>
+                        <input class="form-control form-control-inline" type="date" value="2021-08-19" id="example-date-input">
+                        <!-- END FILTER BY DATE -->
+
+                        <div class="padding"></div>
+
+                        <!-- BEGIN FILTER BY PRICE -->
+                        <h4>By price:</h4>
+                        <h5>Between </h5>
+                        <input type="text" class="form-control form-control-inline">
+                        <h5>to </h5>
+                        <input type="text" class="form-control form-control-inline">
+                        <!-- END FILTER BY PRICE -->
+                    </div>
+                    <!-- END FILTERS -->
+
+
+
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="panel profile-info">
+                        <form>
+                            <textarea class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today?"></textarea>
+                        </form>
+                        <footer class="panel-footer">
+                            <button type="button" class="btn btn-info pull-right">Post</button>
+                            <ul class="nav nav-pills">
+                                <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
+                                <li><a href="#"><i class="fa fa-camera"></i></a></li>
+                                <li><a href="#"><i class=" fa fa-film"></i></a></li>
+                                <li><a href="#"><i class="fa fa-microphone"></i></a></li>
+                            </ul>
+                        </footer>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-body">
+                            @foreach (var posts in Model.Posts)
+                            {
+                                <div class="fb-user-thumb">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
+                                </div>
+                                <div class="fb-user-details">
+                                    <h3><a href="#" class="#">@posts.OwnerName</a></h3>
+                                    <p>@posts.Datetime</p>
+                                </div>
+                                <div class="clearfix"></div>
+                                <p class="fb-user-status">
+                                    @posts.Content
+                                </p>
+                                <div class="fb-status-container fb-border">
+                                    <div class="fb-time-action">
+                                        <a href="#" title="Like this">Like</a>
+                                        <span>-</span>
+                                        <a href="#" title="Leave a comment">Comments</a>
+                                    </div>
+                                    <div class="fb-time-action like-info">
+                                        <a href="#">@posts.Likes people like this</a>
+                                    </div>
+                                </div>
+                                <div class="fb-status-container fb-border fb-gray-bg">
+
+                                    <ul class="fb-comments">
+                                        @foreach (var comment in posts.Comments)
+                                        {
+
+                                            <li>
+                                                <a href="#" class="cmt-thumb">
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                                </a>
+                                                <div class="cmt-details">
+                                                    <a href="#">UserID=@comment.OwnerName</a>
+                                                    <span> @comment.Content </span>
+
+                                                    <a href="#">@comment.Likes people like this</a>
+                                                    <span> </span>
+                                                    <p>@comment.Time<a href="#" class="like-link">Like</a></p>
+
+                                                </div>
+                                            </li>
+
+                                        }
+                                        <li>
+                                            <a href="#" class="cmt-thumb">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
+                                            </a>
+                                            <div class="cmt-form">
+                                                <textarea class="form-control" placeholder="Write a comment..." name=""></textarea>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    </script>
+</body>
