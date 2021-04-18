@@ -9,6 +9,5 @@ namespace WebApi.Database.Repositories.Interfaces
 {
     public interface IUserRepository:IRepository<User>
     {
-        public  Task<ServiceResult<User>> GetUserByIdAsync(int id);
     }
 }

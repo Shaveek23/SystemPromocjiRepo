@@ -13,9 +13,5 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public UserRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        public async Task<ServiceResult<User>> GetUserByIdAsync(int id)
-        {
-            return new ServiceResult<User>(await GetAll().Result.FirstOrDefaultAsync(x => x.UserID == id));
-        }
     }
 }

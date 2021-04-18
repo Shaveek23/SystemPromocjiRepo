@@ -10,10 +10,13 @@ namespace WebApi.Models.DTO
         
         [Required]
         [MaxLength(30)]
+        [MinLength(1)]
         public string UserName { get; set; }
 
         [Required]
         [MaxLength(30)]
+        [MinLength(1)]
+        [EmailAddress]
         public string UserEmail { get; set; }
         public System.DateTime Timestamp { get; set; }
         public bool IsAdmin { get; set; }
