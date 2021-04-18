@@ -55,5 +55,12 @@ namespace WebApi.Controllers
             var result = await _userService.AddUserAsync(user);
             return new ControllerResult<int?>(result).GetResponse();
         }
+
+        [HttpPut("{id}")]
+        public async  Task<ActionResult<bool>> EditUser([FromHeader] int id, [FromBody] UserDTO userDTO)
+        {
+            var result = await _userService.EditUserAsync(id, userDTO);
+            return new ControllerResult<bool>(result).GetResponse();
+        }
     }
 }
