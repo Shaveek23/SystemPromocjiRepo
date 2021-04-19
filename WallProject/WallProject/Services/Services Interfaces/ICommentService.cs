@@ -12,5 +12,6 @@ namespace WallProject.Services.Services_Interfaces
         public Task<ServiceResult<List<CommentViewModel>>> getAll(int userID);
         public Task<ServiceResult<List<CommentViewModel>>> getByPostId(int postID, int userID);
         public Task<ServiceResult<int?>> getCommentLikes(int commentID);
+        public  Task AddNewComment(string commentText, int postId,int userId);
     }
 }

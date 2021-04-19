@@ -14,6 +14,7 @@ namespace WallProject.Models.Mapper
         {
             PostViewModel postVM = new PostViewModel
             {
+                Id=IdCoder.CreateFrontId(postDTO.id),
                 Title = postDTO.title,
                 Content = postDTO.content,
                 Datetime = postDTO.datetime,
