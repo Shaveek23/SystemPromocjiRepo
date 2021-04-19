@@ -17,9 +17,11 @@ namespace WallProject.Services.Serives_Implementations
     {
         //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
         private readonly IHttpClientFactory _clientFactory;
+       
         public CommentService(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
+         
         }
 
         async public Task<ServiceResult<CommentViewModel>> getById(int commentID, int userID)
@@ -110,12 +112,13 @@ namespace WallProject.Services.Serives_Implementations
         async public Task AddNewComment(string commentText, int postId, int userId)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
+          
             CommentDTONoID comment = new CommentDTONoID();
             comment.content = commentText;
-            comment.postID = IdCoder.GetOrginalId(postId);
-            //DO ZMIANY !!!
-            comment.userID = 1;
+            comment.postID = postId;
+            comment.userID = userId;
             comment.dateTime = DateTime.Now;
+          
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(comment);
             //przygotowanie HttpRequest
@@ -126,6 +129,10 @@ namespace WallProject.Services.Serives_Implementations
             //Wysyłanie Request
             var client = _clientFactory.CreateClient("webapi");
             var response = await client.SendAsync(requestMessage);
+            if(!response.IsSuccessStatusCode)
+            {
+                throw new Exception("something went wrong");
+            }
 
 
         }

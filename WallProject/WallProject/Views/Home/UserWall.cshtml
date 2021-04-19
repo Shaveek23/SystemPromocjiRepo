@@ -190,10 +190,10 @@
             });
             location.reload();
         }
-        function AddComment(postId,userId) {
+        async function AddComment(postId, userId) {
 
             var s = "NewComment_" + String(postId);
-            var commentText = document.getElementById(s).value;
+            var commentText =await  document.getElementById(s).value;
              
             $.ajax({
             url: '@Url.Action("AddNewComment", "Home")',
