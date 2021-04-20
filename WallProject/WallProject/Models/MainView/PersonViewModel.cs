@@ -8,7 +8,7 @@ namespace WallProject.Models
     public class PersonViewModel
     {
         //Czy tu nie lepiej private albo pritected
-        public int personID;
+        public int ID;
         public string firstName;
         public string lastName;
         public string address;

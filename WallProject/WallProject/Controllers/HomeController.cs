@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,6 +57,23 @@ namespace WallProject.Controllers
             else
                 return View("Privacy", wall.Message);
 
+        }
+
+        public async Task<IActionResult> AddNewPost(string postText, int userId)
+        {
+            var result = await _postService.AddNewPost(postText, userId);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
+        }
+        public async Task<IActionResult> AddNewComment(string commentText, int postId, int userId)
+        {
+            var result = await _commentService.AddNewComment(commentText, postId, userId);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
         }
 
     }

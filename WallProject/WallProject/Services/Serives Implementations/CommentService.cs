@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using WallProject.Models;
 using WallProject.Models.DTO;
@@ -16,9 +17,11 @@ namespace WallProject.Services.Serives_Implementations
     {
         //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
         private readonly IHttpClientFactory _clientFactory;
+       
         public CommentService(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
+         
         }
 
         async public Task<ServiceResult<CommentViewModel>> getById(int commentID, int userID)
@@ -54,7 +57,7 @@ namespace WallProject.Services.Serives_Implementations
                 List<CommentDTO> commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
                 foreach (var commentDTO in commentsDTO)
                 {
-                    ServiceResult<int?> likes =  await getCommentLikes(commentDTO.commentID);
+                    ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
                     commentsVM.Add(Mapper.Map(commentDTO, likes.Result));
                 }
                 return new ServiceResult<List<CommentViewModel>>(commentsVM);
@@ -104,6 +107,31 @@ namespace WallProject.Services.Serives_Implementations
 
             Random rand = new Random();
             return new ServiceResult<int?>(rand.Next(1, 10)); //na czas prezentacji, potem zmienić na 0
+        }
+
+        async public Task<ServiceResult<bool>> AddNewComment(string commentText, int postId, int userId)
+        {
+            //tworzenie komentarza na podstawie danych przekazanych z kontrolera
+          
+            CommentDTONoID comment = new CommentDTONoID();
+            comment.content = commentText;
+            comment.postID = postId;
+            comment.userID = userId;
+            comment.dateTime = DateTime.Now;
+          
+            //serializacja do JSONa
+            var jsonComment = JsonConvert.SerializeObject(comment);
+            //przygotowanie HttpRequest
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"comment");
+            HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            requestMessage.Headers.Add("userId", userId.ToString());
+            requestMessage.Content = httpContent;
+            //Wysyłanie Request
+            var client = _clientFactory.CreateClient("webapi");
+            var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
+           ;
+
         }
     }
 }

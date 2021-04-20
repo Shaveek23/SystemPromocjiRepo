@@ -7,6 +7,8 @@ namespace WallProject.Models
 {
     public class PostViewModel
     {
+        //Nw na ten moement jak inaczej to przesłac
+        public int Id;
         public string Title;
         public string Content;
         public DateTime Datetime;

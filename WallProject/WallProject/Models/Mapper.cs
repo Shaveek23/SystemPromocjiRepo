@@ -10,10 +10,13 @@ namespace WallProject.Models.Mapper
 {
     public class Mapper
     {
+      
         public static PostViewModel Map(PostDTO postDTO, List<CommentViewModel> comments = null)
         {
             PostViewModel postVM = new PostViewModel
             {
+                
+                Id = postDTO.id,
                 Title = postDTO.title,
                 Content = postDTO.content,
                 Datetime = postDTO.datetime,
