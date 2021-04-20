@@ -10,7 +10,7 @@ namespace WebApi.Models.POCO
     {
         [Key]
         public int CategoryID { get; set; }
-
+        [Required]
         public string Name { get; set; }
     }
 }

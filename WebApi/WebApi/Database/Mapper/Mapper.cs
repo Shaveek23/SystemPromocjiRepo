@@ -172,7 +172,7 @@ namespace WebApi.Database.Mapper
         }
         public static CategoryDTO Map(Category category)
         {
-            if (category == null) return category;
+            if (category == null) return null;
             return new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name }; 
         }
         public static IQueryable<CategoryDTO> Map(IQueryable<Category> categories)
