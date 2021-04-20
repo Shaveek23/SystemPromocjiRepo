@@ -165,8 +165,16 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
-        public static Category Map(CategoryDTO categoryDTO) => new Category { CategoryID = categoryDTO.CategoryID, Name = categoryDTO.Name };
-        public static CategoryDTO Map(Category category) => new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name };
+        public static Category Map(CategoryDTO categoryDTO)
+        {
+            if (categoryDTO == null) return null;
+            return   new Category { CategoryID = categoryDTO.CategoryID, Name = categoryDTO.Name };
+        }
+        public static CategoryDTO Map(Category category)
+        {
+            if (category == null) return category;
+            return new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name }; 
+        }
         public static IQueryable<CategoryDTO> Map(IQueryable<Category> categories)
         {
             List<CategoryDTO> list = new List<CategoryDTO>();
