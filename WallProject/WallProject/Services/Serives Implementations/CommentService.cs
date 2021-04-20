@@ -109,7 +109,7 @@ namespace WallProject.Services.Serives_Implementations
             return new ServiceResult<int?>(rand.Next(1, 10)); //na czas prezentacji, potem zmienić na 0
         }
 
-        async public Task AddNewComment(string commentText, int postId, int userId)
+        async public Task<ServiceResult<bool>> AddNewComment(string commentText, int postId, int userId)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
           
@@ -129,11 +129,8 @@ namespace WallProject.Services.Serives_Implementations
             //Wysyłanie Request
             var client = _clientFactory.CreateClient("webapi");
             var response = await client.SendAsync(requestMessage);
-            if(!response.IsSuccessStatusCode)
-            {
-                throw new Exception("something went wrong");
-            }
-
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
+           ;
 
         }
     }

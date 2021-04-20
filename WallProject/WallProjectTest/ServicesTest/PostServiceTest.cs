@@ -17,11 +17,11 @@ using System.Collections.Generic;
 
 namespace WallProjectTest.ServicesTest
 {
-    public class CommentServiceTest
+    public class PosttServiceTest
     {
         [Theory]
-        [InlineData("text", 1, 1)]
-        public async void Test_AddNewComment(string commentText, int postId, int userId)
+        [InlineData("text", 1)]
+        public async void Test_AddNewPost(string postText, int userId)
         {
 
 
@@ -43,9 +43,11 @@ namespace WallProjectTest.ServicesTest
 
 
             CommentService commentService = new CommentService(mockFactory.Object);
+            PersonService personService = new PersonService(mockFactory.Object);
+            PostService postService = new PostService(mockFactory.Object, commentService, personService);
 
 
-            var result = await commentService.AddNewComment(commentText, postId, userId);
+            var result = await postService.AddNewPost(postText, userId);
             Assert.True(result.Result);
 
 

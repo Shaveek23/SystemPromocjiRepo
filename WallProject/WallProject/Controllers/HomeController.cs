@@ -58,14 +58,22 @@ namespace WallProject.Controllers
                 return View("Privacy", wall.Message);
 
         }
-      
-        public async  Task AddNewPost(string postText,int userId)
+
+        public async Task<IActionResult> AddNewPost(string postText, int userId)
         {
-            await _postService.AddNewPost(postText,userId);
+            var result = await _postService.AddNewPost(postText, userId);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
         }
-        public async Task AddNewComment(string commentText,int postId, int userId)
+        public async Task<IActionResult> AddNewComment(string commentText, int postId, int userId)
         {
-            await _commentService.AddNewComment(commentText, postId,userId);
+            var result = await _commentService.AddNewComment(commentText, postId, userId);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
         }
 
     }

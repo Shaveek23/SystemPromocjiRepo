@@ -25,7 +25,7 @@ namespace WallProject.Services.Serives_Implementations
             _personService = personService; //TO DO: tutaj będzie podstawiany userService, narazie korzystamy z Person
         }
 
-       
+
         public async Task<ServiceResult<List<PostViewModel>>> getAll(int userID)
         {
             var client = _clientFactory.CreateClient("webapi");
@@ -36,16 +36,16 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 var postsDTO = JsonConvert.DeserializeObject<List<PostDTO>>(jsonString);
-                
-                    List<PostViewModel> postsVM = new List<PostViewModel>();
-                    foreach(PostDTO postDTO in postsDTO)
-                    {
-                        var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
-                        if (!commentsResult.IsOk())
-                            return new ServiceResult<List<PostViewModel>>(null, commentsResult.Code, commentsResult.Message);
-                        else
-                            postsVM.Add(Mapper.Map(postDTO, commentsResult.Result));
-                    }
+
+                List<PostViewModel> postsVM = new List<PostViewModel>();
+                foreach (PostDTO postDTO in postsDTO)
+                {
+                    var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
+                    if (!commentsResult.IsOk())
+                        return new ServiceResult<List<PostViewModel>>(null, commentsResult.Code, commentsResult.Message);
+                    else
+                        postsVM.Add(Mapper.Map(postDTO, commentsResult.Result));
+                }
                 return new ServiceResult<List<PostViewModel>>(postsVM, result.StatusCode, null);
             }
             else
@@ -75,17 +75,17 @@ namespace WallProject.Services.Serives_Implementations
                 return ServiceResult<PostViewModel>.GetMessage(jsonString, result.StatusCode);
             }
         }
-        async public Task AddNewPost(string postText,int userId)
+        async public Task<ServiceResult<bool>> AddNewPost(string postText, int userId)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
             PostDTONoID post = new PostDTONoID();
             post.content = postText;
             post.datetime = DateTime.Now;
             //DO ZMIANY !!!
-            post.category = 0;           
+            post.category = 0;
             post.isPromoted = false;
             post.title = "brak";
-           
+
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(post);
             //przygotowanie HttpRequest
@@ -96,6 +96,8 @@ namespace WallProject.Services.Serives_Implementations
             //Wysyłanie Request
             var client = _clientFactory.CreateClient("webapi");
             var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode); 
+
         }
 
     }
