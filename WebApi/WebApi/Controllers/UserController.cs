@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,10 +35,10 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<int> Get(int id)
+        [HttpGet("{UserID}")]
+        public ActionResult<UserDTO> Get([Required][FromRoute] int  UserID)
         {
-            var result = _userService.GetById(id);
+            var result = _userService.GetById(UserID);
             return new ControllerResult<UserDTO>(result).GetResponse();
         }
 
@@ -56,11 +57,19 @@ namespace WebApi.Controllers
             return new ControllerResult<int?>(result).GetResponse();
         }
 
-        [HttpPut("{id}")]
-        public async  Task<ActionResult<bool>> EditUser([FromHeader] int id, [FromBody] UserDTO userDTO)
+        [HttpPut("{UserID}")]
+        public async  Task<ActionResult<bool>> EditUser([Required][FromRoute] int UserID, [FromBody] UserDTO userDTO)
         {
-            var result = await _userService.EditUserAsync(id, userDTO);
+            var result = await _userService.EditUserAsync(UserID, userDTO);
             return new ControllerResult<bool>(result).GetResponse();
+        }
+
+        [HttpDelete("{UserID}")]
+        public async Task<ActionResult<bool>> DeleteUser([Required][FromRoute] int UserID)
+        {
+            var result = await _userService.DeleteUserAsync(UserID);
+            return new ControllerResult<bool>(result).GetResponse();
+
         }
     }
 }

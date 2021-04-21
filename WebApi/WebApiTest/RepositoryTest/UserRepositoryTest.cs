@@ -46,24 +46,25 @@ namespace WebApiTest
         //    }
         //}
 
-    //    [Fact]
-    //    public void GetUserByIdAsync_InvalidCall_NoId()
-    //    {
-    //        var options = new DbContextOptionsBuilder<DatabaseContext>()
-    //            .UseInMemoryDatabase(databaseName: "GetUserByIdAsync_InvalidCall_NoId").Options;
+        //    [Fact]
+        //    public void GetUserByIdAsync_InvalidCall_NoId()
+        //    {
+        //        var options = new DbContextOptionsBuilder<DatabaseContext>()
+        //            .UseInMemoryDatabase(databaseName: "GetUserByIdAsync_InvalidCall_NoId").Options;
 
-    //        using (var dbContext = new DatabaseContext(options))
-    //        {
-    //            SeedUser(dbContext);
-    //            int expectedID = 0;
-    //            var expected = dbContext.Users.Where(x => x.UserID == expectedID).FirstOrDefault();
+        //        using (var dbContext = new DatabaseContext(options))
+        //        {
+        //            SeedUser(dbContext);
+        //            int expectedID = 0;
+        //            var expected = dbContext.Users.Where(x => x.UserID == expectedID).FirstOrDefault();
 
-    //            var cls = new UserRepository(dbContext);
-    //            var actual = cls.GetUserByIdAsync(expectedID);
+        //            var cls = new UserRepository(dbContext);
+        //            var actual = cls.GetUserByIdAsync(expectedID);
 
-    //            Assert.True(actual != null);
-    //            Assert.True(actual.Result.Result == null);
-    //        }
-    //    }
-    //}
+        //            Assert.True(actual != null);
+        //            Assert.True(actual.Result.Result == null);
+        //        }
+        //    }
+        //}
+    }
 }

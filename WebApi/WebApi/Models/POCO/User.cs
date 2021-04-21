@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApi.Models.POCO
 {
@@ -14,7 +14,6 @@ namespace WebApi.Models.POCO
         [EmailAddress]
         public string UserEmail { get; set; }
 
-        [Timestamp]
         public System.DateTime Timestamp { get; set; }
 
         public bool IsAdmin { get; set; }

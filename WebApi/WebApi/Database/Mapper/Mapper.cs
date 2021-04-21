@@ -40,6 +40,8 @@ namespace WebApi.Database.Mapper
         }
         public static User Map(UserDTO userDTO)
         {
+            if (userDTO == null)
+                return null;
             return new User
             {
                 UserID = userDTO.UserID,
@@ -54,7 +56,8 @@ namespace WebApi.Database.Mapper
         }
         public static UserDTO Map(User user)
         {
-
+            if (user == null)
+                return null;
             return new UserDTO
             {
                 UserID = user.UserID,

@@ -51,7 +51,7 @@ namespace WebApi.Database
 
                 return new ServiceResult<TEntity>(entity);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return ServiceResult<TEntity>.GetInternalErrorResult();
                 //throw new AddAsyncFailedException($"Fail when adding a new {nameof(AddAsync)} resource item");
