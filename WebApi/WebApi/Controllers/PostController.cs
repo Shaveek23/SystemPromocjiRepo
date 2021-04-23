@@ -86,18 +86,21 @@ namespace WebApi.Controllers
         }
 
 
-        //I need Like-Post Table in database
-        //[HttpGet("{postID}/likeUsers")]
-        //public IQueryable<int> GetPostLikes([Required][FromRoute] int postID)
-        //{
-        //    return _postService.GetLikes(postID);
-        //}
+        [HttpGet("{postID}/likeUsers")]
+        public ActionResult<IQueryable<int> >GetPostLikes([Required][FromRoute] int postID)
+        {
+            var result=_postService.GetLikes(postID);
+            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+        }
 
-        //[HttpPut("{postID}/likeUsers")]
-        //public Task EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int commentID, [FromBody] bool Like)
-        //{
-        //    return _postService.EditLikeStatusAsync(commentID, Like);
-        //}
+        [HttpPut("{postID}/likeUsers")]
+        public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] bool Like)
+        {
+            var result= await _postService.EditLikeStatusAsync(userID,postID, Like);
+            return new ControllerResult<bool>(result).GetResponse();
+         
+
+        }
 
     }
 }

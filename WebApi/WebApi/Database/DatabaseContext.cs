@@ -21,6 +21,8 @@ namespace WebApi.Database
         virtual public DbSet<Comment> Comments { get; set; }
         virtual public DbSet<User> Users { get; set; }
         virtual public DbSet<Category> Categories { get; set; }
+        virtual public DbSet<PostLike> PostLikes { get; set; }
+        virtual public DbSet<CommentLike> CommentLikes { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -125,6 +127,29 @@ namespace WebApi.Database
                     new Category { CategoryID=3, Name="Kaczor Donald"}
                 );
 
+
+            });
+
+            modelBuilder.Entity<PostLike>(entity =>
+            {
+                modelBuilder.Entity<PostLike>().ToTable("PostLike");
+                modelBuilder.Entity<PostLike>().HasKey(p => p.PostLikeID);
+                modelBuilder.Entity<PostLike>().Property(p => p.PostLikeID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<PostLike>().Property(p => p.PostID).IsRequired();
+                modelBuilder.Entity<PostLike>().Property(p => p.UserID).IsRequired();
+        
+             
+
+            });
+            modelBuilder.Entity<CommentLike>(entity =>
+            {
+                modelBuilder.Entity<CommentLike>().ToTable("CommentLike");
+                modelBuilder.Entity<CommentLike>().HasKey(p => p.CommentLikeID);
+                modelBuilder.Entity<CommentLike>().Property(p => p.CommentLikeID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<CommentLike>().Property(p => p.CommentID).IsRequired();
+                modelBuilder.Entity<CommentLike>().Property(p => p.UserID).IsRequired();
+
+             
 
             });
         }

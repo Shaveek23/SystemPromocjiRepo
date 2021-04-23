@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210423192516_AddLikes")]
+    partial class AddLikes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +86,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 1,
                             Content = "tralalala ",
-                            DateTime = new DateTime(2021, 4, 23, 21, 27, 36, 654, DateTimeKind.Local).AddTicks(2456),
+                            DateTime = new DateTime(2021, 4, 23, 21, 25, 16, 132, DateTimeKind.Local).AddTicks(1534),
                             PostID = 1,
                             UserID = 1
                         },
@@ -92,7 +94,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 2,
                             Content = "tralalala pararara",
-                            DateTime = new DateTime(2021, 4, 23, 21, 27, 36, 656, DateTimeKind.Local).AddTicks(7769),
+                            DateTime = new DateTime(2021, 4, 23, 21, 25, 16, 135, DateTimeKind.Local).AddTicks(8276),
                             PostID = 2,
                             UserID = 1
                         },
@@ -100,7 +102,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 3,
                             Content = "tu ti tu rum tu tu",
-                            DateTime = new DateTime(2021, 4, 23, 21, 27, 36, 656, DateTimeKind.Local).AddTicks(7810),
+                            DateTime = new DateTime(2021, 4, 23, 21, 25, 16, 135, DateTimeKind.Local).AddTicks(8343),
                             PostID = 1,
                             UserID = 2
                         });

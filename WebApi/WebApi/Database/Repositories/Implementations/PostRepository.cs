@@ -26,5 +26,40 @@ namespace WebApi.Database.Repositories.Implementations
             return new ServiceResult<IQueryable<Comment>>(comments);
         }
 
+        public ServiceResult<IQueryable<PostLike>> GetLikes(int postID)
+        {
+            var postLikes = dbContext.PostLikes.Where(like => like.PostID == postID);
+            if (postLikes == null)
+            {
+                return new ServiceResult<IQueryable<PostLike>>((IQueryable< PostLike>)(new List<PostLike>()));
+            }
+            return new ServiceResult<IQueryable<PostLike>>(postLikes);
+
+        }
+
+        public async Task<ServiceResult<bool>> UpdateLikeStatusAsync(int userID,int postID, bool like)
+        {
+            if (dbContext.PostLikes.Any(like => like.PostID == postID && like.UserID == userID) && like)
+            {
+                dbContext.Remove(dbContext.PostLikes.First(like => like.UserID == userID && like.PostID == postID));
+                dbContext.SaveChanges();
+            }
+                
+
+            else
+            {
+                if (!dbContext.PostLikes.Any(like => like.PostID == postID && like.UserID == userID) && !like)
+                {
+                    await dbContext.PostLikes.AddAsync(new PostLike { PostID = postID, UserID = userID });
+                    dbContext.SaveChanges();
+                }
+                   
+                else
+                {
+                    return ServiceResult<bool>.GetInternalErrorResult();
+                }
+            }
+            return new ServiceResult<bool>(true);
+        }
     }
 }
