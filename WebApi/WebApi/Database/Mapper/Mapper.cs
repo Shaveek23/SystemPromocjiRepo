@@ -168,7 +168,7 @@ namespace WebApi.Database.Mapper
         public static Category Map(CategoryDTO categoryDTO)
         {
             if (categoryDTO == null) return null;
-            return   new Category { CategoryID = categoryDTO.CategoryID, Name = categoryDTO.Name };
+            return   new Category { CategoryID = categoryDTO.CategoryID.Value, Name = categoryDTO.Name };
         }
         public static CategoryDTO Map(Category category)
         {
