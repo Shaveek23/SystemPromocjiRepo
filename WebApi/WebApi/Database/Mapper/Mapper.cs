@@ -44,14 +44,14 @@ namespace WebApi.Database.Mapper
                 return null;
             return new User
             {
-                UserID = userDTO.UserID,
+                UserID = userDTO.UserID.Value,
                 UserName = userDTO.UserName,
                 UserEmail = userDTO.UserEmail,
                 Timestamp = userDTO.Timestamp,
-                IsVerified = userDTO.IsVerified,
-                IsAdmin = userDTO.IsAdmin,
-                IsEnterprenuer = userDTO.IsEnterprenuer,
-                Active = userDTO.Active
+                IsVerified = userDTO.IsVerified.Value,
+                IsAdmin = userDTO.IsAdmin.Value,
+                IsEnterprenuer = userDTO.IsEnterprenuer.Value,
+                IsActive = userDTO.IsActive.Value
             };
         }
         public static UserDTO Map(User user)
@@ -67,7 +67,7 @@ namespace WebApi.Database.Mapper
                 IsVerified = user.IsVerified,
                 IsAdmin = user.IsAdmin,
                 IsEnterprenuer = user.IsEnterprenuer,
-                Active = user.Active
+                IsActive = user.IsActive
             };
         }
         public static IQueryable<UserDTO> Map(IQueryable<User> people)

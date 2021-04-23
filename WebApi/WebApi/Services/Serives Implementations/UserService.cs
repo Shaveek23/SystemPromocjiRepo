@@ -31,7 +31,7 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<UserDTO>(Mapper.Map(result.Result), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddUserAsync(UserDTO newUserDTO)
+        public async Task<ServiceResult<int?>> AddUserAsync(int userId,UserDTO newUserDTO)
         {
             User newUser = Mapper.Map(newUserDTO);
             

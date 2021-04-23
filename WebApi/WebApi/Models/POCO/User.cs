@@ -19,6 +19,6 @@ namespace WebApi.Models.POCO
         public bool IsAdmin { get; set; }
         public bool IsEnterprenuer { get; set; }
         public bool IsVerified { get; set; }
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
     }
 }

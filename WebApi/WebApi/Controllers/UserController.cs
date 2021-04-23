@@ -49,23 +49,23 @@ namespace WebApi.Controllers
             return new ControllerResult<IQueryable<UserDTO>>(result).GetResponse();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>> AddUser([FromBody] UserDTO user)
+        [HttpPost("{UserID}")]
+        public async Task<ActionResult<int>> AddUser([Required][FromHeader] int UserID, [FromBody] UserDTO user)
         {
 
-            var result = await _userService.AddUserAsync(user);
+            var result = await _userService.AddUserAsync(UserID,user);
             return new ControllerResult<int?>(result).GetResponse();
         }
 
         [HttpPut("{UserID}")]
-        public async  Task<ActionResult<bool>> EditUser([Required][FromRoute] int UserID, [FromBody] UserDTO userDTO)
+        public async  Task<ActionResult<bool>> EditUser([Required][FromHeader] int UserID, [FromBody] UserDTO userDTO)
         {
             var result = await _userService.EditUserAsync(UserID, userDTO);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
         [HttpDelete("{UserID}")]
-        public async Task<ActionResult<bool>> DeleteUser([Required][FromRoute] int UserID)
+        public async Task<ActionResult<bool>> DeleteUser([Required][FromHeader] int UserID)
         {
             var result = await _userService.DeleteUserAsync(UserID);
             return new ControllerResult<bool>(result).GetResponse();
