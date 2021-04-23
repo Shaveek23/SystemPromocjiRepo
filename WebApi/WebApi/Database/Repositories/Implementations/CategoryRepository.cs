@@ -11,9 +11,12 @@ namespace WebApi.Database.Repositories.Implementations
     public class CategoryRepository: Repository<Category>, ICategoryRepository
     {
         public CategoryRepository(DatabaseContext databaseContext) : base(databaseContext) { }
+
+        #region TO DO
         public ServiceResult<IQueryable<Category>> GetCategoriesSubscribedByUser(int userID)
         {
 
+            
             //Tak to bedzie wygladalo jak zrobimy newslettera
 
             //var newstletters = dbContext.Newsletters.Where(newstletters => newstletters.UserID = userID);
@@ -28,6 +31,7 @@ namespace WebApi.Database.Repositories.Implementations
 
             throw new NotImplementedException();
         }
+        #endregion
 
     }
 }

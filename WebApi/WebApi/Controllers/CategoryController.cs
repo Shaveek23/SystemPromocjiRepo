@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         public ActionResult<IQueryable<CategoryDTO>> GetAll()
         {
             var result = _categoryService.GetAll();
-            return Ok(result);
+            return new ControllerResult<IQueryable<CategoryDTO>>(result).GetResponse();
         }
 
         [HttpGet("{categoryId}")]
