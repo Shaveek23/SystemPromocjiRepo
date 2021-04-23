@@ -12,20 +12,13 @@ using WebApi.Services.Services_Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
-    /* when using [ApiController] validation is performed autmatically - don't need to execute: 
-        if (!ModelState.IsValid)           // Invokes the build-in
-            return BadRequest(ModelState); // validation mechanism
-        
-        in case of error 400 status code is returned with ModelState as shown above.
-        Validation rules are defined by dto class attributes (i.e: [Required]) or Validate method
-    */
 
     [Route("api/[controller]")]
     public class UserController : Controller
     {
 
         // DEPENDENCY INJECTION: 
-        private readonly IUserService _userService; // this service handles all logic and database updates -> no logic in controllers !!!
+        private readonly IUserService _userService; 
 
         private readonly ILogger<UserController> _logger;
 
@@ -49,7 +42,7 @@ namespace WebApi.Controllers
             return new ControllerResult<IQueryable<UserDTO>>(result).GetResponse();
         }
 
-        [HttpPost("{UserID}")]
+        [HttpPost]
         public async Task<ActionResult<int>> AddUser([Required][FromHeader] int UserID, [FromBody] UserDTO user)
         {
 
@@ -57,17 +50,17 @@ namespace WebApi.Controllers
             return new ControllerResult<int?>(result).GetResponse();
         }
 
-        [HttpPut("{UserID}")]
-        public async  Task<ActionResult<bool>> EditUser([Required][FromHeader] int UserID, [FromBody] UserDTO userDTO)
+        [HttpPut("{UserToBeEdited}")]
+        public async  Task<ActionResult<bool>> EditUser([Required][FromHeader] int UserID, [FromBody] UserDTO userDTO, [FromRoute] int UserToBeEdited)
         {
-            var result = await _userService.EditUserAsync(UserID, userDTO);
+            var result = await _userService.EditUserAsync(UserID, userDTO, UserToBeEdited);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
-        [HttpDelete("{UserID}")]
-        public async Task<ActionResult<bool>> DeleteUser([Required][FromHeader] int UserID)
+        [HttpDelete("{UserToBeDeletedId}")]
+        public async Task<ActionResult<bool>> DeleteUser([Required][FromHeader] int UserID, [FromRoute] int UserToBeDeletedId)
         {
-            var result = await _userService.DeleteUserAsync(UserID);
+            var result = await _userService.DeleteUserAsync(UserID, UserToBeDeletedId);
             return new ControllerResult<bool>(result).GetResponse();
 
         }

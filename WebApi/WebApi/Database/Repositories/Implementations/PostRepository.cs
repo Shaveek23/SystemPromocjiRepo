@@ -15,7 +15,7 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public PostRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
-        // To chyba powinno być w CommentRepository albo w ogole jako metoda generyczna GetAllOfUser(user id) - wtedy kazdy zasob by musiał być skojarzony z jakimś userId zeby dzialalo dla każdego
+        //TO DO: To chyba powinno być w CommentRepository albo w ogole jako metoda generyczna GetAllOfUser(user id) - wtedy kazdy zasob by musiał być skojarzony z jakimś userId zeby dzialalo dla każdego
         public ServiceResult<IQueryable<Comment>> GetAllComments(int postID)
         {
             var comments = dbContext.Comments.Where(comment => comment.PostID == postID);

@@ -58,13 +58,13 @@ namespace WebApi.Database
                 modelBuilder.Entity<User>().Property(p => p.IsAdmin);
                 modelBuilder.Entity<User>().Property(p => p.IsEnterprenuer);
                 modelBuilder.Entity<User>().Property(p => p.IsVerified);
-                modelBuilder.Entity<User>().Property(p => p.IsActive);
+                modelBuilder.Entity<User>().Property(p => p.Active);
 
                 // seeding example data to database:
                 modelBuilder.Entity<User>().HasData
                 (
-                  new User { UserID = 1, Timestamp = new DateTime(2021, 4, 16, 22, 30, 20), UserEmail = "jaroslaw@kaczyslaw.pl", UserName = "jaroslawpolsezbaw", IsAdmin = false, IsEnterprenuer = true, IsVerified = true, IsActive = true },
-                  new User { UserID = 2, Timestamp = new DateTime(2021, 4, 13, 12, 30, 20), UserEmail = "antoni@kaczyslaw.pl", UserName = "tobrzozawybuchla", IsAdmin = false, IsEnterprenuer = false, IsVerified = false, IsActive = true }
+                  new User { UserID = 1, Timestamp = new DateTime(2021, 4, 16, 22, 30, 20), UserEmail = "jaroslaw@kaczyslaw.pl", UserName = "jaroslawpolsezbaw", IsAdmin = false, IsEnterprenuer = true, IsVerified = true, Active = true },
+                  new User { UserID = 2, Timestamp = new DateTime(2021, 4, 13, 12, 30, 20), UserEmail = "antoni@kaczyslaw.pl", UserName = "tobrzozawybuchla", IsAdmin = false, IsEnterprenuer = false, IsVerified = false, Active = true }
                 );
 
             });

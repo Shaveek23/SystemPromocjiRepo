@@ -27,10 +27,6 @@ namespace WebApi.Database
 
             return new ServiceResult<TEntity>(result);
 
-                //if (result == null)
-                //    throw new ResourceNotFoundException("Requested resource has not been found.");
-
-                //return result;
         }
 
         public ServiceResult<IQueryable<TEntity>> GetAll()
@@ -42,7 +38,6 @@ namespace WebApi.Database
         {
             if (entity == null)
                 return ServiceResult<TEntity>.GetEntityNullResult();
-            //throw new AddAsyncFailedException($"{nameof(AddAsync)} entity must not be null");
 
             try
             {
@@ -54,7 +49,6 @@ namespace WebApi.Database
             catch (Exception e)
             {
                 return ServiceResult<TEntity>.GetInternalErrorResult();
-                //throw new AddAsyncFailedException($"Fail when adding a new {nameof(AddAsync)} resource item");
             }
         }
 
@@ -62,7 +56,6 @@ namespace WebApi.Database
         {
             if (entity == null)
             {
-                //throw new UpdateAsyncFailException($"{nameof(UpdateAsync)} entity must not be null");
                 return ServiceResult<TEntity>.GetEntityNullResult();
             }
 
@@ -75,7 +68,6 @@ namespace WebApi.Database
             }
             catch
             {
-                //throw new UpdateAsyncFailException($"Fail when updating a {nameof(UpdateAsync)} resource item");
                 return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }
@@ -85,7 +77,6 @@ namespace WebApi.Database
         {
             if (entity == null)
             {
-                //throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
                 return ServiceResult<TEntity>.GetEntityNullResult();
             }
 
@@ -98,7 +89,6 @@ namespace WebApi.Database
             }
             catch (Exception ex)
             {
-                //throw new Exception($"{nameof(entity)} could not be removed: {ex.Message}");
                 return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }

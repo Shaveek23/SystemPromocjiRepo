@@ -39,17 +39,17 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<int?>(result.Result?.UserID, result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditUserAsync(int userId, UserDTO userDTO)
+        public async Task<ServiceResult<bool>> EditUserAsync(int userId, UserDTO userDTO, int userToBeEditedId)
         {
             User user = Mapper.Map(userDTO);
-            user.UserID = userId;
+            user.UserID = userToBeEditedId;
             var result = await _userRepository.UpdateAsync(user);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> DeleteUserAsync(int userId)
+        public async Task<ServiceResult<bool>> DeleteUserAsync(int userId, int userToBeDeletedId)
         {
-            var GetResult = _userRepository.GetById(userId);
+            var GetResult = _userRepository.GetById(userToBeDeletedId);
 
             if (!GetResult.IsOk())
                 return new ServiceResult<bool>(false, GetResult.Code, GetResult.Message);

@@ -5,7 +5,6 @@ namespace WebApi.Models.DTO
 {
     public class UserDTO
     {
-        [Required]
         public int? UserID { get; set; }
         
         [Required]
@@ -17,11 +16,21 @@ namespace WebApi.Models.DTO
         [MaxLength(30)]
         [MinLength(1)]
         [EmailAddress]
-        public string? UserEmail { get; set; }
-        public System.DateTime Timestamp { get; set; }
+        public string UserEmail { get; set; }
+
+        [Required]
+        public System.DateTime? Timestamp { get; set; }
+        
+        [Required]
         public bool? IsAdmin { get; set; }
+        
+        [Required]
         public bool? IsEnterprenuer { get; set; }
+        
+        [Required]
         public bool? IsVerified { get; set; }
+        
+        [Required]
         public bool? IsActive { get; set; }
 
 

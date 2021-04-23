@@ -13,8 +13,8 @@ namespace WebApi.Services.Services_Interfaces
 
         public ServiceResult<UserDTO> GetById(int id);
         public Task<ServiceResult<int?>> AddUserAsync(int userId,UserDTO newUserDTO);
-        public Task<ServiceResult<bool>> EditUserAsync(int userId, UserDTO userDTO);
-        public Task<ServiceResult<bool>> DeleteUserAsync(int userId);
+        public Task<ServiceResult<bool>> EditUserAsync(int userId, UserDTO userDTO, int userToBeEditedId);
+        public Task<ServiceResult<bool>> DeleteUserAsync(int userId, int userToBeDeletedId);
 
 
     }

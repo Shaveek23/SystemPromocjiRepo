@@ -46,7 +46,7 @@ namespace WebApiTest.ControllerTest
                 UserName=name,
                 Timestamp=date,
                 IsVerified=isVerified,
-                Active=active,
+                IsActive=active,
                 IsEnterprenuer=isEnterprenuer
             })); 
             var mockLogger = new Mock<ILogger<UserController>>();
@@ -59,7 +59,7 @@ namespace WebApiTest.ControllerTest
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
-                Active = active,
+                IsActive = active,
                 IsEnterprenuer = isEnterprenuer
             };
 
@@ -84,7 +84,7 @@ namespace WebApiTest.ControllerTest
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
-                Active = active,
+                IsActive = active,
                 IsEnterprenuer = isEnterprenuer
             });
 
@@ -95,7 +95,7 @@ namespace WebApiTest.ControllerTest
                 UserName = name+"XD",
                 Timestamp = date,
                 IsVerified = !isVerified,
-                Active = active,
+                IsActive = active,
                 IsEnterprenuer = !isEnterprenuer
             });
 
@@ -120,7 +120,7 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IUserService>();
-            mockService.Setup(x => x.AddUserAsync(It.IsAny<UserDTO>())).Returns(Task.Run(() =>
+            mockService.Setup(x => x.AddUserAsync(id, It.IsAny<UserDTO>())).Returns(Task.Run(() =>
             {
                 return new ServiceResult<int?>(id);
             }));
@@ -135,19 +135,19 @@ namespace WebApiTest.ControllerTest
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
-                Active = active,
+                IsActive = active,
                 IsEnterprenuer = isEnterprenuer
             };
 
             //Act
-            var actual = controller.AddUser(new UserDTO
+            var actual = controller.AddUser(1, new UserDTO
             {
                 UserID = id,
                 UserEmail = email,
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
-                Active = active,
+                IsActive = active,
                 IsEnterprenuer = isEnterprenuer
             }).Result.Result;
 
