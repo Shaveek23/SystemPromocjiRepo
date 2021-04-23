@@ -39,26 +39,28 @@ namespace WebApi.Database.Repositories.Implementations
 
         public async Task<ServiceResult<bool>> UpdateLikeStatusAsync(int userID,int postID, bool like)
         {
-            if (dbContext.PostLikes.Any(like => like.PostID == postID && like.UserID == userID) && like)
+            try
             {
-                dbContext.Remove(dbContext.PostLikes.First(like => like.UserID == userID && like.PostID == postID));
-                dbContext.SaveChanges();
-            }
-                
-
-            else
-            {
-                if (!dbContext.PostLikes.Any(like => like.PostID == postID && like.UserID == userID) && !like)
+                if (dbContext.PostLikes.Any(like => like.PostID == postID && like.UserID == userID))
                 {
-                    await dbContext.PostLikes.AddAsync(new PostLike { PostID = postID, UserID = userID });
+                    dbContext.Remove(dbContext.PostLikes.First(like => like.UserID == userID && like.PostID == postID));
                     dbContext.SaveChanges();
                 }
-                   
+
                 else
                 {
-                    return ServiceResult<bool>.GetInternalErrorResult();
+
+                    await dbContext.PostLikes.AddAsync(new PostLike { PostID = postID, UserID = userID });
+                    dbContext.SaveChanges();
+
                 }
             }
+            catch (Exception e)
+            {
+                return ServiceResult<bool>.GetInternalErrorResult();
+            }
+
+
             return new ServiceResult<bool>(true);
         }
     }

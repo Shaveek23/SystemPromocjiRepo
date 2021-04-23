@@ -80,6 +80,21 @@ namespace WebApi.Controllers
         //    return Ok();
         //}
         #endregion
+        [HttpGet("{id}/likeUsers")]
+        public ActionResult<IQueryable<int>> GetPostLikes([Required][FromRoute] int id)
+        {
+            var result = _commentService.GetLikedUsers(id);
+            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+        }
+
+        [HttpPut("{id}/likeUsers")]
+        public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int id, [FromBody] LikeDTO like)
+        {
+            var result = await _commentService.EditLikeOnCommentAsync(userID, id, like);
+            return new ControllerResult<bool>(result).GetResponse();
+
+
+        }
 
     }
 

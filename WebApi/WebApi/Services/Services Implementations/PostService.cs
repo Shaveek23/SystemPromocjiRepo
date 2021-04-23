@@ -74,9 +74,9 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<IQueryable<int>>(result.Result.Select(x=>x.UserID), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID,int postID, bool like)
+        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID,int postID, LikeDTO like)
         {
-            var result = await _postRepository.UpdateLikeStatusAsync(userID,postID,like);
+            var result = await _postRepository.UpdateLikeStatusAsync(userID,postID,like.like);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
            
         }

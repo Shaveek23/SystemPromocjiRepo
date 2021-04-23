@@ -10,12 +10,9 @@ namespace WebApi.Database.Repositories.Interfaces
 {
     public interface ICommentRepository : IRepository<Comment>
     {
+        ServiceResult<IQueryable<CommentLike>> GetLikes(int commentId);
+        Task<ServiceResult<bool>> UpdateLikeStatusAsync( int commentID, int userID, bool like);
 
-        //TODO:Zamienic na Users
-        Task<ServiceResult<IQueryable<int>>> GetLikedUsersAsync(int id);
- 
-       Task<ServiceResult<Comment>> EditLikeOnComment(int commentId,int userId);
 
-   
     }
 }

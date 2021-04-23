@@ -42,9 +42,10 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public Task<ServiceResult<bool>> EditLikeOnCommentAsync(int commentId, int userId)
+        public async Task<ServiceResult<bool>> EditLikeOnCommentAsync(int commentId, int userID, LikeDTO like)
         {
-            throw new NotImplementedException();
+            var result = await _commentRepository.UpdateLikeStatusAsync(userID, commentId, like.like);
+            return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAll(int userId)
@@ -63,7 +64,8 @@ namespace WebApi.Services.Serives_Implementations
 
         public ServiceResult<IQueryable<int>> GetLikedUsers(int commentId)
         {
-            throw new NotImplementedException();
+            var result = _commentRepository.GetLikes(commentId);
+            return new ServiceResult<IQueryable<int>>(result.Result.Select(x => x.UserID), result.Code, result.Message);
         }
     }
 }

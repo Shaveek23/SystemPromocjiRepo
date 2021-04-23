@@ -74,7 +74,7 @@ namespace WebApi.Database
             });
             modelBuilder.Entity<Comment>(entity =>
             {
-                //CO z relacjami ??
+               
                 modelBuilder.Entity<Comment>().ToTable("Comment");
                 modelBuilder.Entity<Comment>().HasKey(p => p.CommentID);
                 modelBuilder.Entity<Comment>().Property(p => p.CommentID).IsRequired().ValueGeneratedOnAdd();
@@ -86,9 +86,9 @@ namespace WebApi.Database
 
                 modelBuilder.Entity<Comment>().HasData
                 (
-                  new Comment { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Now, Content = "tralalala " },
-                    new Comment { CommentID = 2, UserID = 1, PostID = 2, DateTime = DateTime.Now, Content = "tralalala pararara" },
-                      new Comment { CommentID = 3, UserID = 2, PostID = 1, DateTime = DateTime.Now, Content = "tu ti tu rum tu tu" }
+                  new Comment { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala " },
+                    new Comment { CommentID = 2, UserID = 1, PostID = 2, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala pararara" },
+                      new Comment { CommentID = 3, UserID = 2, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tu ti tu rum tu tu" }
                 );
 
 

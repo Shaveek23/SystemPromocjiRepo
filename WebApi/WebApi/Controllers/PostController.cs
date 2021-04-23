@@ -94,9 +94,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{postID}/likeUsers")]
-        public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] bool Like)
+        public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] LikeDTO like)
         {
-            var result= await _postService.EditLikeStatusAsync(userID,postID, Like);
+            var result= await _postService.EditLikeStatusAsync(userID,postID, like);
             return new ControllerResult<bool>(result).GetResponse();
          
 
