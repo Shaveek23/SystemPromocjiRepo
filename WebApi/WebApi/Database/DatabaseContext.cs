@@ -20,6 +20,8 @@ namespace WebApi.Database
         virtual public DbSet<Post> Posts { get; set; }
         virtual public DbSet<Comment> Comments { get; set; }
         virtual public DbSet<User> Users { get; set; }
+        virtual public DbSet<Category> Categories { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -108,6 +110,22 @@ namespace WebApi.Database
                   new Post { PostID = 2, UserID = 2, CategoryID = 1, Title = "tytuł 2", Content = "Oto mój drugi post!", Date = new DateTime(2021, 6, 21, 11, 2, 44), IsPromoted = false },
                   new Post { PostID = 3, UserID = 3, CategoryID = 1, Title = "tytuł 3", Content = "Oto mój trzeci post!", Date = new DateTime(2021, 4, 11, 1, 21, 4), IsPromoted = false }
                 );
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                modelBuilder.Entity<Category>().ToTable("Category");
+                modelBuilder.Entity<Category>().HasKey(p => p.CategoryID);
+                modelBuilder.Entity<Category>().Property(p => p.Name).IsRequired().HasMaxLength(50);
+
+                modelBuilder.Entity<Category>().HasData
+                (
+                    new Category { CategoryID=1, Name="Polityka"},
+                    new Category { CategoryID=2, Name="Stomatologia"},
+                    new Category { CategoryID=3, Name="Kaczor Donald"}
+                );
+
+
             });
         }
 

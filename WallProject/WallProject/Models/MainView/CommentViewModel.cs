@@ -9,6 +9,7 @@ namespace WallProject.Models
     {
         public int Likes;
         public PersonViewModel Owner;
+        public string OwnerName; //do wyświetlenia userID w ramach prezentacji
         public DateTime Time;
         public string Content;
     }

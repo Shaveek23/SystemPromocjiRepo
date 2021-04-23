@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210416230552_AddCategories")]
+    partial class AddCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,9 +86,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 1,
                             Content = "tralalala ",
-
-                            DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 182, DateTimeKind.Local).AddTicks(8068),
-
+                            DateTime = new DateTime(2021, 4, 17, 1, 5, 51, 723, DateTimeKind.Local).AddTicks(4367),
                             PostID = 1,
                             UserID = 1
                         },
@@ -94,9 +94,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 2,
                             Content = "tralalala pararara",
-
-                            DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 185, DateTimeKind.Local).AddTicks(2453),
-
+                            DateTime = new DateTime(2021, 4, 17, 1, 5, 51, 726, DateTimeKind.Local).AddTicks(2227),
                             PostID = 2,
                             UserID = 1
                         },
@@ -104,9 +102,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 3,
                             Content = "tu ti tu rum tu tu",
-
-                            DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 185, DateTimeKind.Local).AddTicks(2501),
-
+                            DateTime = new DateTime(2021, 4, 17, 1, 5, 51, 726, DateTimeKind.Local).AddTicks(2273),
                             PostID = 1,
                             UserID = 2
                         });
@@ -216,67 +212,6 @@ namespace WebApi.Migrations
                             IsPromoted = false,
                             Title = "tytuł 3",
                             UserID = 3
-                        });
-                });
-
-            modelBuilder.Entity("WebApi.Models.POCO.User", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEnterprenuer")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            Active = true,
-                            IsAdmin = false,
-                            IsEnterprenuer = true,
-                            IsVerified = true,
-                            Timestamp = new DateTime(2021, 4, 16, 22, 30, 20, 0, DateTimeKind.Unspecified),
-                            UserEmail = "jaroslaw@kaczyslaw.pl",
-                            UserName = "jaroslawpolsezbaw"
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            Active = true,
-                            IsAdmin = false,
-                            IsEnterprenuer = false,
-                            IsVerified = false,
-                            Timestamp = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
-                            UserEmail = "antoni@kaczyslaw.pl",
-                            UserName = "tobrzozawybuchla"
                         });
                 });
 #pragma warning restore 612, 618

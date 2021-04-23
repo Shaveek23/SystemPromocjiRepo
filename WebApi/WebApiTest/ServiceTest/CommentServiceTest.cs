@@ -23,8 +23,6 @@ namespace WebApiTest.ServiceTest
             new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test" },
              new Comment() { CommentID = 2, UserID = 2, PostID = 2, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test2" },
             new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test3" }
-
-
         };
 
         [Fact]

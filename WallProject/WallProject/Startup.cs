@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WallProject.Models;
 using WallProject.Services.Serives_Implementations;
 using WallProject.Services.Services_Interfaces;
 
@@ -30,6 +31,10 @@ namespace WallProject
                 { c.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/api/"); });
             services.AddControllersWithViews();
             services.AddScoped<IWallService, WallService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IPersonService, PersonService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
