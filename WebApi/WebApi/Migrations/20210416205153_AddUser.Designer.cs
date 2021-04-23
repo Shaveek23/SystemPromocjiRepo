@@ -3,55 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Database;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210416205153_AddUser")]
+    partial class AddUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("WebApi.Models.POCO.Category", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryID = 1,
-                            Name = "Polityka"
-                        },
-                        new
-                        {
-                            CategoryID = 2,
-                            Name = "Stomatologia"
-                        },
-                        new
-                        {
-                            CategoryID = 3,
-                            Name = "Kaczor Donald"
-                        });
-                });
 
             modelBuilder.Entity("WebApi.Models.POCO.Comment", b =>
                 {
@@ -84,9 +52,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 1,
                             Content = "tralalala ",
-
                             DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 182, DateTimeKind.Local).AddTicks(8068),
-
                             PostID = 1,
                             UserID = 1
                         },
@@ -94,9 +60,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 2,
                             Content = "tralalala pararara",
-
                             DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 185, DateTimeKind.Local).AddTicks(2453),
-
                             PostID = 2,
                             UserID = 1
                         },
@@ -104,9 +68,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 3,
                             Content = "tu ti tu rum tu tu",
-
                             DateTime = new DateTime(2021, 4, 16, 22, 51, 53, 185, DateTimeKind.Local).AddTicks(2501),
-
                             PostID = 1,
                             UserID = 2
                         });

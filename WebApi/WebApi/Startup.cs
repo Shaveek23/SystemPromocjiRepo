@@ -42,13 +42,16 @@ namespace WebApi
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
+
 
             // adding repository services
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
 
 

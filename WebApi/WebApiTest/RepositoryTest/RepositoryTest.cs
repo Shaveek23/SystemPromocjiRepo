@@ -63,8 +63,11 @@ namespace WebApiTest
                 dbContext.SaveChanges();
 
                 var cls = new Repository<Person>(dbContext);
-               
-                Assert.Throws<ResourceNotFoundException>( () => cls.GetById(0));
+
+                var actual = cls.GetById(0);
+
+                Assert.Null(actual.Result);
+                Assert.Equal(404, (int)(actual.Code));
             }
         }
 

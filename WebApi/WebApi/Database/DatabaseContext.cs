@@ -19,7 +19,9 @@ namespace WebApi.Database
         virtual public DbSet<Person> Persons { get; set; }
         virtual public DbSet<Post> Posts { get; set; }
         virtual public DbSet<Comment> Comments { get; set; }
+        virtual public DbSet<User> Users { get; set; }
         virtual public DbSet<Category> Categories { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -28,7 +30,7 @@ namespace WebApi.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            
+
             base.OnModelCreating(modelBuilder);
             // configuring Person in database
             modelBuilder.Entity<Person>(entity =>
@@ -48,6 +50,26 @@ namespace WebApi.Database
                 );
 
             });
+            modelBuilder.Entity<User>(entity =>
+            {
+                modelBuilder.Entity<User>().ToTable("User");
+                modelBuilder.Entity<User>().HasKey(p => p.UserID);
+                modelBuilder.Entity<User>().Property(p => p.UserID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<User>().Property(p => p.Timestamp).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<User>().Property(p => p.UserEmail).IsRequired().HasMaxLength(30);
+                modelBuilder.Entity<User>().Property(p => p.IsAdmin);
+                modelBuilder.Entity<User>().Property(p => p.IsEnterprenuer);
+                modelBuilder.Entity<User>().Property(p => p.IsVerified);
+                modelBuilder.Entity<User>().Property(p => p.Active);
+
+                // seeding example data to database:
+                modelBuilder.Entity<User>().HasData
+                (
+                  new User { UserID = 1, Timestamp = new DateTime(2021, 4, 16, 22, 30, 20), UserEmail = "jaroslaw@kaczyslaw.pl", UserName = "jaroslawpolsezbaw", IsAdmin = false, IsEnterprenuer = true, IsVerified = true, Active = true },
+                  new User { UserID = 2, Timestamp = new DateTime(2021, 4, 13, 12, 30, 20), UserEmail = "antoni@kaczyslaw.pl", UserName = "tobrzozawybuchla", IsAdmin = false, IsEnterprenuer = false, IsVerified = false, Active = true }
+                );
+
+            });
             modelBuilder.Entity<Comment>(entity =>
             {
                 //CO z relacjami ??
@@ -58,7 +80,7 @@ namespace WebApi.Database
                 modelBuilder.Entity<Comment>().Property(p => p.PostID).IsRequired();
                 modelBuilder.Entity<Comment>().Property(p => p.UserID).IsRequired();
                 modelBuilder.Entity<Comment>().Property(p => p.Content).IsRequired().HasMaxLength(255);
-               
+
 
                 modelBuilder.Entity<Comment>().HasData
                 (

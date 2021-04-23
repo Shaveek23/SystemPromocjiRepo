@@ -27,17 +27,17 @@ namespace WebApi.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "PostID", "CategoryID", "Content", "Date", "IsPromoted", "Title", "UserID" },
-                values: new object[] { 1, 1, "Oto mój pierwszy post!", new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified), false, "tytuł 1", 1 });
+                values: new object[] { 4, 1, "Oto mój pierwszy post!", new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified), false, "tytuł 1", 1 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "PostID", "CategoryID", "Content", "Date", "IsPromoted", "Title", "UserID" },
-                values: new object[] { 2, 1, "Oto mój drugi post!", new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified), false, "tytuł 2", 2 });
+                values: new object[] { 5, 1, "Oto mój drugi post!", new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified), false, "tytuł 2", 2 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "PostID", "CategoryID", "Content", "Date", "IsPromoted", "Title", "UserID" },
-                values: new object[] { 3, 1, "Oto mój trzeci post!", new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified), false, "tytuł 3", 3 });
+                values: new object[] { 6, 1, "Oto mój trzeci post!", new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified), false, "tytuł 3", 3 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
