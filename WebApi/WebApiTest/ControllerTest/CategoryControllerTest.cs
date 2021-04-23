@@ -75,8 +75,7 @@ namespace WebApiTest.ControllerTest
 
             var expected = categories;
 
-
-            var actual = ((ServiceResult<IQueryable<CategoryDTO>>)((ObjectResult)controller.GetAll().Result).Value).Result.ToList();
+            var actual = ((IEnumerable<CategoryDTO>)((ObjectResult)controller.GetAll().Result).Value).ToList();
 
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.CategoryID == shouldItem.CategoryID && isItem.Name==shouldItem.Name)));
 
