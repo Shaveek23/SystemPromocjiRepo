@@ -19,7 +19,7 @@ namespace WebApi.Controllers
     {
         private readonly IPostService _postService;
         private readonly ILogger<PostController> _logger;
-        public PostController(ILogger<PostController> logger , IPostService postService)
+        public PostController(ILogger<PostController> logger, IPostService postService)
         {
             _logger = logger;
             _postService = postService;
@@ -33,7 +33,7 @@ namespace WebApi.Controllers
             return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
         }
 
-      
+
         [HttpGet("byUser/{UserID}")]
         public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
         {
@@ -77,28 +77,28 @@ namespace WebApi.Controllers
 
 
         [HttpGet("{postID}/comments")]
-        public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID,[Required][FromRoute] int postID)
+        public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID, [Required][FromRoute] int postID)
         {
-            // tutaj trzebaby chyba użyć _commentService
-            var result= _postService.GetAllComments(postID,userID);
+
+            var result = _postService.GetAllComments(postID, userID);
 
             return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
 
         [HttpGet("{postID}/likeUsers")]
-        public ActionResult<IQueryable<int> >GetPostLikes([Required][FromRoute] int postID)
+        public ActionResult<IQueryable<int>> GetPostLikes([Required][FromRoute] int postID)
         {
-            var result=_postService.GetLikes(postID);
+            var result = _postService.GetLikes(postID);
             return new ControllerResult<IQueryable<int>>(result).GetResponse();
         }
 
         [HttpPut("{postID}/likeUsers")]
         public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] LikeDTO like)
         {
-            var result= await _postService.EditLikeStatusAsync(userID,postID, like);
+            var result = await _postService.EditLikeStatusAsync(userID, postID, like);
             return new ControllerResult<bool>(result).GetResponse();
-         
+
 
         }
 
