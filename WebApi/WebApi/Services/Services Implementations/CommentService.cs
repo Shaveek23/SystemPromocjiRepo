@@ -53,21 +53,36 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAll(int userId)
         {
             var result = _commentRepository.GetAll();
-            List<CommentDTOOutput> outputDTOlist = new List<CommentDTOOutput>();
+            if(result.Result == null)
+            {
+                return new ServiceResult<IQueryable<CommentDTOOutput>>(null, result.Code, result.Message);
+            }
 
+
+            List<CommentDTOOutput> outputDTOlist = new List<CommentDTOOutput>();
             foreach(var comment in result.Result.ToList())
             {
-                var outputDTO = Mapper.MapOutput(comment);
-                var author = _userRepository.GetById(comment.UserID).Result;
-                var commentLikes = GetLikedUsers(comment.CommentID).Result;
-
-                if(author != null)
+                var author = _userRepository.GetById(comment.UserID);
+                if(author.Result == null)
                 {
-                    outputDTO.authorName = author.UserName;
-                    outputDTO.ownerMode = userId == author.UserID;
+                    return new ServiceResult<IQueryable<CommentDTOOutput>>(null, author.Code, author.Message);
                 }
-                outputDTO.likesCount = commentLikes.Count();
-                outputDTO.isLikedByUser = commentLikes.Any(x => x == userId);
+
+                var commentLikes = GetLikedUsers(comment.CommentID);
+                if (commentLikes.Result == null)
+                {
+                    return new ServiceResult<IQueryable<CommentDTOOutput>>(null, commentLikes.Code, commentLikes.Message);
+                }
+
+                //USUNĄĆ IFA I ODKOMENTOWAĆ
+                var outputDTO = Mapper.MapOutput(comment);
+                if (author.Result != null)
+                {
+                    outputDTO.authorName = author.Result.UserName;
+                    outputDTO.ownerMode = userId == author.Result.UserID;
+                }
+                outputDTO.likesCount = commentLikes.Result.Count();
+                outputDTO.isLikedByUser = commentLikes.Result.Any(x => x == userId);
 
                 outputDTOlist.Add(outputDTO);
             }
@@ -78,14 +93,32 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<CommentDTOOutput> GetById(int commentId, int userId)
         {
             var result = _commentRepository.GetById(commentId);
-            var outputDTO = Mapper.MapOutput(result.Result);
-            var author = _userRepository.GetById(result.Result.UserID).Result;
-            var commentLikes = GetLikedUsers(commentId).Result;
+            if(result.Result == null)
+            {
+                return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message);
+            }
 
-            outputDTO.authorName = author.UserName;
-            outputDTO.ownerMode = userId == author.UserID;
-            outputDTO.likesCount = commentLikes.Count();
-            outputDTO.isLikedByUser = commentLikes.Any(x => x == userId);
+            var author = _userRepository.GetById(result.Result.UserID);
+            if(author.Result == null)
+            { 
+                //return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message); 
+            }
+
+            var commentLikes = GetLikedUsers(commentId);
+            if (commentLikes.Result == null)
+            {
+                return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message);
+            }
+
+            //USUNĄĆ IFA I ODKOMENTOWAĆ
+            var outputDTO = Mapper.MapOutput(result.Result);
+            if(author.Result != null)
+            {
+                outputDTO.authorName = author.Result.UserName;
+                outputDTO.ownerMode = userId == author.Result.UserID;
+            }
+            outputDTO.likesCount = commentLikes.Result.Count();
+            outputDTO.isLikedByUser = commentLikes.Result.Any(x => x == userId);
 
             return new ServiceResult<CommentDTOOutput>(outputDTO, result.Code, result.Message);
         }

@@ -45,7 +45,7 @@ namespace WebApi.Controllers
         [HttpGet("{postID}")]
         public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
-            var result = _postService.GetById(postID);
+            var result = _postService.GetById(postID, userID);
             return new ControllerResult<PostDTO>(result).GetResponse();
         }
 
