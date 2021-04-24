@@ -31,9 +31,9 @@ namespace WebApiTest.ControllerTest
 
             DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
-            var mockService = new Mock<ICommentService>();
-            mockService.Setup(x => x.GetById(c_id, UserId)).Returns(new ServiceResult<CommentDTOOutput>( new CommentDTOOutput
-
+            var mockCommentService = new Mock<ICommentService>();
+            var mockPersonService = new Mock<ICommentService>();
+            mockCommentService.Setup(x => x.GetById(c_id, UserId)).Returns(new ServiceResult<CommentDTOOutput>( new CommentDTOOutput
             {
                 CommentID = c_id,
                 UserID = u_id,

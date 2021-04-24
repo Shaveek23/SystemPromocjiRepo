@@ -15,11 +15,14 @@ namespace WebApi.Services.Serives_Implementations
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
-        
 
-        public PostService(IPostRepository postRepository)
+        private readonly ICommentService _commentService;
+
+
+        public PostService(IPostRepository postRepository, ICommentService commentService)
         {
             _postRepository = postRepository;
+            _commentService = commentService;
         }
 
         public ServiceResult<IQueryable<PostDTO>> GetAll()
@@ -83,8 +86,9 @@ namespace WebApi.Services.Serives_Implementations
 
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID, int userID)
         {
-            var result = _postRepository.GetAllComments(postID);
-            return new ServiceResult<IQueryable<CommentDTOOutput>>(Mapper.MapOutput(result.Result), result.Code, result.Message);
+            var result = _commentService.GetAll(userID);
+            result.Result = result.Result.Where(x => x.postId == postID);
+            return new ServiceResult<IQueryable<CommentDTOOutput>>(result.Result, result.Code, result.Message);
         }
     }
 }

@@ -79,9 +79,7 @@ namespace WebApi.Controllers
         [HttpGet("{postID}/comments")]
         public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID, [Required][FromRoute] int postID)
         {
-
             var result = _postService.GetAllComments(postID, userID);
-
             return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
@@ -98,8 +96,6 @@ namespace WebApi.Controllers
         {
             var result = await _postService.EditLikeStatusAsync(userID, postID, like);
             return new ControllerResult<bool>(result).GetResponse();
-
-
         }
 
     }

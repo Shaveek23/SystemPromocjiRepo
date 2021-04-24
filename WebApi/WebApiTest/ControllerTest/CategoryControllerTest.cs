@@ -17,9 +17,9 @@ namespace WebApiTest.ControllerTest
     public class CategoryControllerTest
     {
         [Theory]
-        [InlineData(0, "Kategoria")]
-        [InlineData(5, "xd")]
-        [InlineData(2, "lol")]
+        [InlineData(0, "Kategoria1")]
+        [InlineData(5, "Kategoria2")]
+        [InlineData(2, "Kategoria4")]
         public void GetById_Test(int id, string name)
         {
 
@@ -50,9 +50,9 @@ namespace WebApiTest.ControllerTest
         }
 
         [Theory]
-        [InlineData(0, "Kategoria")]
-        [InlineData(5, "xd")]
-        [InlineData(2, "lol")]
+        [InlineData(0, "Kategoria1")]
+        [InlineData(5, "Kategoria2")]
+        [InlineData(2, "Kategoria4")]
         public void GetAll_Test(int id, string name)
         {
             List<CategoryDTO> categories = new List<CategoryDTO>();
