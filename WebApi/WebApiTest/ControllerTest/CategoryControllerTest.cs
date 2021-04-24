@@ -28,8 +28,8 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.GetById(id)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO
 
             {
-                CategoryID = id,
-                Name=name
+                id = id,
+                name=name
             }));
 
             var mockLogger = new Mock<ILogger<CategoryController>>();
@@ -38,15 +38,15 @@ namespace WebApiTest.ControllerTest
             var expected = new CategoryDTO
 
             {
-                CategoryID = id,
-                Name = name
+                id = id,
+                name = name
             };
 
 
             var actual = (CategoryDTO)((ObjectResult)controller.GetById(id).Result).Value;
 
-            Assert.Equal(expected.CategoryID, actual.CategoryID);
-            Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.id, actual.id);
+            Assert.Equal(expected.name, actual.name);
         }
 
         [Theory]
@@ -58,13 +58,13 @@ namespace WebApiTest.ControllerTest
             List<CategoryDTO> categories = new List<CategoryDTO>();
             categories.Add(new CategoryDTO
             {
-                CategoryID = id,
-                Name = name
+                id = id,
+                name = name
             });
             categories.Add(new CategoryDTO
             {
-                CategoryID = id+1,
-                Name = name+"cokolwiek"
+                id = id+1,
+                name = name+"cokolwiek"
             });
             var mockService = new Mock<ICategoryService>();
             mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()
@@ -77,7 +77,7 @@ namespace WebApiTest.ControllerTest
 
             var actual = ((IEnumerable<CategoryDTO>)((ObjectResult)controller.GetAll().Result).Value).ToList();
 
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.CategoryID == shouldItem.CategoryID && isItem.Name==shouldItem.Name)));
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.id == shouldItem.id && isItem.name==shouldItem.name)));
 
 
         }

@@ -20,8 +20,8 @@ namespace WebApiTest
         List<User> users = new List<User>
         {
             new User {UserID=1, UserEmail="iojestsuper@mini.pw.edu.pl", UserName="student", Timestamp=new DateTime(2021,4,16,8,4,12),IsEnterprenuer=false,IsAdmin=false,IsVerified=false, Active=false },
-            new User {UserID=1, UserEmail="cokolwiek@ck.pl", UserName="ktokolwiek", Timestamp=new DateTime(2021,2,6,4,2,12),IsEnterprenuer=false,IsAdmin=true,IsVerified=false, Active=true},
-            new User {UserID=1, UserEmail="xd@xd.pl", UserName="jakikowliek", Timestamp=new DateTime(2020,1,11,5,4,12),IsEnterprenuer=true,IsAdmin=false,IsVerified=false , Active=true},
+            new User {UserID=1, UserEmail="cokolwiek@c321321.pl", UserName="ktokolwiek", Timestamp=new DateTime(2021,2,6,4,2,12),IsEnterprenuer=false,IsAdmin=true,IsVerified=false, Active=true},
+            new User {UserID=1, UserEmail="321d@321321.pl", UserName="jakikowliek", Timestamp=new DateTime(2020,1,11,5,4,12),IsEnterprenuer=true,IsAdmin=false,IsVerified=false , Active=true},
         };
         [Fact]
         public void GetAll_ValidCall()
@@ -68,7 +68,7 @@ namespace WebApiTest
                 .Returns(new ServiceResult<User>(null, System.Net.HttpStatusCode.BadRequest, "Requested resource has not been found."));
 
             var userService = new UserService(mockIUserRepository.Object);
-            var actual =  userService.GetById(expectedId);
+            var actual = userService.GetById(expectedId);
 
             Assert.Null(actual.Result);
             Assert.Equal(404, (int)actual.Code);

@@ -19,9 +19,9 @@ namespace WebApiTest.ServiceTest
     {
         public List<Category> categories = new List<Category>
         {
-            new Category{CategoryID=0, Name="xDD"},
+            new Category{CategoryID=0, Name="cokolwiekkkkkk"},
             new Category{CategoryID=1, Name="cokolwiek"},
-            new Category{CategoryID=2, Name="xcvsda"},
+            new Category{CategoryID=2, Name="xcvsdsada"},
         };
 
         [Fact]
@@ -37,7 +37,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.CategoryID == shouldItem.CategoryID && isItem.Name == shouldItem.Name)));
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.id == shouldItem.CategoryID && isItem.name == shouldItem.Name)));
 
         }
 
@@ -57,8 +57,8 @@ namespace WebApiTest.ServiceTest
             var expected2 = expected.Result;
 
             Assert.True(actual != null);
-            Assert.Equal(expected2.CategoryID, actual.CategoryID);
-            Assert.Equal(expected2.Name, actual.Name);
+            Assert.Equal(expected2.CategoryID, actual.id);
+            Assert.Equal(expected2.Name, actual.name);
 
         }
 

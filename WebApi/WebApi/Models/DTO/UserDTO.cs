@@ -5,33 +5,33 @@ namespace WebApi.Models.DTO
 {
     public class UserDTO
     {
-        public int? UserID { get; set; }
-        
+        public int? id { get; set; }
+
         [Required]
         [MaxLength(30)]
         [MinLength(1)]
-        public string? UserName { get; set; }
+        public string? userName { get; set; }
 
         [Required]
         [MaxLength(30)]
         [MinLength(1)]
         [EmailAddress]
-        public string UserEmail { get; set; }
+        public string userEmail { get; set; }
 
         [Required]
-        public System.DateTime? Timestamp { get; set; }
-        
+        public System.DateTime? timestamp { get; set; }
+
         [Required]
-        public bool? IsAdmin { get; set; }
-        
+        public bool? isAdmin { get; set; }
+
         [Required]
-        public bool? IsEnterprenuer { get; set; }
-        
+        public bool? isEnterprenuer { get; set; }
+
         [Required]
-        public bool? IsVerified { get; set; }
-        
+        public bool? isVerified { get; set; }
+
         [Required]
-        public bool? IsActive { get; set; }
+        public bool? isActive { get; set; }
 
 
     }
