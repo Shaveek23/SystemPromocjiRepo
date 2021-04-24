@@ -29,8 +29,8 @@ namespace WebApiTest.ControllerTest
         public static readonly object[][] TestData =
         {
             new object[]{1, "iojestsuper@mini.pw.edu.pl", "student",new DateTime(2021,4,16,8,4,12),false,false,false },
-            new object[]{1, "cokolwiek@c321.pl", "ktokolwiek", new DateTime(2021,2,6,4,2,12),false,true,false },
-            new object[]{1, "321321@x434344.pl", "jakikowliek", new DateTime(2020,1,11,5,4,12),true,false,false }
+            new object[]{1, "cokolwiek@ck.pl", "ktokolwiek", new DateTime(2021,2,6,4,2,12),false,true,false },
+            new object[]{1, "xd@xd.pl", "jakikowliek", new DateTime(2020,1,11,5,4,12),true,false,false }
         };
 
         [Theory]
@@ -41,34 +41,34 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IUserService>();
             mockService.Setup(x => x.GetById(0)).Returns(new ServiceResult<UserDTO>(new UserDTO
             {
-                id = id,
-                userEmail = email,
-                userName = name,
-                timestamp = date,
-                isVerified = isVerified,
-                isActive = active,
-                isEnterprenuer = isEnterprenuer
-            }));
+                UserID = id,
+                UserEmail = email,
+                UserName=name,
+                Timestamp=date,
+                IsVerified=isVerified,
+                IsActive=active,
+                IsEnterprenuer=isEnterprenuer
+            })); 
             var mockLogger = new Mock<ILogger<UserController>>();
             var controller = new UserController(mockLogger.Object, mockService.Object);
 
             var expected = new UserDTO
             {
-                id = id,
-                userEmail = email,
-                userName = name,
-                timestamp = date,
-                isVerified = isVerified,
-                isActive = active,
-                isEnterprenuer = isEnterprenuer
+                UserID = id,
+                UserEmail = email,
+                UserName = name,
+                Timestamp = date,
+                IsVerified = isVerified,
+                IsActive = active,
+                IsEnterprenuer = isEnterprenuer
             };
 
             //Act
             var actual = (ObjectResult)controller.Get(0).Result;
-            int idActual = (int)((UserDTO)(actual.Value)).id;
+            int idActual = (int)((UserDTO)(actual.Value)).UserID;
 
             //Assert
-            Assert.Equal(expected.id, idActual);
+            Assert.Equal(expected.UserID, idActual);
 
         }
 
@@ -79,24 +79,24 @@ namespace WebApiTest.ControllerTest
             List<UserDTO> people = new List<UserDTO>();
             people.Add(new UserDTO
             {
-                id = id,
-                userEmail = email,
-                userName = name,
-                timestamp = date,
-                isVerified = isVerified,
-                isActive = active,
-                isEnterprenuer = isEnterprenuer
+                UserID = id,
+                UserEmail = email,
+                UserName = name,
+                Timestamp = date,
+                IsVerified = isVerified,
+                IsActive = active,
+                IsEnterprenuer = isEnterprenuer
             });
 
             people.Add(new UserDTO
             {
-                id = id + 1,
-                userEmail = "cko" + email,
-                userName = name + "1234",
-                timestamp = date,
-                isVerified = !isVerified,
-                isActive = active,
-                isEnterprenuer = !isEnterprenuer
+                UserID = id+1,
+                UserEmail = "cko"+email,
+                UserName = name+"XD",
+                Timestamp = date,
+                IsVerified = !isVerified,
+                IsActive = active,
+                IsEnterprenuer = !isEnterprenuer
             });
 
             //Arrange
@@ -130,30 +130,30 @@ namespace WebApiTest.ControllerTest
 
             var expected = new UserDTO
             {
-                id = id,
-                userEmail = email,
-                userName = name,
-                timestamp = date,
-                isVerified = isVerified,
-                isActive = active,
-                isEnterprenuer = isEnterprenuer
+                UserID = id,
+                UserEmail = email,
+                UserName = name,
+                Timestamp = date,
+                IsVerified = isVerified,
+                IsActive = active,
+                IsEnterprenuer = isEnterprenuer
             };
 
             //Act
             var actual = controller.AddUser(1, new UserDTO
             {
-                id = id,
-                userEmail = email,
-                userName = name,
-                timestamp = date,
-                isVerified = isVerified,
-                isActive = active,
-                isEnterprenuer = isEnterprenuer
+                UserID = id,
+                UserEmail = email,
+                UserName = name,
+                Timestamp = date,
+                IsVerified = isVerified,
+                IsActive = active,
+                IsEnterprenuer = isEnterprenuer
             }).Result.Result;
 
             var val = (int)((ObjectResult)actual).Value;
             //Assert
-            Assert.Equal(expected.id, val);
+            Assert.Equal(expected.UserID, val);
 
 
         }

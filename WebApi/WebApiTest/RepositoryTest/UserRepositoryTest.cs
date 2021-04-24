@@ -18,8 +18,8 @@ namespace WebApiTest
         void SeedUser(DatabaseContext dbContext)
         {
             dbContext.Add(new User { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false });
-            dbContext.Add(new User { UserID = 2, UserEmail = "cokolwiek@4324231.pl", UserName = "ktokolwiek", Timestamp = new DateTime(2021, 2, 6, 4, 2, 12), IsEnterprenuer = false, IsAdmin = true, IsVerified = false });
-            dbContext.Add(new User { UserID = 3, UserEmail = "432342@x4324.pl", UserName = "jakikowliek", Timestamp = new DateTime(2020, 1, 11, 5, 4, 12), IsEnterprenuer = true, IsAdmin = false, IsVerified = false });
+            dbContext.Add(new User { UserID = 2, UserEmail = "cokolwiek@ck.pl", UserName = "ktokolwiek", Timestamp = new DateTime(2021, 2, 6, 4, 2, 12), IsEnterprenuer = false, IsAdmin = true, IsVerified = false });
+            dbContext.Add(new User { UserID = 3, UserEmail = "xd@xd.pl", UserName = "jakikowliek", Timestamp = new DateTime(2020, 1, 11, 5, 4, 12), IsEnterprenuer = true, IsAdmin = false, IsVerified = false });
             dbContext.SaveChanges();
         }
         //[Fact]
