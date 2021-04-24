@@ -70,6 +70,79 @@ namespace WebApi.Database.Mapper
                 IsActive = user.Active
             };
         }
+        public static PostLike Map(PostLikeDTO postLikeDTO)
+        {
+            return new PostLike
+            {
+                PostID = postLikeDTO.PostID,
+                PostLikeID = postLikeDTO.PostLikeID,
+                UserID = postLikeDTO.UserID
+            };
+
+        }
+        public static PostLikeDTO Map(PostLike postLike)
+        {
+            return new PostLikeDTO
+            {
+                PostID = postLike.PostID,
+                PostLikeID = postLike.PostLikeID,
+                UserID = postLike.UserID
+            };
+
+        }
+        public static CommentLike Map(CommentLikeDTO CommentLikeDTO)
+        {
+            return new CommentLike
+            {
+                CommentID = CommentLikeDTO.CommentID,
+                CommentLikeID = CommentLikeDTO.CommentLikeID,
+                UserID = CommentLikeDTO.UserID
+            };
+
+        }
+        public static CommentLikeDTO Map(CommentLike CommentLike)
+        {
+            return new CommentLikeDTO
+            {
+                CommentID = CommentLike.CommentID,
+                CommentLikeID = CommentLike.CommentLikeID,
+                UserID = CommentLike.UserID
+            };
+
+        }
+
+        public static IQueryable<PostLike> Map(IQueryable<PostLikeDTO> likesDTO)
+        {
+            List<PostLike> postlikes = new List<PostLike>();
+            foreach (var like in likesDTO)
+                postlikes.Add(Map(like));
+
+            return postlikes.AsQueryable();
+        }
+        public static IQueryable<PostLikeDTO> Map(IQueryable<PostLike> likes)
+        {
+            List<PostLikeDTO> postlikes = new List<PostLikeDTO>();
+            foreach (var like in likes)
+                postlikes.Add(Map(like));
+
+            return postlikes.AsQueryable();
+        }
+        public static IQueryable<CommentLike> Map(IQueryable<CommentLikeDTO> likesDTO)
+        {
+            List<CommentLike> Commentlikes = new List<CommentLike>();
+            foreach (var like in likesDTO)
+                Commentlikes.Add(Map(like));
+
+            return Commentlikes.AsQueryable();
+        }
+        public static IQueryable<CommentLikeDTO> Map(IQueryable<CommentLike> likes)
+        {
+            List<CommentLikeDTO> Commentlikes = new List<CommentLikeDTO>();
+            foreach (var like in likes)
+                Commentlikes.Add(Map(like));
+
+            return Commentlikes.AsQueryable();
+        }
         public static IQueryable<UserDTO> Map(IQueryable<User> people)
         {
             if (people == null)
@@ -227,12 +300,12 @@ namespace WebApi.Database.Mapper
         public static Category Map(CategoryDTO categoryDTO)
         {
             if (categoryDTO == null) return null;
-            return   new Category { CategoryID = categoryDTO.CategoryID.Value, Name = categoryDTO.Name };
+            return new Category { CategoryID = categoryDTO.CategoryID.Value, Name = categoryDTO.Name };
         }
         public static CategoryDTO Map(Category category)
         {
             if (category == null) return null;
-            return new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name }; 
+            return new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name };
         }
         public static IQueryable<CategoryDTO> Map(IQueryable<Category> categories)
         {

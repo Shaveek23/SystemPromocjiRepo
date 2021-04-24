@@ -12,5 +12,7 @@ namespace WebApi.Database.Repositories.Interfaces
     {
 
         ServiceResult<IQueryable<Comment>> GetAllComments(int postID);
+        ServiceResult<IQueryable<PostLike>> GetLikes(int postID);
+        Task<ServiceResult<bool>> UpdateLikeStatusAsync(int userID,int postID, bool like);
     }
 }

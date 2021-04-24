@@ -65,21 +65,22 @@ namespace WebApi.Controllers
             return new ControllerResult<bool>(result).GetResponse();
         }
 
-        #region TO DO: implement those endpoints
-        //[HttpGet("{id}/likedUsers")]
-        //public ActionResult<IQueryable<int>> GetLikedUsers([FromRoute] int id)
-        //{
-        //    var result = _commentService.GetLikedUsers(id);
-        //    return Ok(result);
-        //}
 
-        //[HttpPut("{id}/likedUsers")]
-        //public async Task<ActionResult> EditLikeOnComment([FromRoute] int id, [Required][FromHeader] int userId)
-        //{
-        //    await _commentService.EditLikeOnCommentAsync(id, userId);
-        //    return Ok();
-        //}
-        #endregion
+        [HttpGet("{id}/likeUsers")]
+        public ActionResult<IQueryable<int>> GetPostLikes([Required][FromRoute] int id)
+        {
+            var result = _commentService.GetLikedUsers(id);
+            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+        }
+
+        [HttpPut("{id}/likeUsers")]
+        public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int id, [FromBody] LikeDTO like)
+        {
+            var result = await _commentService.EditLikeOnCommentAsync(userID, id, like);
+            return new ControllerResult<bool>(result).GetResponse();
+
+
+        }
 
     }
 

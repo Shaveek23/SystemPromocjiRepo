@@ -70,12 +70,15 @@ namespace WebApi.Services.Serives_Implementations
 
         public ServiceResult<IQueryable<int>> GetLikes(int postID)
         {
-            throw new NotImplementedException();
+            var result = _postRepository.GetLikes(postID);
+            return new ServiceResult<IQueryable<int>>(result.Result.Select(x=>x.UserID), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int commentID, bool like)
+        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID,int postID, LikeDTO like)
         {
-            throw new NotImplementedException();
+            var result = await _postRepository.UpdateLikeStatusAsync(userID,postID,like.like);
+            return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
+           
         }
 
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID, int userID)

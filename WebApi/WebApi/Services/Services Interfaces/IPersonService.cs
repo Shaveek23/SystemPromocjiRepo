@@ -12,5 +12,6 @@ namespace WebApi.Services.Services_Interfaces
         
         public ServiceResult<PersonDTO> GetById(int id);
         public Task<ServiceResult<int?>> AddPersonAsync(PersonDTO newPersonDTO);
+       
     }
 }
