@@ -63,26 +63,17 @@ namespace WebApi.Services.Serives_Implementations
             foreach(var comment in result.Result.ToList())
             {
                 var author = _userRepository.GetById(comment.UserID);
-                if(author.Result == null)
-                {
-                    return new ServiceResult<IQueryable<CommentDTOOutput>>(null, author.Code, author.Message);
-                }
-
+      
                 var commentLikes = GetLikedUsers(comment.CommentID);
-                if (commentLikes.Result == null)
-                {
-                    return new ServiceResult<IQueryable<CommentDTOOutput>>(null, commentLikes.Code, commentLikes.Message);
-                }
 
-                //USUNĄĆ IFA I ODKOMENTOWAĆ
+
                 var outputDTO = Mapper.MapOutput(comment);
-                if (author.Result != null)
-                {
-                    outputDTO.authorName = author.Result.UserName;
-                    outputDTO.ownerMode = userId == author.Result.UserID;
-                }
-                outputDTO.likesCount = commentLikes.Result.Count();
-                outputDTO.isLikedByUser = commentLikes.Result.Any(x => x == userId);
+
+                outputDTO.authorName = author.Result?.UserName ?? "";
+                outputDTO.ownerMode = userId == (author.Result?.UserID ?? -1);
+                
+                outputDTO.likesCount = commentLikes.Result?.Count() ?? 0;
+                outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x == userId) ?? false; 
 
                 outputDTOlist.Add(outputDTO);
             }
@@ -93,32 +84,23 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<CommentDTOOutput> GetById(int commentId, int userId)
         {
             var result = _commentRepository.GetById(commentId);
-            if(result.Result == null)
+            if (result.Result == null)
             {
                 return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message);
             }
 
             var author = _userRepository.GetById(result.Result.UserID);
-            if(author.Result == null)
-            { 
-                //return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message); 
-            }
 
-            var commentLikes = GetLikedUsers(commentId);
-            if (commentLikes.Result == null)
-            {
-                return new ServiceResult<CommentDTOOutput>(null, result.Code, result.Message);
-            }
+            var commentLikes = GetLikedUsers(result.Result.CommentID);
 
-            //USUNĄĆ IFA I ODKOMENTOWAĆ
+
             var outputDTO = Mapper.MapOutput(result.Result);
-            if(author.Result != null)
-            {
-                outputDTO.authorName = author.Result.UserName;
-                outputDTO.ownerMode = userId == author.Result.UserID;
-            }
-            outputDTO.likesCount = commentLikes.Result.Count();
-            outputDTO.isLikedByUser = commentLikes.Result.Any(x => x == userId);
+
+            outputDTO.authorName = author.Result?.UserName ?? "";
+            outputDTO.ownerMode = userId == (author.Result?.UserID ?? -1);
+
+            outputDTO.likesCount = commentLikes.Result?.Count() ?? 0;
+            outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x == userId) ?? false;
 
             return new ServiceResult<CommentDTOOutput>(outputDTO, result.Code, result.Message);
         }
