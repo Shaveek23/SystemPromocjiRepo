@@ -136,9 +136,9 @@ namespace WebApiTest.MapperTest
             {
                 new List<CommentDTOOutput>
                 {
-                    new CommentDTOOutput() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
-                    new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
-                    new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
+                    new CommentDTOOutput() { id=1},
+                    //new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
+                    //new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
                 }
 
              };
@@ -175,9 +175,9 @@ namespace WebApiTest.MapperTest
 
         public static IEnumerable<object[]> CommentDTOOutputData()
         {
-            yield return new object[] { new CommentDTOOutput() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
-            yield return new object[] { new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
-            yield return new object[] { new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
+            yield return new object[] { new CommentDTOOutput() { id=1 } };
+            //yield return new object[] { new CommentDTOOutput() { CommentID = 2, UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
+            //yield return new object[] { new CommentDTOOutput() { CommentID = 3, UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
         }
 
 
@@ -204,26 +204,29 @@ namespace WebApiTest.MapperTest
             CommentDTOOutput result = Mapper.MapOutput(input);
 
 
-            Assert.Equal(input.CommentID, result.CommentID);
-            Assert.Equal(input.Content, result.Content);
-            Assert.Equal(input.DateTime, result.DateTime);
-            Assert.Equal(input.PostID, result.PostID);
-            Assert.Equal(input.UserID, result.UserID);
+            //Assert.Equal(input.CommentID, result.CommentID);
+            //Assert.Equal(input.Content, result.Content);
+            //Assert.Equal(input.DateTime, result.DateTime);
+            //Assert.Equal(input.PostID, result.PostID);
+            //Assert.Equal(input.UserID, result.UserID);
+
+            Assert.True(false);
         }
         [Theory]
         [MemberData(nameof(CommentDTOOutputData))]
         public void CommentDTOOutputToPOCOMapping(CommentDTOOutput input)
         {
 
-            Comment result = Mapper.Map(input);
+            //Comment result = Mapper.Map(input);
 
 
 
-            Assert.Equal(input.CommentID, result.CommentID);
-            Assert.Equal(input.Content, result.Content);
-            Assert.Equal(input.DateTime, result.DateTime);
-            Assert.Equal(input.PostID, result.PostID);
-            Assert.Equal(input.UserID, result.UserID);
+            //Assert.Equal(input.CommentID, result.CommentID);
+            //Assert.Equal(input.Content, result.Content);
+            //Assert.Equal(input.DateTime, result.DateTime);
+            //Assert.Equal(input.PostID, result.PostID);
+            //Assert.Equal(input.UserID, result.UserID);
+            Assert.True(false);
         }
         [Theory]
         [MemberData(nameof(CommentDTOData))]
@@ -268,33 +271,37 @@ namespace WebApiTest.MapperTest
             var result = Mapper.MapOutput(input.AsQueryable());
 
 
-            Assert.True(result.All(result => input.Any(isItem =>
+            //Assert.True(result.All(result => input.Any(isItem =>
 
-                isItem.CommentID == result.CommentID &&
-                isItem.Content == result.Content &&
-                isItem.DateTime == result.DateTime &&
-                isItem.PostID == result.PostID &&
-                isItem.UserID == result.UserID
+            //    isItem.CommentID == result.CommentID &&
+            //    isItem.Content == result.Content &&
+            //    isItem.DateTime == result.DateTime &&
+            //    isItem.PostID == result.PostID &&
+            //    isItem.UserID == result.UserID
 
-            )));
+            //)));
+
+            Assert.True(false);
         }
         [Theory]
         [MemberData(nameof(CommentDTOOutputDataList))]
         public void CommentDTOOutputTOPOCOMapping_List(List<CommentDTOOutput> input)
         {
-            var result = Mapper.Map(input.AsQueryable());
+            //var result = Mapper.Map(input.AsQueryable());
 
 
-            Assert.True(result.All(result => input.Any(isItem =>
+            //Assert.True(result.All(result => input.Any(isItem =>
 
 
-                isItem.CommentID == result.CommentID &&
-                isItem.Content == result.Content &&
-                isItem.DateTime == result.DateTime &&
-                isItem.PostID == result.PostID &&
-                isItem.UserID == result.UserID
+            //    isItem.CommentID == result.CommentID &&
+            //    isItem.Content == result.Content &&
+            //    isItem.DateTime == result.DateTime &&
+            //    isItem.PostID == result.PostID &&
+            //    isItem.UserID == result.UserID
 
-            )));
+            //)));
+
+            Assert.True(false);
         }
         [Theory]
         [MemberData(nameof(CommentDTODataList))]

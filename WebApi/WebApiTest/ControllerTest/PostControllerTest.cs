@@ -163,97 +163,101 @@ namespace WebApiTest.ControllerTest
         public void GetById_Test(int in_id, string in_author, int in_authorID, int in_category,
             string in_title, string in_content, int in_likesCount, bool in_isLiked, bool in_isPromoted)
         {
-            //Arrange
-            var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetById(in_id)).Returns( new ServiceResult<PostDTO>(new PostDTO
-            {
-                id = in_id,
-                author = in_author,
-                authorID = in_authorID,
-                category = in_category,
-                title = in_title,
-                content = in_content,
-                likesCount = in_likesCount,
-                datetime = datetime1,
-                isLikedByUser = in_isLiked,
-                isPromoted = in_isPromoted
-            }));
+            ////Arrange
+            //var mockService = new Mock<IPostService>();
+            //mockService.Setup(x => x.GetById(in_id)).Returns( new ServiceResult<PostDTO>(new PostDTO
+            //{
+            //    id = in_id,
+            //    author = in_author,
+            //    authorID = in_authorID,
+            //    category = in_category,
+            //    title = in_title,
+            //    content = in_content,
+            //    likesCount = in_likesCount,
+            //    datetime = datetime1,
+            //    isLikedByUser = in_isLiked,
+            //    isPromoted = in_isPromoted
+            //}));
 
-            var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            //var mockLogger = new Mock<ILogger<PostController>>();
+            //var controller = new PostController(mockLogger.Object, mockService.Object);
 
-            var expected = new PostDTO
-            {
-                id = in_id,
-                author = in_author,
-                authorID = in_authorID,
-                category = in_category,
-                title = in_title,
-                content = in_content,
-                likesCount = in_likesCount,
-                datetime = datetime1,
-                isLikedByUser = in_isLiked,
-                isPromoted = in_isPromoted
-            };
+            //var expected = new PostDTO
+            //{
+            //    id = in_id,
+            //    author = in_author,
+            //    authorID = in_authorID,
+            //    category = in_category,
+            //    title = in_title,
+            //    content = in_content,
+            //    likesCount = in_likesCount,
+            //    datetime = datetime1,
+            //    isLikedByUser = in_isLiked,
+            //    isPromoted = in_isPromoted
+            //};
 
-            //Act
-            var actual = (PostDTO)(((ObjectResult)controller.Get(userID, in_id).Result).Value);
-            //var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.Get(userID, in_id).Result).Value).ToList();
+            ////Act
+            //var actual = (PostDTO)(((ObjectResult)controller.Get(userID, in_id).Result).Value);
+            ////var actual = ((IQueryable<PostDTO>)((OkObjectResult)controller.Get(userID, in_id).Result).Value).ToList();
 
-            //Assert
-            Assert.Equal(expected.id, actual.id);
-            Assert.Equal(expected.author, actual.author);
-            Assert.Equal(expected.authorID, actual.authorID);
-            Assert.Equal(expected.category, actual.category);
-            Assert.Equal(expected.title, actual.title);
-            Assert.Equal(expected.content, actual.content);
-            Assert.Equal(expected.likesCount, actual.likesCount);
-            Assert.Equal(expected.datetime, actual.datetime);
-            Assert.Equal(expected.isLikedByUser, actual.isLikedByUser);
-            Assert.Equal(expected.isPromoted, actual.isPromoted);
+            ////Assert
+            //Assert.Equal(expected.id, actual.id);
+            //Assert.Equal(expected.author, actual.author);
+            //Assert.Equal(expected.authorID, actual.authorID);
+            //Assert.Equal(expected.category, actual.category);
+            //Assert.Equal(expected.title, actual.title);
+            //Assert.Equal(expected.content, actual.content);
+            //Assert.Equal(expected.likesCount, actual.likesCount);
+            //Assert.Equal(expected.datetime, actual.datetime);
+            //Assert.Equal(expected.isLikedByUser, actual.isLikedByUser);
+            //Assert.Equal(expected.isPromoted, actual.isPromoted);
+
+            Assert.True(false);
         }
         [Theory]
         [InlineData(1)]
         public void GetPostCommentsTest(int postID)
         {
-          
-            int UserId = 1;
-            var commentsList = new List<CommentDTOOutput>
-            { new CommentDTOOutput{
-                CommentID=1,
-                PostID=postID,
-                UserID=1,
-                Content="porzadny kontent",
-                DateTime=datetime1
-            } ,
-            new CommentDTOOutput{
-                CommentID=2,
-                PostID=postID,
-                UserID=2,
-                Content="mniej porzadny kontent",
-                DateTime=datetime2
-            } ,
-            new CommentDTOOutput{
-                CommentID=3,
-                PostID=postID,
-                UserID=1,
-                Content="slaby kontent",
-                DateTime=datetime3
-            } ,
-            };
-           
-            var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(commentsList.AsQueryable()));
-          
-            var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
-        
-            var expected = commentsList.AsQueryable();
 
-            //Act
-            var actual = ((IQueryable<CommentDTOOutput>)((ObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
-            //Asset
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
+            //int UserId = 1;
+            //var commentsList = new List<CommentDTOOutput>
+            //{ new CommentDTOOutput{
+            //    CommentID=1,
+            //    PostID=postID,
+            //    UserID=1,
+            //    Content="porzadny kontent",
+            //    DateTime=datetime1
+            //} ,
+            //new CommentDTOOutput{
+            //    CommentID=2,
+            //    PostID=postID,
+            //    UserID=2,
+            //    Content="mniej porzadny kontent",
+            //    DateTime=datetime2
+            //} ,
+            //new CommentDTOOutput{
+            //    CommentID=3,
+            //    PostID=postID,
+            //    UserID=1,
+            //    Content="slaby kontent",
+            //    DateTime=datetime3
+            //} ,
+            //};
+
+            //var mockService = new Mock<IPostService>();
+            //mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(commentsList.AsQueryable()));
+
+            //var mockLogger = new Mock<ILogger<PostController>>();
+            //var controller = new PostController(mockLogger.Object, mockService.Object);
+
+            //var expected = commentsList.AsQueryable();
+
+            ////Act
+            //var actual = ((IQueryable<CommentDTOOutput>)((ObjectResult)controller.GetPostComments(userID,postID).Result).Value).ToList();
+            ////Asset
+            //Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
+
+            Assert.True(false);
 
         }
         //TODO:

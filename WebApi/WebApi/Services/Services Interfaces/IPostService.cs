@@ -12,7 +12,7 @@ namespace WebApi.Services.Services_Interfaces
     {
         public ServiceResult<IQueryable<PostDTO>> GetAll();
 
-        public ServiceResult<PostDTO> GetById(int id);
+        public ServiceResult<PostDTO> GetById(int id, int userID);
         public Task<ServiceResult<int?>> AddPostAsync(PostEditDTO newPostDTO, int userID);
         public ServiceResult<IQueryable<PostDTO>> GetAllOfUser(int userID);
         public Task<ServiceResult<bool>> DeletePostAsync(int id);
