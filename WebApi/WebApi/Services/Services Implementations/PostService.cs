@@ -20,7 +20,7 @@ namespace WebApi.Services.Serives_Implementations
         private readonly ICommentService _commentService;
 
 
-        public PostService(IPostRepository postRepository,IUserRepository userRepository, ICommentService commentService)
+        public PostService(IPostRepository postRepository, IUserRepository userRepository, ICommentService commentService)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
@@ -35,25 +35,19 @@ namespace WebApi.Services.Serives_Implementations
                 return new ServiceResult<IQueryable<PostDTO>>(null, result.Code, result.Message);
             }
 
-            List<PostDTO> postDTOs = new List<PostDTO>(); 
-            foreach(var post in result.Result.ToList())
+            List<PostDTO> postDTOs = new List<PostDTO>();
+            foreach (var post in result.Result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
-                if (postLikes.Result == null)
-                {
-                    return new ServiceResult<IQueryable<PostDTO>>(null, postLikes.Code, postLikes.Message);
-                }
 
                 var user = _userRepository.GetById(post.UserID);
-                if (user.Result == null)
-                {
-                    //return new ServiceResult<IQueryable<PostDTO>>(null, user.Code, user.Message);
-                }
 
-                //TEGO IFA MUSISZ WYWALIĆ I TO ^ ODKOMENTOWAĆ
                 var postDTO = PostMapper.Map(post);
-                if(user.Result!=null) postDTO.author = user.Result.UserName;
-                postDTO.likesCount = postLikes.Result.Count();
+
+                postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorID = user.Result?.UserID ?? 0;
+
+                postDTO.likesCount = postLikes.Result?.Count() ?? 0;
                 postDTO.isLikedByUser = false;
 
                 postDTOs.Add(postDTO);
@@ -71,22 +65,18 @@ namespace WebApi.Services.Serives_Implementations
             }
 
             var postLikes = GetLikes(postID);
-            if (postLikes.Result == null)
-            {
-                return new ServiceResult<PostDTO>(null, postLikes.Code, postLikes.Message);
-            }
 
             var user = _userRepository.GetById(userID);
-            if (user.Result == null)
-            {
-                //return new ServiceResult<PostDTO>(null, user.Code, user.Message);
-            }
 
-            //TEGO IFA MUSISZ WYWALIĆ I TO ^ ODKOMENTOWAĆ
+
+
             var postDTO = PostMapper.Map(result.Result);
-            if (user.Result != null) postDTO.author = user.Result.UserName;
-            postDTO.likesCount = postLikes.Result.Count();
-            postDTO.isLikedByUser = postLikes.Result.Any(x => x == userID);
+
+            postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
+            postDTO.authorID = user.Result?.UserID ?? 0;
+
+            postDTO.likesCount = postLikes.Result?.Count() ?? 0;
+            postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
 
             return new ServiceResult<PostDTO>(postDTO, result.Code, result.Message);
         }
@@ -113,27 +103,21 @@ namespace WebApi.Services.Serives_Implementations
             foreach (var post in result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
-                if (postLikes.Result == null)
-                {
-                    return new ServiceResult<IQueryable<PostDTO>>(null, postLikes.Code, postLikes.Message);
-                }
 
                 var user = _userRepository.GetById(post.UserID);
-                if (user.Result == null)
-                {
-                    //return new ServiceResult<IQueryable<PostDTO>>(null, user.Code, user.Message);
-                }
 
-                //TEGO IFA MUSISZ WYWALIĆ I TO ^ ODKOMENTOWAĆ
                 var postDTO = PostMapper.Map(post);
-                if (user.Result != null) postDTO.author = user.Result.UserName;
-                postDTO.likesCount = postLikes.Result.Count();
-                postDTO.isLikedByUser = postLikes.Result.Any(x => x == userID);
+
+                postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorID = user.Result?.UserID ?? 0;
+
+                postDTO.likesCount = postLikes.Result?.Count() ?? 0;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
 
                 postDTOs.Add(postDTO);
             }
 
-            return new ServiceResult<IQueryable<PostDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);  
+            return new ServiceResult<IQueryable<PostDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
         }
 
         public async Task<ServiceResult<bool>> DeletePostAsync(int id)
@@ -158,14 +142,14 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<IQueryable<int>> GetLikes(int postID)
         {
             var result = _postRepository.GetLikes(postID);
-            return new ServiceResult<IQueryable<int>>(result.Result.Select(x=>x.UserID), result.Code, result.Message);
+            return new ServiceResult<IQueryable<int>>(result.Result.Select(x => x.UserID), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID,int postID, LikeDTO like)
+        public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)
         {
-            var result = await _postRepository.UpdateLikeStatusAsync(userID,postID,like.like);
+            var result = await _postRepository.UpdateLikeStatusAsync(userID, postID, like.like);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
-           
+
         }
 
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID, int userID)
