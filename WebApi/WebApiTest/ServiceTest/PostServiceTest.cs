@@ -78,7 +78,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.True(actual != null);
             Assert.Equal(expected2.PostID, actual.id);
-            Assert.Equal(expected2.UserID, actual.authorID);
+            //Assert.Equal(expected2.UserID, actual.authorID);
             Assert.Equal(expected2.Title, actual.title);
             Assert.Equal(expected2.Content, actual.content);
             Assert.Equal(expected2.IsPromoted, actual.isPromoted);
