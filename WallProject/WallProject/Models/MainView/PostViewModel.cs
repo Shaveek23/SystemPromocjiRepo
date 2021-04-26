@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WallProject.Models.MainView;
 
 namespace WallProject.Models
 {
@@ -14,7 +15,7 @@ namespace WallProject.Models
         public DateTime Datetime;
         public int Category;
         public bool IsPromoted;
-        public PersonViewModel Owner;
+        public UserViewModel Owner;
         public string OwnerName; //TO DO: po implementacji User usunąć;
         public int Likes;
         public bool IsLikedByUser;

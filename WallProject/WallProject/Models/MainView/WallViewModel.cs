@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WallProject.Models.MainView;
 
 namespace WallProject.Models
 {
     public class WallViewModel
     {
-        public PersonViewModel Owner;
+        public UserViewModel Owner;
         public List<PostViewModel> Posts;
+        public List<CategoryViewModel> Categories;
     }
 }
