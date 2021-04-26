@@ -94,7 +94,7 @@
                             <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today?"></textarea>
                         </form>
                         <footer class="panel-footer">
-                            <button onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
+                            <button id="PostBtnId" onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
                             <ul class="nav nav-pills">
                                 <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
                                 <li><a href="#"><i class="fa fa-camera"></i></a></li>
@@ -109,8 +109,8 @@
                         <div class="panel-body">
                             @foreach (var post in Model.Posts)
                             {
+                            <div id="post_@post.Id">
                                 <!-- OBSZAR POJEDYNCZEGO POSTA -->
-
                                 <!-- Info -->
                                 <div style="text-align:right; color:@(post.IsPromoted ? "orangered": "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
                                 <div class="fb-user-thumb">
@@ -125,10 +125,6 @@
                                 <div class="clearfix"></div>
 
 
-
-
-
-
                                 <!-- Content -->
 
                                 <p class="fb-user-status">
@@ -139,59 +135,63 @@
 
                                 <div class="fb-status-container fb-border">
                                     <div class="fb-time-action">
-                                        <a href="#" title="Like this" style="color:@(post.IsLikedByUser ? "azure" : "blue")">@(post.IsLikedByUser ? "You like it!. Click to unlike.": "Like it!" )</a>
+                                        <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "azure" : "blue")">
+                                            @(post.IsLikedByUser ? "You like it!. Click to unlike.": "Like it!" )
+                                        </a>
                                     </div>
                                     <div class="fb-time-action like-info" style="text-align:right">
                                         <a href="#">@post.Likes people like it.</a>
                                     </div>
                                 </div>
-                        <div class="clearfix"></div>
-                        <div class="panel">
-                            <div class="fb-status-container  fb-gray-bg">
-                                <div><h3>Comments:</h3></div>
-                                <!-- OBSZR POJEDYNCZEGO POSTA -->
-                                <ul class="fb-comments">
-                                    @foreach (var comment in post.Comments)
-                                    {
-                                        <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
-                                        <li>
-                                            <a href="#" class="cmt-thumb">
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                            </a>
-                                            <div class="cmt-details">
-                                                <a href="#"><h5>@comment.OwnerName</h5></a>
-                                                <br />
-                                                <p class="fb-user-status">
-                                                    @comment.Content
-                                                </p>
-                                                <div style="overflow: hidden;">
-                                                    <p style="float: left; color:Highlight">@comment.Likes people like this. 
-                                                        <a href="#" class="btn-block">
-                                                            @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
-                                                        </a> 
-                                                    </p>
-                                                    <p style="float: right;">@comment.Time</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
-
-                                    }
-                                    <!-- DODAJ KOMENTARZ -->
-                                    <li>
-                                        <a href="#" class="cmt-thumb">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
-                                        </a>
-                                        <div class="cmt-form">
-                                            <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
-                                        </div>
-
-                                        <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
-                                    </li>
-                                    <!-- DODAJ KOMENTARZ -->
-                                </ul>
                                 <div class="clearfix"></div>
-                                <hr />
+                                <div class="panel">
+                                    <div class="fb-status-container  fb-gray-bg">
+                                        <div><h3>Comments:</h3></div>
+                                        <!-- OBSZR POJEDYNCZEGO POSTA -->
+                                        <ul class="fb-comments">
+                                            @foreach (var comment in post.Comments)
+                                            {
+                                                <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
+                                                <li>
+                                                    <a href="#" class="cmt-thumb">
+                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                                    </a>
+                                                    <div class="cmt-details">
+                                                        <a href="#"><h5>@comment.OwnerName</h5></a>
+                                                        <br />
+                                                        <p class="fb-user-status">
+                                                            @comment.Content
+                                                        </p>
+                                                        <div style="overflow: hidden;">
+                                                            <p style="float: left; color:Highlight">
+                                                                @comment.Likes people like this.
+                                                            <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
+                                                                @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
+                                                            </a>
+                                                        </p>
+                                                        <p style="float: right;">@comment.Time</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
+
+                                        }
+                                            <!-- DODAJ KOMENTARZ -->
+                                            <li>
+                                                <a href="#" class="cmt-thumb">
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
+                                                </a>
+                                                <div class="cmt-form">
+                                                    <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
+                                                </div>
+
+                                                <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+                                            </li>
+                                            <!-- DODAJ KOMENTARZ -->
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                        <hr />
+                                    </div>
                                 </div>
                             </div>
                                 }
@@ -223,7 +223,7 @@
                 console.log("ERROR " + data)
 
                 }
-           
+
 
             });
             location.reload();
@@ -232,7 +232,7 @@
 
             var s = "NewComment_" + String(postId);
             var commentText =await  document.getElementById(s).value;
-             
+
             $.ajax({
             url: '@Url.Action("AddNewComment", "Home")',
                 data: { "commentText": commentText, "postId": postId, "UserId": userId},
@@ -248,8 +248,43 @@
                 console.log("ERROR " + data)
 
                 }
-            
+            });
+            location.reload();
+        }
+        async function LikePost(postId, userId, like) {
 
+            $.ajax({
+                url: '@Url.Action("EditPostLikeStatus", "Home")',
+                data: { "postID": postId, "userID": userId, "like": like },
+
+
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+            location.reload();
+        }
+
+           async function LikeComment(commentId, userId, like) {
+
+            $.ajax({
+                url: '@Url.Action("EditCommentLikeStatus", "Home")',
+                data: { "commentID": commentId, "userID": userId, "like": like },
+
+
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
             });
             location.reload();
         }

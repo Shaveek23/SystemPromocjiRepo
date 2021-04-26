@@ -8,6 +8,8 @@ namespace WallProject.Models
 {
     public class CommentViewModel
     {
+        public int Id;
+
         public UserViewModel Owner;
         public string OwnerName; //do wyświetlenia userID w ramach prezentacji
         public bool OwnerMode;

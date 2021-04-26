@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WallProject.Models;
 using WallProject.Models.DTO;
+using WallProject.Models.DTO.PostDTOs;
 using WallProject.Models.Mapper;
 using WallProject.Services.Services_Interfaces;
 
@@ -114,7 +115,27 @@ namespace WallProject.Services.Serives_Implementations
             client.DefaultRequestHeaders.Add("userID", $"{userId}");
             var response = await client.SendAsync(requestMessage);
             return new ServiceResult<bool>(response.IsSuccessStatusCode); 
+        }
 
+
+        async public Task<ServiceResult<bool>> EditLikeStatus(int postID, int userID, bool like)
+        {
+            //tworzenie komentarza na podstawie danych przekazanych z kontrolera          
+            PostChangeLikeStatusDTO postDTO = new PostChangeLikeStatusDTO { like = like };
+
+            //serializacja do JSONa
+            var jsonComment = JsonConvert.SerializeObject(postDTO);
+            //przygotowanie HttpRequest
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"post/{postID}/likeUsers");
+            HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            requestMessage.Headers.Add("userId", userID.ToString());
+            requestMessage.Content = httpContent;
+
+            //Wysyłanie Request
+            var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
+            var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
         }
 
     }

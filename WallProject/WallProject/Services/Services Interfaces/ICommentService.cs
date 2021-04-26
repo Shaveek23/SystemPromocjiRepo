@@ -13,5 +13,6 @@ namespace WallProject.Services.Services_Interfaces
         public Task<ServiceResult<List<CommentViewModel>>> getByPostId(int postID, int userID);
         public Task<ServiceResult<int?>> getCommentLikes(int commentID);
         public Task<ServiceResult<bool>> AddNewComment(string commentText, int postId,int userId);
+        public Task<ServiceResult<bool>> EditLikeStatus(int commentID, int userID, bool like);
     }
 }

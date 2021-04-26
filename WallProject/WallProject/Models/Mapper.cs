@@ -34,6 +34,7 @@ namespace WallProject.Models.Mapper
         {
             return new CommentViewModel
             {
+                Id= commentDTO.id,
                 IsLikedByUser = commentDTO.isLikedByUser,
                 Content = commentDTO.content,
                 Time = commentDTO.date,

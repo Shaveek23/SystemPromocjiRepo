@@ -78,5 +78,28 @@ namespace WallProject.Controllers
                 return View(new ErrorViewModel());
         }
 
+
+
+    //    url: '@Url.Action("EditPostLikeStatus", "Home")',
+    //            data: { "postID": postId, "userID": userId, "like": like
+    //},
+        public async Task<IActionResult> EditPostLikeStatus(int postID, int userID, bool like)
+        {
+            var result = await _postService.EditLikeStatus(postID, userID, like);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
+        }
+
+        public async Task<IActionResult> EditCommentLikeStatus(int commentID, int userID, bool like)
+        {
+            var result = await _commentService.EditLikeStatus(commentID, userID, like);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
+        }
+
     }
 }
