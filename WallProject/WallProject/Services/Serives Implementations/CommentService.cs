@@ -40,6 +40,7 @@ namespace WallProject.Services.Serives_Implementations
                 var commentDTO = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
                 var commentVM = Mapper.Map(commentDTO);
                 commentVM.Owner = _userService.getById(commentDTO.authorID).Result.Result;
+
                 return new ServiceResult<CommentViewModel>(commentVM);
             }
             else

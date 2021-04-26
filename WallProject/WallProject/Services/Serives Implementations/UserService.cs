@@ -56,13 +56,6 @@ namespace WallProject.Services.Serives_Implementations
             }
         }
 
-        //async public Task<ServiceResult<List<UserViewModel>>> getAll()
-        //{
-        //    var client = _clientFactory.CreateClient("webapi");
-        //    var result = await client.GetAsync("person");
-        //    var jsonString = await result.Content.ReadAsStringAsync();
 
-        //    return new ServiceResult<List<PersonViewModel>>(jsonString, result.StatusCode);
-        //}
     }
 }
