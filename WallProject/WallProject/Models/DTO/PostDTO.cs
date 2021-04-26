@@ -13,9 +13,9 @@ namespace WallProject.Models.DTO
         public DateTime datetime;
         public int category;
         public bool isPromoted;
-        public string author; //not used
+        public string author; 
         public int authorID;
         public int likesCount;
-        public bool IsLikedByUser;
+        public bool isLikedByUser;
     }
 }

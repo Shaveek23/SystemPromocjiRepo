@@ -22,7 +22,7 @@ namespace WallProject.Services.Serives_Implementations
         {
             _clientFactory = clientFactory;
             _commentService = commentService;
-            _userService = userService; //TO DO: tutaj będzie podstawiany userService, narazie korzystamy z Person
+            _userService = userService; 
         }
 
 
@@ -36,17 +36,30 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 var postsDTO = JsonConvert.DeserializeObject<List<PostDTO>>(jsonString);
+                var usersResult = await _userService.getAll();
+                if(!usersResult.IsOk())
+                {
+                    //Some information about it.  :TODO
+                }
 
-                List<PostViewModel> postsVM = new List<PostViewModel>();
+
+                List<PostViewModel> postVMs = new List<PostViewModel>();
                 foreach (PostDTO postDTO in postsDTO)
                 {
                     var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
                     if (!commentsResult.IsOk())
+                    {
                         return new ServiceResult<List<PostViewModel>>(null, commentsResult.Code, commentsResult.Message);
+                    }
                     else
-                        postsVM.Add(Mapper.Map(postDTO, commentsResult.Result));
+                    {
+                        var postVM = Mapper.Map(postDTO, commentsResult.Result);
+                        postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.authorID).FirstOrDefault();
+                        postVMs.Add(postVM);
+                    }
+                   
                 }
-                return new ServiceResult<List<PostViewModel>>(postsVM, result.StatusCode, null);
+                return new ServiceResult<List<PostViewModel>>(postVMs, result.StatusCode, null);
             }
             else
             {

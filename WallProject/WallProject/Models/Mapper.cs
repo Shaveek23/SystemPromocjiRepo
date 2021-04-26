@@ -22,7 +22,7 @@ namespace WallProject.Models.Mapper
                 Content = postDTO.content,
                 Datetime = postDTO.datetime,
                 IsPromoted = postDTO.isPromoted,
-                IsLikedByUser = postDTO.IsLikedByUser,
+                IsLikedByUser = postDTO.isLikedByUser,
                 Likes = postDTO.likesCount,
                 OwnerName = postDTO.author, //TO DO: po implementacji User usunąć;
                 Comments = comments
