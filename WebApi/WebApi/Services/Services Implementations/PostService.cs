@@ -27,7 +27,7 @@ namespace WebApi.Services.Serives_Implementations
             _commentService = commentService;
         }
 
-        public ServiceResult<IQueryable<PostDTO>> GetAll()
+        public ServiceResult<IQueryable<PostDTO>> GetAll(int userID)
         {
             var result = _postRepository.GetAll();
             if (result.Result == null)
@@ -48,7 +48,7 @@ namespace WebApi.Services.Serives_Implementations
                 postDTO.authorID = user.Result?.UserID ?? 0;
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-                postDTO.isLikedByUser = false;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
 
                 postDTOs.Add(postDTO);
             }

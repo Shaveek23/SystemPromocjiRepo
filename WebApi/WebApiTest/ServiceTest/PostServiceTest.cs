@@ -32,6 +32,7 @@ namespace WebApiTest.ServiceTest
         [Fact]
         public void GetAll_ValidCall()
         {
+            int userID = 1;
             // arrange:
             var expected = posts;
             var mockIPostRepository = new Mock<IPostRepository>();
@@ -49,7 +50,8 @@ namespace WebApiTest.ServiceTest
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object);
             
             // act:
-            var actual = postService.GetAll().Result.ToList();
+            
+            var actual = postService.GetAll(userID).Result.ToList();
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);
