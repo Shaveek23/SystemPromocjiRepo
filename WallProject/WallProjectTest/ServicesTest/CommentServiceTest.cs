@@ -40,9 +40,10 @@ namespace WallProjectTest.ServicesTest
             client.BaseAddress = fixure.Create<Uri>();
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
 
+            var mockUserService = new Mock<IUserService>(); 
 
 
-            CommentService commentService = new CommentService(mockFactory.Object);
+            CommentService commentService = new CommentService(mockFactory.Object, mockUserService.Object);
 
 
             var result = await commentService.AddNewComment(commentText, postId, userId);

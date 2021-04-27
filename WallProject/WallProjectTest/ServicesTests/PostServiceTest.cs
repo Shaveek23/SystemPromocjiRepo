@@ -88,9 +88,9 @@ namespace WallProjectTest.ServiceTests
             var mockCommentService = new Mock<ICommentService>();
             mockCommentService.Setup(_ => _.getByPostId(id, authorId))
                 .Returns(Task.FromResult(mockResult));
-            var mockPersonService = new Mock<IPersonService>();
+            var mockUserService = new Mock<IUserService>();
 
-            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockPersonService.Object);
+            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockUserService.Object);
             var result = await postService.getById(id, authorId);
             Assert.NotNull(result);
             Assert.Null(result.Message);
@@ -119,9 +119,9 @@ namespace WallProjectTest.ServiceTests
             var mockCommentService = new Mock<ICommentService>();
             mockCommentService.Setup(_ => _.getByPostId(id, authorId))
                 .Returns(Task.FromResult(mockResult));
-            var mockPersonService = new Mock<IPersonService>();
+            var mockUserService = new Mock<IUserService>();
 
-            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockPersonService.Object);
+            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockUserService.Object);
             var result = await postService.getById(id, authorId);
             Assert.NotNull(result);
             Assert.Null(result.Message);
