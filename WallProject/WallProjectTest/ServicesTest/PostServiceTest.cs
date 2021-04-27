@@ -41,10 +41,10 @@ namespace WallProjectTest.ServicesTest
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
 
 
-
-            CommentService commentService = new CommentService(mockFactory.Object);
-            PersonService personService = new PersonService(mockFactory.Object);
-            PostService postService = new PostService(mockFactory.Object, commentService, personService);
+            var mockUserService = new UserService(mockFactory.Object);
+            CommentService commentService = new CommentService(mockFactory.Object, mockUserService);
+           
+            PostService postService = new PostService(mockFactory.Object, commentService, mockUserService);
 
 
             var result = await postService.AddNewPost(postText, userId);
