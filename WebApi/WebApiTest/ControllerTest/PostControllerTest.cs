@@ -257,9 +257,95 @@ namespace WebApiTest.ControllerTest
 
 
         }
-        //TODO:
-        //public void DeletePost_Test
-        //public PostLikesDTO GetPostLikes
-        //public void EditLikeStatus
+        [Theory]
+        [InlineData(1,1)]
+        [InlineData(3,2)]
+        [InlineData(5,0)]
+        [InlineData(int.MaxValue,1)]
+        public void DeletePost_Test(int userId, int postId)
+        {
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.DeletePostAsync(postId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var result = (bool)((ObjectResult)controller.Delete(userId, postId).Result).Value;
+            Assert.True(result);
+
+        }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(4)]
+        [InlineData(2)]
+        public void GetPostLikes_Test(int id)
+        {
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var idList = new List<int>();
+            idList.Add(0);
+            idList.Add(1);
+            idList.Add(2);
+
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.GetLikes(id)).Returns(new ServiceResult<IQueryable<int>>(idList.AsQueryable()));
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+
+            var result = ((IQueryable<int>)((ObjectResult)controller.GetPostLikes(id).Result).Value).ToList<int>(); ;
+            var expected = idList;
+            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem == shouldItem)));
+
+        }
+
+        [Theory]
+        [InlineData(0, 0, true)]
+        [InlineData(1, 4, false)]
+        [InlineData(2, 3, true)]
+        public void EditLikeStatus_Test(int userId, int id, bool lik)
+        {
+            LikeDTO like = new LikeDTO { like = lik };
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.EditLikeStatusAsync(userId, id, like)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var actual = controller.EditLikeStatus(userId, id, like);
+            var val = (bool)((ObjectResult)actual.Result).Value;
+            Assert.True(val);
+        }
+
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(3, 2)]
+        [InlineData(5, 0)]
+        [InlineData(int.MaxValue, 1)]
+        public void EditPost_Test(int userId, int postId)
+        {
+            PostEditDTO body = new PostEditDTO { content = "cokolwiek", category = 1, dateTime = new DateTime(1999, 12, 12, 12, 12, 12), isPromoted = true, title = "tytul" };
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.EditPostAsync(postId,body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var result = (bool)((ObjectResult)controller.Edit(userId, postId,body).Result).Value;
+            Assert.True(result);
+
+        }
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(5)]
+        [InlineData(int.MaxValue)]
+        public void CreatePost_Test(int userId)
+        {
+            PostEditDTO body = new PostEditDTO { content = "cokolwiek", category = 1, dateTime = new DateTime(1999, 12, 12, 12, 12, 12), isPromoted = true, title = "tytul" };
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.AddPostAsync(body,userId)).Returns(Task.FromResult(new ServiceResult<int?>(0)));
+
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var result = (int?)((ObjectResult)controller.Create( userId,body).Result).Value;
+            Assert.True(result is int?);
+
+        }
     }
 }
