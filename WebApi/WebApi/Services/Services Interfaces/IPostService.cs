@@ -10,7 +10,7 @@ namespace WebApi.Services.Services_Interfaces
 {
     public interface IPostService
     {
-        public ServiceResult<IQueryable<PostDTO>> GetAll();
+        public ServiceResult<IQueryable<PostDTO>> GetAll(int userID);
 
         public ServiceResult<PostDTO> GetById(int id, int userID);
         public Task<ServiceResult<int?>> AddPostAsync(PostEditDTO newPostDTO, int userID);

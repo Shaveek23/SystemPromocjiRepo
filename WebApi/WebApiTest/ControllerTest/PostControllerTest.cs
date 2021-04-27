@@ -73,7 +73,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.AsQueryable()));
+            mockService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 

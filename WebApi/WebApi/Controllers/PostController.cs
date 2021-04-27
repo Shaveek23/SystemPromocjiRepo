@@ -29,7 +29,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
         {
-            var result = _postService.GetAll();
+            var result = _postService.GetAll(userID);
             return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
         }
 
