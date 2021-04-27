@@ -36,6 +36,8 @@ namespace UIAutomatedTests
 
             _driver.Navigate()
                 .GoToUrl("https://localhost:44399/getWall/1");
+
+            // Dodanie nowego posta:
             var textBox = _driver.FindElement(By.Id("NewPost"));
 
             textBox.Click();
