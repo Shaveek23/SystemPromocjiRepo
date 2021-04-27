@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 
 namespace WallProject.Models.DTO
 {
-    public class PostDTONoID
+    public class PostDTO
     {
-       
+        public int id;
         public string title;
         public string content;
         public DateTime datetime;
         public int category;
         public bool isPromoted;
-        public string shopName;
-        public string localization;
-      
+        public string author; 
+        public int authorID;
+        public int likesCount;
+        public bool isLikedByUser;
     }
 }

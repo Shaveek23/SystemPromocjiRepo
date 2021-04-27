@@ -11,5 +11,6 @@ namespace WallProject.Services.Services_Interfaces
         public Task<ServiceResult<PostViewModel>> getById(int postID, int userID);
         public Task<ServiceResult<List<PostViewModel>>> getAll(int userID);
         public Task<ServiceResult<bool>> AddNewPost(string postText, int userId);
+        public Task<ServiceResult<bool>> EditLikeStatus(int postID, int userID, bool like);
     }
 }

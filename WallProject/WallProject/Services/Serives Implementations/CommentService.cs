@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WallProject.Models;
 using WallProject.Models.DTO;
+using WallProject.Models.DTO.CommentDTOs;
 using WallProject.Models.Mapper;
 using WallProject.Services.Services_Interfaces;
 
@@ -17,10 +18,13 @@ namespace WallProject.Services.Serives_Implementations
     {
         //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
         private readonly IHttpClientFactory _clientFactory;
-       
-        public CommentService(IHttpClientFactory clientFactory)
+
+        private readonly IUserService _userService;
+
+        public CommentService(IHttpClientFactory clientFactory, IUserService userService)
         {
             _clientFactory = clientFactory;
+            _userService = userService;
          
         }
 
@@ -35,8 +39,10 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 var commentDTO = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
-                ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
-                return new ServiceResult<CommentViewModel>(Mapper.Map(commentDTO, likes.Result));
+                var commentVM = Mapper.Map(commentDTO);
+                commentVM.Owner = _userService.getById(commentDTO.authorID).Result.Result;
+
+                return new ServiceResult<CommentViewModel>(commentVM);
             }
             else
             {
@@ -53,14 +59,18 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                List<CommentViewModel> commentsVM = new List<CommentViewModel>();
-                List<CommentDTO> commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                foreach (var commentDTO in commentsDTO)
+                List<CommentViewModel> commentVMs = new List<CommentViewModel>();
+                List<CommentDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+
+                var users = await _userService.getAll();
+
+                foreach (var commentDTO in commentDTOs)
                 {
-                    ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
-                    commentsVM.Add(Mapper.Map(commentDTO, likes.Result));
+                    var commentVM = Mapper.Map(commentDTO);
+                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.authorID).FirstOrDefault();
+                    commentVMs.Add(commentVM);
                 }
-                return new ServiceResult<List<CommentViewModel>>(commentsVM);
+                return new ServiceResult<List<CommentViewModel>>(commentVMs);
             }
             else
             {
@@ -77,14 +87,18 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                List<CommentViewModel> commentsVM = new List<CommentViewModel>();
-                List<CommentDTO> commentsDTO = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
-                foreach (var commentDTO in commentsDTO)
+                List<CommentViewModel> commentVMs = new List<CommentViewModel>();
+                List<CommentDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+
+                var users = await _userService.getAll();
+
+                foreach (var commentDTO in commentDTOs)
                 {
-                    ServiceResult<int?> likes = await getCommentLikes(commentDTO.commentID);
-                    commentsVM.Add(Mapper.Map(commentDTO, likes.Result));
+                    var commentVM = Mapper.Map(commentDTO);
+                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.authorID).FirstOrDefault();
+                    commentVMs.Add(commentVM);
                 }
-                return new ServiceResult<List<CommentViewModel>>(commentsVM);
+                return new ServiceResult<List<CommentViewModel>>(commentVMs);
             }
             else
             {
@@ -133,5 +147,26 @@ namespace WallProject.Services.Serives_Implementations
            ;
 
         }
+
+        async public Task<ServiceResult<bool>> EditLikeStatus(int commentID, int userID, bool like)
+        {
+            //tworzenie komentarza na podstawie danych przekazanych z kontrolera          
+            CommentChangeLikeStatusDTO postDTO = new CommentChangeLikeStatusDTO { like = like };
+
+            //serializacja do JSONa
+            var jsonComment = JsonConvert.SerializeObject(postDTO);
+            //przygotowanie HttpRequest
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likeUsers");
+            HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            requestMessage.Headers.Add("userId", userID.ToString());
+            requestMessage.Content = httpContent;
+
+            //Wysyłanie Request
+            var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
+            var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
+        }
+
     }
 }
