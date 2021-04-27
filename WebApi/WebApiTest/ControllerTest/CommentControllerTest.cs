@@ -6,6 +6,8 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Controllers;
@@ -243,7 +245,47 @@ namespace WebApiTest.ControllerTest
             Assert.True(val);
 
         }
-        
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(4)]
+        [InlineData(2)]
+        public void GetCommentLikes_Test(int id)
+        {
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var idList = new List<int>();
+            idList.Add(0);
+            idList.Add(1);
+            idList.Add(2);
+
+            var mockService = new Mock<ICommentService>();
+            mockService.Setup(x => x.GetLikedUsers(id)).Returns(new ServiceResult<IQueryable<int>>(idList.AsQueryable()));
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+
+            var result = ((IQueryable<int>)((ObjectResult)controller.GetCommentLikes(id).Result).Value).ToList<int>(); ;
+            var expected = idList;
+            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem == shouldItem)));
+
+        }
+
+        [Theory]
+        [InlineData(0,0,true)]
+        [InlineData(1,4,false)]
+        [InlineData(2,3,true)]
+        public void EditLikeStatus_Test(int userId, int id,bool lik)
+        {
+            LikeDTO like = new LikeDTO { like = lik };
+            var mockService = new Mock<ICommentService>();
+            mockService.Setup(x => x.EditLikeOnCommentAsync(userId, id, like)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            var mockLogger = new Mock<ILogger<CommentController>>();
+            var controller = new CommentController(mockLogger.Object, mockService.Object);
+            var actual = controller.EditLikeStatus(userId, id, like);
+            var val = (bool)((ObjectResult)actual.Result).Value;
+            Assert.True(val);
+        }
+
 
     }
 }

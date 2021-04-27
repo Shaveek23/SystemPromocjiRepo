@@ -12,6 +12,8 @@ using WebApi.Database;
 using WebApi.Services.Serives_Implementations;
 using WebApi.Database.Mapper;
 using WebApi.Services;
+using WebApi.Models.DTO;
+using System.Threading.Tasks;
 
 namespace WebApiTest
 {
@@ -68,13 +70,33 @@ namespace WebApiTest
                 .Returns(new ServiceResult<User>(null, System.Net.HttpStatusCode.BadRequest, "Requested resource has not been found."));
 
             var userService = new UserService(mockIUserRepository.Object);
-            var actual =  userService.GetById(expectedId);
+            var actual = userService.GetById(expectedId);
 
             Assert.Null(actual.Result);
             Assert.Equal(404, (int)actual.Code);
             Assert.Equal("Requested resource has not been found.", actual.Message);
 
         }
+
+        [Fact]
+
+        public void EditUser_ValidCall()
+        {
+            var newUserDTO = new UserDTO { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, IsActive = false };
+            var newUser = new User { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, Active = false };
+
+            var mockIUserRepository = new Mock<IUserRepository>();
+            mockIUserRepository.Setup(x => x.UpdateAsync(It.IsAny<User>())).Returns(Task.Run(() => new ServiceResult<User>(newUser)));
+
+
+
+            var userService = new UserService(mockIUserRepository.Object);
+            var actual = userService.EditUserAsync(newUser.UserID, newUserDTO, newUser.UserID).Result.Result;
+
+            Assert.True(actual);
+
+        }
+
 
     }
 }

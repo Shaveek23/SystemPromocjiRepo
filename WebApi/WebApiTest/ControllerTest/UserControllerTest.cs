@@ -21,6 +21,7 @@ using Microsoft.VisualBasic;
 using WebApi.Database.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApiTest.ControllerTest
 {
@@ -155,6 +156,56 @@ namespace WebApiTest.ControllerTest
             //Assert
             Assert.Equal(expected.UserID, val);
 
+
+        }
+
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        [InlineData(3, 3)]
+
+        public void DeleteUserTest(int a_id, int u_id)
+        {
+
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var mockService = new Mock<IUserService>();
+
+
+            var mockLogger = new Mock<ILogger<UserController>>();
+            var controller = new UserController(mockLogger.Object, mockService.Object);
+            mockService.Setup(x => x.DeleteUserAsync(a_id,u_id)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            var actual =controller.DeleteUser(a_id,u_id).Result.Result;
+            var val = (bool)((ObjectResult)actual).Value;
+
+            Assert.True(val);
+
+        }
+
+
+        [Theory]
+        [InlineData(1, 1, 1, "test", "")]
+        [InlineData(2, 2, 2, "test2", "konrad@gaw.pl")]
+        [InlineData(3, 3, 3, "test3", "ckool@fsf.pl")]
+        public void EditUser_Test(int a_id, int u_id, int p_id, string name, string email)
+        {
+
+            DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
+
+            var mockService = new Mock<IUserService>();
+            var expected = new UserDTO { UserID = u_id, Timestamp = date, UserEmail = email, UserName = name };
+            mockService.Setup(x => x.EditUserAsync(a_id,expected, u_id)).Returns(Task.Run(() =>
+            {
+                return new ServiceResult<bool>(true);
+
+            }));
+            var mockLogger = new Mock<ILogger<UserController>>();
+            var controller = new UserController(mockLogger.Object, mockService.Object);
+
+
+            var actual = controller.EditUser(a_id, expected, u_id).Result;
+            var val = (bool)((ObjectResult)actual.Result).Value;
+            Assert.True(val);
 
         }
 

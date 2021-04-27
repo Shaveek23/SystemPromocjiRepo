@@ -67,7 +67,7 @@ namespace WebApi.Controllers
 
 
         [HttpGet("{id}/likeUsers")]
-        public ActionResult<IQueryable<int>> GetPostLikes([Required][FromRoute] int id)
+        public ActionResult<IQueryable<int>> GetCommentLikes([Required][FromRoute] int id)
         {
             var result = _commentService.GetLikedUsers(id);
             return new ControllerResult<IQueryable<int>>(result).GetResponse();

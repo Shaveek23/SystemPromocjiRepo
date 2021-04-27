@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using Xunit;
 using Moq;
 using System.Net.Http;
@@ -14,13 +14,15 @@ using WallProject.Services.Services_Interfaces;
 using WallProject.Services;
 using WallProject.Models;
 using System.Collections.Generic;
+using WallProject.Models.MainView;
+using Newtonsoft.Json;
 
-namespace WallProjectTest
+namespace WallProjectTest.ServicesTest
 {
-    public class UnitTest1
+    public class UserServiceTest
     {
         [Fact]
-        public async void PersonGetByIdValidCall()
+        public async void UserGetByIdValidCall()
         {
             var fixure = new Fixture();
             var mockFactory = new Mock<IHttpClientFactory>();
@@ -30,21 +32,21 @@ namespace WallProjectTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("[{\"personID\":1,\"firstName\":\"Adam\",\"lastName\":\"Nowak\",\"address\":\"ul. Koszykowa 57A/7\",\"city\":\"Warszawa\"}]")
+                    Content = new StringContent("{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true,}")
                 });
 
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
-            PersonService personService = new PersonService(mockFactory.Object);
+            UserService userService = new UserService(mockFactory.Object);
 
-            var result = await personService.getAll();
+            var result = await userService.getById(1);
             Assert.NotNull(result);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
         [Fact]
-        public async void PostGetByIdValidCall()
+        public async void UserGetAllValidCall()
         {
             var fixure = new Fixture();
             var mockFactory = new Mock<IHttpClientFactory>();
@@ -54,23 +56,18 @@ namespace WallProjectTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("{\"id\":1,\"title\":\"tytu³ 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"category\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}")
+                    Content = new StringContent("[{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true},"+
+                    "{\"userId\":2,\"userName\":\"golik\",\"userEmail\":\"cokolwiek@golik.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true}]")
                 });
+
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
-            var mockResult = new ServiceResult<List<CommentViewModel>>(new List<CommentViewModel>());
-            var mockCommentService = new Mock<ICommentService>();
-            mockCommentService.Setup(_ => _.getByPostId(1, 1))
-                .Returns(Task.FromResult(mockResult));
-            var mockPersonService = new Mock<IUserService>();
+            UserService userService = new UserService(mockFactory.Object);
 
-            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockPersonService.Object);
-            var result = await postService.getById(1, 1);
+            var result = await userService.getAll();
             Assert.NotNull(result);
-            Assert.Null(result.Message);
             Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Empty(result.Result.Comments);
         }
     }
 }
