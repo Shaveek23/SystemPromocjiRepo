@@ -50,6 +50,10 @@ namespace UIAutomatedTests
 
             postButton.Click();
 
+            _driver.Navigate()
+               .GoToUrl("https://localhost:44399/getWall/1");
+
+
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
 
             // Odnalezienie dodanego posta
@@ -65,7 +69,9 @@ namespace UIAutomatedTests
                 }
             }
 
-            string testPostId = id.Split("_")[1];
+            string testPostId = "";
+            if (id != "")
+                testPostId = id.Split("_")[1];
             bool isDeleted;
 
             //Wysy³anie Request z delete
