@@ -20,6 +20,7 @@ namespace WallProject.Models.Mapper
                 Id = postDTO.id,
                 Title = postDTO.title,
                 Content = postDTO.content,
+                Category = postDTO.category,
                 Datetime = postDTO.datetime,
                 IsPromoted = postDTO.isPromoted,
                 IsLikedByUser = postDTO.isLikedByUser,
