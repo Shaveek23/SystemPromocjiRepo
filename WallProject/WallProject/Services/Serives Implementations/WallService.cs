@@ -22,7 +22,7 @@ namespace WallProject.Services.Serives_Implementations
             _userService = userService;
             _categoryService = categoryService;
         }
-      
+
         async public Task<ServiceResult<WallViewModel>> getWall(int userID)
         {
             var Owner = await _userService.getById(userID);
@@ -32,11 +32,18 @@ namespace WallProject.Services.Serives_Implementations
             var Categories = await _categoryService.getAll();
             if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
 
+
+            var sortedPosts = Posts.Result
+                          .OrderByDescending(x => x.IsPromoted).ThenByDescending(x => x.Datetime)
+                          .ToList();
+
+
             WallViewModel wallVM = new WallViewModel
             {
-                Posts = Posts.Result,
+                Posts = sortedPosts,
                 Owner = Owner.Result,
-                Categories = Categories.Result               
+                Categories = Categories.Result,
+                SelectedCategories = new bool[Categories.Result.Count()]          
             };
             return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
         }

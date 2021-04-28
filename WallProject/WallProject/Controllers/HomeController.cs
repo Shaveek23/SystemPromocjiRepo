@@ -27,6 +27,7 @@ namespace WallProject.Controllers
             _postService = postService;
         }
 
+
         public async Task<IActionResult> WallAsync()
         {
             ServiceResult<WallViewModel> wall = await _service.getWall(1);
@@ -56,7 +57,6 @@ namespace WallProject.Controllers
                 return View(wall.Result);
             else
                 return View("Privacy", wall.Message);
-
         }
 
         public async Task<IActionResult> AddNewPost(string postText, int userId)
@@ -78,11 +78,6 @@ namespace WallProject.Controllers
                 return View(new ErrorViewModel());
         }
 
-
-
-    //    url: '@Url.Action("EditPostLikeStatus", "Home")',
-    //            data: { "postID": postId, "userID": userId, "like": like
-    //},
         public async Task<IActionResult> EditPostLikeStatus(int postID, int userID, bool like)
         {
             var result = await _postService.EditLikeStatus(postID, userID, like);
@@ -100,6 +95,5 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
-
     }
 }

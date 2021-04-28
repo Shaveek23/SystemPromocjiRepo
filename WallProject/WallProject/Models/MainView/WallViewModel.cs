@@ -8,6 +8,7 @@ namespace WallProject.Models
 {
     public class WallViewModel
     {
+        public bool[] SelectedCategories;
         public UserViewModel Owner;
         public List<PostViewModel> Posts;
         public List<CategoryViewModel> Categories;

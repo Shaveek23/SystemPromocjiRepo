@@ -28,57 +28,19 @@
                     <div class="panel">
 
                         <!-- BEGIN FILTERS -->
-                        <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
+                        <h3 class="grid-title">Hello @Model.Owner.UserName!</h3>
                         <hr>
 
                         <!-- BEGIN FILTER BY CATEGORY -->
-                        <h4>By category:</h4>
+                        <h4>All categories:</h4>
 
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="checkbox">
-                                <label><input type="checkbox" class="icheck"> @category.CategoryName </label>
+                            <div >
+                                <label> -@category.CategoryName </label>
                             </div>
                         }
 
-                        <!--
-        <div class="checkbox">
-            <label><input type="checkbox" class="icheck"> Application</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" class="icheck"> Design</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" class="icheck"> Desktop</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" class="icheck"> Management</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" class="icheck"> Mobile</label>
-        </div>
-        -->
-                        <!-- END FILTER BY CATEGORY -->
-
-                        <div class="padding"></div>
-
-                        <!-- BEGIN FILTER BY DATE -->
-                        <h4>By date:</h4>
-                        <h5>From </h5>
-                        <input class="form-control form-control-inline" type="date" value="2011-08-19" id="example-date-input">
-                        <h5>to </h5>
-                        <input class="form-control form-control-inline" type="date" value="2021-08-19" id="example-date-input">
-                        <!-- END FILTER BY DATE -->
-
-                        <div class="padding"></div>
-
-                        <!-- BEGIN FILTER BY PRICE -->
-                        <h4>By price:</h4>
-                        <h5>Between </h5>
-                        <input type="text" class="form-control form-control-inline">
-                        <h5>to </h5>
-                        <input type="text" class="form-control form-control-inline">
-                        <!-- END FILTER BY PRICE -->
                     </div>
                     <!-- END FILTERS -->
 
@@ -91,7 +53,7 @@
                 <div class="row">
                     <div class="panel profile-info">
                         <form>
-                            <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today?"></textarea>
+                            <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today, @Model.Owner.UserName.Split().First()?"></textarea>
                         </form>
                         <footer class="panel-footer">
                             <button id="PostBtnId" onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
@@ -120,7 +82,7 @@
                                 <div class="fb-user-details">
                                     <h3><a href="#" class="#">@post.OwnerName </a></h3>
                                     <div style="color:grey"> Dodano: @post.Datetime </div>
-                                    <div style="text-align:right; color:chocolate">@Model.Categories[post.Category].CategoryName </div>
+                                    <div style="text-align:right; color:chocolate">@Model.Categories[post.Category-1].CategoryName </div>
                                 </div>
                                 <div class="clearfix"></div>
 
@@ -135,7 +97,7 @@
 
                                 <div class="fb-status-container fb-border">
                                     <div class="fb-time-action">
-                                        <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "azure" : "blue")">
+                                        <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "midnightblue" : "blue")">
                                             @(post.IsLikedByUser ? "You like it!. Click to unlike.": "Like it!" )
                                         </a>
                                     </div>
@@ -147,11 +109,11 @@
                                 <div class="panel">
                                     <div class="fb-status-container  fb-gray-bg">
                                         <div><h3>Comments:</h3></div>
-                                        <!-- OBSZR POJEDYNCZEGO POSTA -->
+                                        <!-- OBSZAR POJEDYNCZEGO POSTA -->
                                         <ul class="fb-comments">
                                             @foreach (var comment in post.Comments)
                                             {
-                                                <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
+                                                <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
                                                 <li>
                                                     <a href="#" class="cmt-thumb">
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
@@ -173,7 +135,7 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            <!-- OBSZR POJEDYNCZEGO KOMENTARZA -->
+                                            <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
 
                                         }
                                             <!-- DODAJ KOMENTARZ -->
@@ -267,7 +229,7 @@
                 console.log("ERROR " + data)
                 }
             });
-            location.reload();
+            location.reload(true);
         }
 
            async function LikeComment(commentId, userId, like) {
@@ -286,7 +248,7 @@
                 console.log("ERROR " + data)
                 }
             });
-            location.reload();
+            location.reload(true);
         }
     </script>
 </body>
