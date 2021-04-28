@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.POCO;
+using WebApi.Services;
 
 namespace WebApi.Database.Repositories.Implementations
 {
@@ -12,9 +13,9 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public PersonRepository(DatabaseContext databaseContext) : base(databaseContext) {}
 
-        public Task<Person> GetPersonByIdAsync(int id)
+        public async Task<ServiceResult<Person>> GetPersonByIdAsync(int id)
         {
-            return GetAll().FirstOrDefaultAsync(x => x.PersonID == id);
+            return new ServiceResult<Person>(await GetAll().Result.FirstOrDefaultAsync(x => x.PersonID == id));
         }
     }
 }

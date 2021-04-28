@@ -51,7 +51,7 @@ namespace WebApiTest
 
 
                 var cls = new PostRepository(dbContext);
-                var actual = cls.GetAllComments(PostID);
+                var actual = cls.GetAllComments(PostID).Result;
 
                 Assert.True(actual != null);
                 Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));

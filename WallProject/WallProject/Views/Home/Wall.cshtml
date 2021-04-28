@@ -81,10 +81,10 @@
                 <div class="row">
                     <div class="panel profile-info">
                         <form>
-                            <textarea class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today?"></textarea>
+                            <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today?"></textarea>
                         </form>
                         <footer class="panel-footer">
-                            <button type="button" class="btn btn-info pull-right">Post</button>
+                            <button onclick="CreateNewPost()"  type="button" class="btn btn-info pull-right">Post</button>
                             <ul class="nav nav-pills">
                                 <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
                                 <li><a href="#"><i class="fa fa-camera"></i></a></li>
@@ -96,56 +96,13 @@
 
                     <div class="panel">
                         <div class="panel-body">
-                            @foreach (var posts in Model.Posts)
-                            {
-                                <div class="fb-user-details">
-                                    <h3><a href="#" class="#">@posts.Owner.firstName</a></h3>
-                                    <p>@posts.Time+ " "+@posts.Localization</p>
-                                </div>
-                                <div class="clearfix"></div>
-                                <p class="fb-user-status">
-                                    @posts.Content
-                                </p>
-                                <div class="fb-status-container fb-border">
-                                    <div class="fb-time-action">
-                                        <a href="#" title="Like this">Like</a>
-                                        <span>-</span>
-                                        <a href="#" title="Leave a comment">Comments</a>
-                                    </div>
-                                </div>
-                                <div class="fb-status-container fb-border fb-gray-bg">
-                                    <div class="fb-time-action like-info">
-                                        <a href="#">@posts.Likes people like this</a>
-                                    </div>
-                                    <ul class="fb-comments">
-                                        @foreach (var comment in posts.Comments)
-                                        {
-                                            <li>
-                                                @*<a href="#" class="cmt-thumb">
-                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                                    </a>*@
-                                                <div class="cmt-details">
-                                                    <a href="#">@comment.Owner</a>
-                                                    <span> @comment.Content </span>
-
-                                                    <a href="#">@comment.Likes people like this</a>
-                                                    <span> </span>
-                                                    <p>@comment.Time<a href="#" class="like-link">Like</a></p>
-
-                                                </div>
-                                            </li>
-
-                                        }
-                                    </ul>
-                                    <div class="clearfix"></div>
-                                </div>
-                            }
+                            
                             <div class="fb-user-thumb">
                                 <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
                             </div>
                             <div class="fb-user-details">
-                                <h3><a href="#" class="#">@Model.Owner.firstName  @Model.Owner.lastName</a></h3>
-                                <p>@Model.Owner.address, @Model.Owner.city</p>
+                                <h3><a href="#" class="#">@Model.Owner.UserName</a></h3>
+                                <p>@Model.Owner.UserEmail</p>
                             </div>
                             <div class="clearfix"></div>
                             <p class="fb-user-status">
@@ -163,6 +120,7 @@
                         </div>
                     </div>
                     <div class="clearfix"></div>
+
                     <div class="panel">
                         <div class="fb-status-container  fb-gray-bg">
                             <div class="fb-time-action like-info">
@@ -220,8 +178,9 @@
                                         <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
                                     </a>
                                     <div class="cmt-form">
-                                        <textarea class="form-control" placeholder="Write a comment..." name=""></textarea>
+                                        <textarea id="NewComment" class="form-control" placeholder="Write a comment..." name=""></textarea>
                                     </div>
+                                    <button onclick="AddComment()" type="button" class="btn btn-info pull-right">AddComment</button>
                                 </li>
                             </ul>
                             <div class="clearfix"></div>
@@ -231,11 +190,29 @@
             </div>
         </div>
     </div>
-   
+
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+        function CreateNewPost() {
+            var postText = document.getElementById("NewPost").value;
+            $.ajax({
+            url: '@Url.Action("GetNewPost", "Home")',
+                data: { "postText": postText },
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
 
+
+
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+
+            }
+
+        });
+        }
     </script>
 </body>
-

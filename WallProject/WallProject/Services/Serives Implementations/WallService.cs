@@ -12,30 +12,40 @@ namespace WallProject.Services.Serives_Implementations
 {
     public class WallService : IWallService
     {
-        //Dobra praktyka - pomaga uniknac problemu z wyczerpaniem gniazda
-        private readonly IHttpClientFactory clientFactory;
-        public WallService(IHttpClientFactory clientFactory)
+        
+        private readonly IPostService _postService;
+        private readonly IUserService _userService;
+        private readonly ICategoryService _categoryService;
+        public WallService(IPostService postService, IUserService userService, ICategoryService categoryService)
         {
-            this.clientFactory = clientFactory;
+            _postService = postService;
+            _userService = userService;
+            _categoryService = categoryService;
         }
-      
-        [HttpGet]
-        async public Task<PersonViewModel> getUser()
-        {
-            var client = clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync("person");
-           
-            if(result!=null)
-            {
-                var jsonString = await result.Content.ReadAsStringAsync();
-                
-               var user= JsonConvert.DeserializeObject<List<PersonViewModel>>(jsonString);
-                if(user!=null)
-                return user[0];
-            }
-          
 
-            return null;
+        async public Task<ServiceResult<WallViewModel>> getWall(int userID)
+        {
+            var Owner = await _userService.getById(userID);
+            if (!Owner.IsOk()) return new ServiceResult<WallViewModel>(null, Owner.Code, Owner.Message);
+            var Posts = await _postService.getAll(userID);
+            if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
+            var Categories = await _categoryService.getAll();
+            if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
+
+
+            var sortedPosts = Posts.Result
+                          .OrderByDescending(x => x.IsPromoted).ThenByDescending(x => x.Datetime)
+                          .ToList();
+
+
+            WallViewModel wallVM = new WallViewModel
+            {
+                Posts = sortedPosts,
+                Owner = Owner.Result,
+                Categories = Categories.Result,
+                SelectedCategories = new bool[Categories.Result.Count()]          
+            };
+            return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
         }
     }
 }

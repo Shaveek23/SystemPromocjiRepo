@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using WebApi.Exceptions;
+using WebApi.Services;
 
 namespace WebApi.Database
 {
@@ -15,67 +17,67 @@ namespace WebApi.Database
             dbContext = databaseContext;
         }
 
-        public TEntity GetById(int id)
+        public ServiceResult<TEntity> GetById(int id)
         {
-                var result = dbContext.Find<TEntity>(id);
-                if (result == null)
-                    throw new ResourceNotFoundException("Requested resource has not been found.");
+            var result = dbContext.Find<TEntity>(id);
+            // use static factory methods when they are sufficient or create your custom results with constructor or add your 
+            // factory methods to avoid code repeating 
+            if (result == null)
+                return ServiceResult<TEntity>.GetResourceNotFoundResult();
 
-                return result;
+            return new ServiceResult<TEntity>(result);
+
         }
 
-        public IQueryable<TEntity> GetAll()
+        public ServiceResult<IQueryable<TEntity>> GetAll()
         {
-            return dbContext.Set<TEntity>();
+            return new ServiceResult<IQueryable<TEntity>>(dbContext.Set<TEntity>());
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> AddAsync(TEntity entity)
         {
             if (entity == null)
-                throw new AddAsyncFailedException($"{nameof(AddAsync)} entity must not be null");
-
+                return ServiceResult<TEntity>.GetEntityNullResult();
 
             try
             {
                 await dbContext.AddAsync(entity);
                 await dbContext.SaveChangesAsync();
 
-                return entity;
+                return new ServiceResult<TEntity>(entity);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new AddAsyncFailedException($"Fail when adding a new {nameof(AddAsync)} resource item");
+                return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity)
         {
             if (entity == null)
             {
-                throw new UpdateAsyncFailException($"{nameof(UpdateAsync)} entity must not be null");
-                
+                return ServiceResult<TEntity>.GetEntityNullResult();
             }
 
             try
             {
-
                 dbContext.Update(entity);
                 await dbContext.SaveChangesAsync();
 
-                return entity;
+                return new ServiceResult<TEntity>(entity);
             }
             catch
             {
-                throw new UpdateAsyncFailException($"Fail when updating a {nameof(UpdateAsync)} resource item");
+                return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }
 
 
-        public async Task<TEntity> RemoveAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity)
         {
             if (entity == null)
             {
-                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+                return ServiceResult<TEntity>.GetEntityNullResult();
             }
 
             try
@@ -83,25 +85,25 @@ namespace WebApi.Database
                 dbContext.Remove(entity);
                 await dbContext.SaveChangesAsync();
 
-                return entity;
+                return new ServiceResult<TEntity>(entity);
             }
             catch (Exception ex)
             {
-                throw new Exception($"{nameof(entity)} could not be removed: {ex.Message}");
+                return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }
 
-        public bool Delete(int entityID,int userId)
+        public ServiceResult<bool> Delete(int entityID,int userId)
         {
             try
             {
                 dbContext.Remove(dbContext.Find<TEntity>(entityID));
                 dbContext.SaveChanges();
-                return true;
+                return new ServiceResult<bool>(true);
             }
             catch
             {
-                throw new DeleteFailException("Fail when trying to delete the resource item");
+                return ServiceResult<bool>.GetEntityNullResult();
             }
         }
       

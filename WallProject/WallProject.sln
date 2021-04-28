@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallProject", "WallProject\WallProject.csproj", "{92DC490D-C518-4413-ABAE-3B7F5FD9728C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WallProject", "WallProject\WallProject.csproj", "{92DC490D-C518-4413-ABAE-3B7F5FD9728C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WallProjectTest", "WallProjectTest\WallProjectTest.csproj", "{A261E475-1AAF-4038-B5E7-DB5329EE59D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIAutomatedTests", "UIAutomatedTests\UIAutomatedTests.csproj", "{A1FEBA3A-13E5-4677-8B6B-81E116005E82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{92DC490D-C518-4413-ABAE-3B7F5FD9728C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92DC490D-C518-4413-ABAE-3B7F5FD9728C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92DC490D-C518-4413-ABAE-3B7F5FD9728C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A261E475-1AAF-4038-B5E7-DB5329EE59D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A261E475-1AAF-4038-B5E7-DB5329EE59D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A261E475-1AAF-4038-B5E7-DB5329EE59D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A261E475-1AAF-4038-B5E7-DB5329EE59D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FEBA3A-13E5-4677-8B6B-81E116005E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FEBA3A-13E5-4677-8B6B-81E116005E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FEBA3A-13E5-4677-8B6B-81E116005E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FEBA3A-13E5-4677-8B6B-81E116005E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,9 +8,10 @@ namespace WebApi.Services.Services_Interfaces
 {
     public interface IPersonService
     {
-        public IQueryable<PersonDTO> GetAll();
+        public ServiceResult<IQueryable<PersonDTO>> GetAll();
         
-        public PersonDTO GetById(int id);
-        public Task<PersonDTO> AddPersonAsync(PersonDTO newPersonDTO);
+        public ServiceResult<PersonDTO> GetById(int id);
+        public Task<ServiceResult<int?>> AddPersonAsync(PersonDTO newPersonDTO);
+       
     }
 }

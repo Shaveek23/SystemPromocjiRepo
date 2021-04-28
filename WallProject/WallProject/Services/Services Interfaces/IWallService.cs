@@ -8,7 +8,7 @@ namespace WallProject.Services.Services_Interfaces
 {
     public interface IWallService
     {
-        
-        public Task<PersonViewModel> getUser();
+        public Task<ServiceResult<WallViewModel>> getWall(int userID);
+
     }
 }

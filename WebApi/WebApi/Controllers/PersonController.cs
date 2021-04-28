@@ -35,22 +35,25 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public PersonDTO Get(int id)
+        public ActionResult<int> Get(int id)
         {
-            return _personService.GetById(id);
+            var result = _personService.GetById(id);
+            return new ControllerResult<PersonDTO>(result).GetResponse();
         }
         
         [HttpGet]
-        public IQueryable<PersonDTO> GetAll()
+        public ActionResult<IQueryable<PersonDTO>> GetAll()
         {
-            return _personService.GetAll();
+            var result = _personService.GetAll();
+            return new ControllerResult<IQueryable<PersonDTO>>(result).GetResponse();
         }
 
         [HttpPost]
-        public async Task<PersonDTO> AddPerson([FromBody] PersonDTO person)
+        public async Task<ActionResult<int>> AddPerson([FromBody] PersonDTO person)
         { 
 
-            return await _personService.AddPersonAsync(person);
+            var result = await _personService.AddPersonAsync(person);
+            return new ControllerResult<int?>(result).GetResponse();
         }
     }
 }

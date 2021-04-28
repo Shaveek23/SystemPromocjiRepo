@@ -37,7 +37,7 @@ namespace WebApiTest
                 var expected = dbContext.Persons.Where(x => x.PersonID == expectedID).FirstOrDefault();
 
                 var cls = new PersonRepository(dbContext);
-                var actual = cls.GetPersonByIdAsync(expectedID);
+                var actual = cls.GetPersonByIdAsync(expectedID).Result;
 
                 Assert.True(actual != null);
                 Assert.Equal(expected.FirstName, actual.Result.FirstName);
@@ -63,7 +63,7 @@ namespace WebApiTest
                 var actual = cls.GetPersonByIdAsync(expectedID);
 
                 Assert.True(actual != null);
-                Assert.True(actual.Result == null);
+                Assert.True(actual.Result.Result == null);
             }
         }
     }

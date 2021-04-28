@@ -19,6 +19,40 @@ namespace WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("WebApi.Models.POCO.Category", b =>
+                {
+                    b.Property<int?>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            Name = "Polityka"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            Name = "Stomatologia"
+                        },
+                        new
+                        {
+                            CategoryID = 3,
+                            Name = "Kaczor Donald"
+                        });
+                });
+
             modelBuilder.Entity("WebApi.Models.POCO.Comment", b =>
                 {
                     b.Property<int>("CommentID")
@@ -50,7 +84,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 1,
                             Content = "tralalala ",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 418, DateTimeKind.Local).AddTicks(6952),
+                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
                             PostID = 1,
                             UserID = 1
                         },
@@ -58,7 +92,7 @@ namespace WebApi.Migrations
                         {
                             CommentID = 2,
                             Content = "tralalala pararara",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2920),
+                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
                             PostID = 2,
                             UserID = 1
                         },
@@ -66,10 +100,28 @@ namespace WebApi.Migrations
                         {
                             CommentID = 3,
                             Content = "tu ti tu rum tu tu",
-                            DateTime = new DateTime(2021, 3, 30, 15, 17, 20, 422, DateTimeKind.Local).AddTicks(2972),
+                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
                             PostID = 1,
                             UserID = 2
                         });
+                });
+
+            modelBuilder.Entity("WebApi.Models.POCO.CommentLike", b =>
+                {
+                    b.Property<int>("CommentLikeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CommentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentLikeID");
+
+                    b.ToTable("CommentLike");
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>
@@ -176,6 +228,84 @@ namespace WebApi.Migrations
                             IsPromoted = false,
                             Title = "tytuł 3",
                             UserID = 3
+                        });
+                });
+
+            modelBuilder.Entity("WebApi.Models.POCO.PostLike", b =>
+                {
+                    b.Property<int>("PostLikeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PostID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostLikeID");
+
+                    b.ToTable("PostLike");
+                });
+
+            modelBuilder.Entity("WebApi.Models.POCO.User", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnterprenuer")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            UserID = 1,
+                            Active = true,
+                            IsAdmin = false,
+                            IsEnterprenuer = true,
+                            IsVerified = true,
+                            Timestamp = new DateTime(2021, 4, 16, 22, 30, 20, 0, DateTimeKind.Unspecified),
+                            UserEmail = "jaroslaw@kaczyslaw.pl",
+                            UserName = "jaroslawpolsezbaw"
+                        },
+                        new
+                        {
+                            UserID = 2,
+                            Active = true,
+                            IsAdmin = false,
+                            IsEnterprenuer = false,
+                            IsVerified = false,
+                            Timestamp = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
+                            UserEmail = "antoni@kaczyslaw.pl",
+                            UserName = "tobrzozawybuchla"
                         });
                 });
 #pragma warning restore 612, 618
