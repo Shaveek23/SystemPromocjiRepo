@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Exceptions;
-using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
 using WebApi.Services;
 

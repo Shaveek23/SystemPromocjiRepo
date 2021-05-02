@@ -6,7 +6,6 @@ using WebApi.Database.Mapper;
 using WebApi.Database.Mapper.PostMappers;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.DTO;
-using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
 using WebApi.Services.Services_Interfaces;
 

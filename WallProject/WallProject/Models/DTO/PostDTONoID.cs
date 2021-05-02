@@ -13,8 +13,6 @@ namespace WallProject.Models.DTO
         public DateTime datetime;
         public int category;
         public bool isPromoted;
-        public string shopName;
-        public string localization;
       
     }
 }

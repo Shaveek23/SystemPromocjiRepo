@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApi.Models.DTO.PostDTOs
+namespace WebApi.Models.DTO
 {
     //DTO for creating and editing post
     public class PostEditDTO

@@ -67,6 +67,8 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
+
+
         public async Task<IActionResult> AddNewComment(string commentText, int postId, int userId)
         {
             var result = await _commentService.AddNewComment(commentText, postId, userId);
@@ -75,6 +77,16 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
+
+
+        //public async Task<IActionResult> SortPosts(string commentText, int postId, int userId)
+        //{
+        //    var result = await _commentService.AddNewComment(commentText, postId, userId);
+        //    if (result.Result)
+        //        return View();
+        //    else
+        //        return View(new ErrorViewModel());
+        //}
 
     }
 }

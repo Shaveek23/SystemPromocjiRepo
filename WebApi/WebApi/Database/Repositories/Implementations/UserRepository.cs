@@ -13,5 +13,7 @@ namespace WebApi.Database.Repositories.Implementations
     {
         public UserRepository(DatabaseContext databaseContext) : base(databaseContext) { }
 
+
+
     }
 }

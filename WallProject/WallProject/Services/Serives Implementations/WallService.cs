@@ -14,24 +14,29 @@ namespace WallProject.Services.Serives_Implementations
     {
         
         private readonly IPostService _postService;
-        private readonly IPersonService _personService;
-        public WallService(IPostService postService, IPersonService personService)
+        private readonly IUserService _userService;
+        private readonly ICategoryService _categoryService;
+        public WallService(IPostService postService, IUserService userService, ICategoryService categoryService)
         {
             _postService = postService;
-            _personService = personService;
+            _userService = userService;
+            _categoryService = categoryService;
         }
       
         async public Task<ServiceResult<WallViewModel>> getWall(int userID)
         {
-            var Owner = await _personService.getById(userID);
+            var Owner = await _userService.getById(userID);
             if (!Owner.IsOk()) return new ServiceResult<WallViewModel>(null, Owner.Code, Owner.Message);
             var Posts = await _postService.getAll(userID);
+            if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
+            var Categories = await _categoryService.getAll();
             if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
 
             WallViewModel wallVM = new WallViewModel
             {
                 Posts = Posts.Result,
-                Owner = Owner.Result
+                Owner = Owner.Result,
+                Categories = Categories.Result               
             };
             return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
         }

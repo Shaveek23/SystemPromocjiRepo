@@ -90,26 +90,6 @@ namespace WebApi.Database.Mapper
             };
 
         }
-        public static CommentLike Map(CommentLikeDTO CommentLikeDTO)
-        {
-            return new CommentLike
-            {
-                CommentID = CommentLikeDTO.CommentID,
-                CommentLikeID = CommentLikeDTO.CommentLikeID,
-                UserID = CommentLikeDTO.UserID
-            };
-
-        }
-        public static CommentLikeDTO Map(CommentLike CommentLike)
-        {
-            return new CommentLikeDTO
-            {
-                CommentID = CommentLike.CommentID,
-                CommentLikeID = CommentLike.CommentLikeID,
-                UserID = CommentLike.UserID
-            };
-
-        }
 
         public static IQueryable<PostLike> Map(IQueryable<PostLikeDTO> likesDTO)
         {
@@ -127,22 +107,7 @@ namespace WebApi.Database.Mapper
 
             return postlikes.AsQueryable();
         }
-        public static IQueryable<CommentLike> Map(IQueryable<CommentLikeDTO> likesDTO)
-        {
-            List<CommentLike> Commentlikes = new List<CommentLike>();
-            foreach (var like in likesDTO)
-                Commentlikes.Add(Map(like));
 
-            return Commentlikes.AsQueryable();
-        }
-        public static IQueryable<CommentLikeDTO> Map(IQueryable<CommentLike> likes)
-        {
-            List<CommentLikeDTO> Commentlikes = new List<CommentLikeDTO>();
-            foreach (var like in likes)
-                Commentlikes.Add(Map(like));
-
-            return Commentlikes.AsQueryable();
-        }
         public static IQueryable<UserDTO> Map(IQueryable<User> people)
         {
             if (people == null)
@@ -198,29 +163,28 @@ namespace WebApi.Database.Mapper
             return list.AsQueryable();
         }
         //Mapowanie dla komentarzy
-        public static CommentDTO Map(Comment comment)
+
+        public static Comment Map(CommentDTONew commentDTO)
         {
-            CommentDTO commentDTO = new CommentDTO();
-
-
-            commentDTO.UserID = comment.UserID;
-            commentDTO.PostID = comment.PostID;
-            commentDTO.DateTime = comment.DateTime;
-            commentDTO.Content = comment.Content;
-            return commentDTO;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                PostID = commentDTO.PostID.Value,
+                Content = commentDTO.Content
+            };
         }
-        public static Comment Map(CommentDTO commentDTO)
+
+        public static Comment Map(CommentDTOEdit commentDTO)
         {
-            Comment comment = new Comment();
-
-            comment.UserID = commentDTO.UserID.Value;
-            comment.PostID = commentDTO.PostID.Value;
-            comment.DateTime = commentDTO.DateTime.Value;
-            comment.Content = commentDTO.Content;
-            return comment;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                Content = commentDTO.Content
+            };
         }
+
         public static CommentDTOOutput MapOutput(Comment comment)
         {
             if (comment == null)
@@ -248,28 +212,6 @@ namespace WebApi.Database.Mapper
             comment.Content = commentDTO.Content;
             return comment;
 
-        }
-        public static IQueryable<CommentDTO> Map(IQueryable<Comment> comments)
-        {
-            List<CommentDTO> list = new List<CommentDTO>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
-
-            return list.AsQueryable();
-        }
-
-
-        public static IQueryable<Comment> Map(IQueryable<CommentDTO> comments)
-        {
-            List<Comment> list = new List<Comment>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
-
-            return list.AsQueryable();
         }
 
         public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)

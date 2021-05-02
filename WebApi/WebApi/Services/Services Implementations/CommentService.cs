@@ -21,9 +21,11 @@ namespace WebApi.Services.Serives_Implementations
             _commentRepository = commentRepository;
         }
 
-        public async Task<ServiceResult<int?>> AddCommentAsync(int userId, CommentDTO comment)
+        public async Task<ServiceResult<int?>> AddCommentAsync(int userId, CommentDTONew comment)
         {
             Comment newComment = Mapper.Map(comment);
+            newComment.UserID = userId;
+            newComment.DateTime = DateTime.Now;
             ServiceResult<Comment> result = await _commentRepository.AddAsync(newComment);
             return new ServiceResult<int?>(result.Result?.CommentID, result.Code, result.Message);
         }
@@ -34,11 +36,11 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditCommentAsync(int commentId, int userId, CommentDTO comment)
+        public async Task<ServiceResult<bool>> EditCommentAsync(int commentId, int userId, CommentDTOEdit comment)
         {
-            Comment newComment = Mapper.Map(comment);
-            newComment.CommentID = commentId;
-            var result = await _commentRepository.UpdateAsync(newComment);
+            Comment currentComment = _commentRepository.GetById(commentId).Result;
+            currentComment.Content = comment.Content;
+            var result = await _commentRepository.UpdateAsync(currentComment);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 

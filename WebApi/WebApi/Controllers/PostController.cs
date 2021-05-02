@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
-using WebApi.Models.DTO.PostDTOs;
 using WebApi.Services.Services_Interfaces;
 
 

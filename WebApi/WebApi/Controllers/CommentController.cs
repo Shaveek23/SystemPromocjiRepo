@@ -42,7 +42,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTO comment, [Required][FromHeader] int userId)
+        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTONew comment, [Required][FromHeader] int userId)
         {
 
             var result = await _commentService.AddCommentAsync(userId, comment);
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<bool>> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
+        public async Task<ActionResult<bool>> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTOEdit comment)
         {
             var result = await _commentService.EditCommentAsync(id, userId, comment);
             return new ControllerResult<bool>(result).GetResponse();

@@ -17,12 +17,12 @@ namespace WallProject.Services.Serives_Implementations
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly ICommentService _commentService;
-        private readonly IPersonService _personService;
-        public PostService(IHttpClientFactory clientFactory, ICommentService commentService, IPersonService personService)
+        private readonly IUserService _userService;
+        public PostService(IHttpClientFactory clientFactory, ICommentService commentService, IUserService userService)
         {
             _clientFactory = clientFactory;
             _commentService = commentService;
-            _personService = personService; //TO DO: tutaj będzie podstawiany userService, narazie korzystamy z Person
+            _userService = userService; //TO DO: tutaj będzie podstawiany userService, narazie korzystamy z Person
         }
 
 
@@ -79,10 +79,12 @@ namespace WallProject.Services.Serives_Implementations
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
             PostDTONoID post = new PostDTONoID();
+
             post.content = postText;
             post.datetime = DateTime.Now;
             //DO ZMIANY !!!
-            post.category = 0;
+
+            post.category = 1;
             post.isPromoted = false;
             post.title = "brak";
 
@@ -93,8 +95,10 @@ namespace WallProject.Services.Serives_Implementations
             HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             requestMessage.Headers.Add("userId", userId.ToString());
             requestMessage.Content = httpContent;
+
             //Wysyłanie Request
             var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userId}");
             var response = await client.SendAsync(requestMessage);
             return new ServiceResult<bool>(response.IsSuccessStatusCode); 
 

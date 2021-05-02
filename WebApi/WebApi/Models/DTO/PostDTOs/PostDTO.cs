@@ -9,27 +9,27 @@ namespace WebApi.Models.DTO
     public class PostDTO : IValidatableObject
     {
         [Required]
-        public int? id { get; set; }
+        public int? id { get; set; }//
         [Required]
         [MaxLength(50)]
-        public string title { get; set; }
+        public string title { get; set; }//
         [Required]
-        public string content { get; set; }
+        public string content { get; set; }//
         [Required]
-        public DateTime? datetime { get; set; }
+        public DateTime? datetime { get; set; }//
         [Required]
-        public int? category { get; set; }
+        public int? category { get; set; }//
         [Required]
-        public bool? isPromoted { get; set; }
+        public bool? isPromoted { get; set; }//
         [Required]
         public string author { get; set; }
         [Required]
-        public int? authorID { get; set; }
+        public int? authorID { get; set; }//
         [Required]
-        public int? likesCount { get; set; }
+        public int? likesCount { get; set; }//
         [Required]
-        public bool? isLikedByUser { get; set; }
-
+        public bool? isLikedByUser { get; set; }//
+        
 
         //[Required]
         //public IQueryable<CommentDTO> comments { get; set; }
