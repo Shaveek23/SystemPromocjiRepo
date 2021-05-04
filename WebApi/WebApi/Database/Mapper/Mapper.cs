@@ -44,7 +44,7 @@ namespace WebApi.Database.Mapper
                 return null;
             return new User
             {
-                UserID = userDTO.UserID ?? 0,
+                UserID = userDTO.ID ?? 0,
                 UserName = userDTO.UserName,
                 UserEmail = userDTO.UserEmail,
                 Timestamp = userDTO.Timestamp.Value,
@@ -60,7 +60,7 @@ namespace WebApi.Database.Mapper
                 return null;
             return new UserDTO
             {
-                UserID = user.UserID,
+                ID = user.UserID,
                 UserName = user.UserName,
                 UserEmail = user.UserEmail,
                 Timestamp = user.Timestamp,

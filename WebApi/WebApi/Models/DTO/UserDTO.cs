@@ -5,7 +5,7 @@ namespace WebApi.Models.DTO
 {
     public class UserDTO
     {
-        public int? UserID { get; set; }
+        public int? ID { get; set; }
         
         [Required]
         [MaxLength(30)]
