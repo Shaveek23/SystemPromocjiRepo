@@ -198,29 +198,27 @@ namespace WebApi.Database.Mapper
             return list.AsQueryable();
         }
         //Mapowanie dla komentarzy
-        public static CommentDTO Map(Comment comment)
+        public static Comment Map(CommentDTONew commentDTO)
         {
-            CommentDTO commentDTO = new CommentDTO();
-
-
-            commentDTO.UserID = comment.UserID;
-            commentDTO.PostID = comment.PostID;
-            commentDTO.DateTime = comment.DateTime;
-            commentDTO.Content = comment.Content;
-            return commentDTO;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                PostID = commentDTO.PostID.Value,
+                Content = commentDTO.Content
+            };
         }
-        public static Comment Map(CommentDTO commentDTO)
+
+        public static Comment Map(CommentDTOEdit commentDTO)
         {
-            Comment comment = new Comment();
-
-            comment.UserID = commentDTO.UserID.Value;
-            comment.PostID = commentDTO.PostID.Value;
-            comment.DateTime = commentDTO.DateTime.Value;
-            comment.Content = commentDTO.Content;
-            return comment;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                Content = commentDTO.Content
+            };
         }
+
         public static CommentDTOOutput MapOutput(Comment comment)
         {
             if (comment == null)
@@ -229,35 +227,25 @@ namespace WebApi.Database.Mapper
             CommentDTOOutput commentDTO = new CommentDTOOutput();
 
             commentDTO.id = comment.CommentID;
-            commentDTO.postId = comment.PostID;
             commentDTO.authorID = comment.UserID;
+            commentDTO.postId = comment.PostID;
             commentDTO.date = comment.DateTime;
             commentDTO.content = comment.Content;
             return commentDTO;
 
         }
 
-        public static IQueryable<CommentDTO> Map(IQueryable<Comment> comments)
+        public static Comment Map(CommentDTOOutput commentDTO)
+
         {
-            List<CommentDTO> list = new List<CommentDTO>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
+            Comment comment = new Comment();
+            comment.CommentID = commentDTO.id.Value;
+            comment.UserID = commentDTO.authorID.Value;
+            comment.PostID = commentDTO.postId.Value;
+            comment.DateTime = commentDTO.date.Value;
+            comment.Content = commentDTO.content;
+            return comment;
 
-            return list.AsQueryable();
-        }
-
-
-        public static IQueryable<Comment> Map(IQueryable<CommentDTO> comments)
-        {
-            List<Comment> list = new List<Comment>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
-
-            return list.AsQueryable();
         }
 
         public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)
@@ -274,6 +262,17 @@ namespace WebApi.Database.Mapper
             return list.AsQueryable();
         }
 
+
+        public static IQueryable<Comment> Map(IQueryable<CommentDTOOutput> comments)
+        {
+            List<Comment> list = new List<Comment>();
+            foreach (var comment in comments)
+            {
+                list.Add(Map(comment));
+            }
+
+            return list.AsQueryable();
+        }
 
         public static Category Map(CategoryDTO categoryDTO)
         {

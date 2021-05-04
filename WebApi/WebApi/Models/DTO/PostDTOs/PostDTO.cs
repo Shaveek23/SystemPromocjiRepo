@@ -30,9 +30,8 @@ namespace WebApi.Models.DTO
         [Required]
         public bool? isLikedByUser { get; set; }
 
-
-        //[Required]
-        //public IQueryable<CommentDTO> comments { get; set; }
+        [Required]
+        public IQueryable<CommentDTOOutput> comments { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (content == "" && title == "")

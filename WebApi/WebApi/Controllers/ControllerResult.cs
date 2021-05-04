@@ -21,7 +21,7 @@ namespace WebApi.Controllers
             ObjectResult res;
             if (!_serviceResult.IsOk())
             {
-               res = new ObjectResult(new { message = _serviceResult.Message });
+               res = new ObjectResult(new { message = _serviceResult.Message});
             }
             else
             {
@@ -29,6 +29,7 @@ namespace WebApi.Controllers
             }
 
             res.StatusCode = (int)_serviceResult.Code;
+            
             return res;
         }
         
