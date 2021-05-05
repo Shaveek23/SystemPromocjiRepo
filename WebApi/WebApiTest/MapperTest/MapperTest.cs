@@ -127,7 +127,7 @@ namespace WebApiTest.MapperTest
                 new List<UserDTO>
                 {
 
-                    new UserDTO() { UserID=0,
+                    new UserDTO() { ID=0,
                         IsActive=true,
                         IsAdmin=false,
                         IsEnterprenuer=true,
@@ -136,7 +136,7 @@ namespace WebApiTest.MapperTest
                         UserEmail="konrad.gaw3@gmail.com",
                         UserName="gawezi"
                     },
-                    new UserDTO() { UserID=12,
+                    new UserDTO() { ID=12,
                         IsActive=true,
                         IsAdmin=false,
                         IsEnterprenuer=true,
@@ -145,7 +145,7 @@ namespace WebApiTest.MapperTest
                         UserEmail="12@12.12",
                         UserName="12"
                     },
-                    new UserDTO() { UserID=420,
+                    new UserDTO() { ID=420,
                         IsActive=true,
                         IsAdmin=false,
                         IsEnterprenuer=true,
@@ -205,9 +205,9 @@ namespace WebApiTest.MapperTest
         [InlineData(1, "", "", false, false, false, true)]
         public void UserDTOtoPOCOMapping(int id, string name, string email, bool active, bool entrepreneur, bool verified, bool admin)
         {
-            UserDTO userDTO = new UserDTO { UserID = id, UserName = name, IsActive = active, IsEnterprenuer = entrepreneur, UserEmail = email, Timestamp = new DateTime(2012, 12, 12, 12, 12, 12), IsAdmin = admin, IsVerified = verified };
+            UserDTO userDTO = new UserDTO { ID = id, UserName = name, IsActive = active, IsEnterprenuer = entrepreneur, UserEmail = email, Timestamp = new DateTime(2012, 12, 12, 12, 12, 12), IsAdmin = admin, IsVerified = verified };
             User user = Mapper.Map(userDTO);
-            Assert.Equal(user.UserID, userDTO.UserID);
+            Assert.Equal(user.UserID, userDTO.ID);
             Assert.Equal(user.UserName, userDTO.UserName);
             Assert.Equal(user.UserEmail, userDTO.UserEmail);
             Assert.Equal(user.Active, userDTO.IsActive);
@@ -223,7 +223,7 @@ namespace WebApiTest.MapperTest
         {
             User user = new User { UserID = id, UserName = name, Active = active, IsEnterprenuer = entrepreneur, UserEmail = email, Timestamp = new DateTime(2012, 12, 12, 12, 12, 12) };
             UserDTO userDTO = Mapper.Map(user);
-            Assert.Equal(user.UserID, userDTO.UserID);
+            Assert.Equal(user.UserID, userDTO.ID);
             Assert.Equal(user.UserName, userDTO.UserName);
             Assert.Equal(user.UserEmail, userDTO.UserEmail);
             Assert.Equal(user.Active, userDTO.IsActive);
@@ -238,7 +238,7 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
-                        isItem.UserID == result.UserID &&
+                        isItem.UserID == result.ID &&
                         isItem.UserName == result.UserName &&
                         isItem.UserEmail == result.UserEmail &&
                         isItem.Active == result.IsActive &&
@@ -257,7 +257,7 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
-                        isItem.UserID == result.UserID &&
+                        isItem.ID == result.UserID &&
                         isItem.UserName == result.UserName &&
                         isItem.UserEmail == result.UserEmail &&
                         isItem.IsActive == result.Active &&
@@ -383,28 +383,50 @@ namespace WebApiTest.MapperTest
              };
         }
 
-        public static IEnumerable<object[]> CommentDTODataList()
+        public static IEnumerable<object[]> CommentDTONewDataList()
         {
             yield return new object[]
             {
-                new List<CommentDTO>
+                new List<CommentDTONew>
                 {
 
-                    new CommentDTO() { UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" },
-                    new CommentDTO() {  UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" },
-                    new CommentDTO() {  UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" },
+                    new CommentDTONew() {  PostID = 1,  Content = "test" },
+                    new CommentDTONew() {  PostID = 2,  Content = "test2" },
+                    new CommentDTONew() {   PostID = 3,  Content = "test3" },
                 }
 
              };
         }
-        public static IEnumerable<object[]> CommentDTOData()
+        public static IEnumerable<object[]> CommentDTOEditDataList()
+        {
+            yield return new object[]
+            {
+                new List<CommentDTOEdit>
+                {
+
+                    new CommentDTOEdit() {    Content = "test" },
+                    new CommentDTOEdit() {   Content = "test2" },
+                    new CommentDTOEdit() {     Content = "test3" },
+                }
+
+             };
+        }
+        public static IEnumerable<object[]> CommentDTONewData()
         {
 
-            yield return new object[] { new CommentDTO() { UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
-            yield return new object[] { new CommentDTO() { UserID = 2, PostID = 2, DateTime = DateTime.Today, Content = "test2" } };
-            yield return new object[] { new CommentDTO() { UserID = 3, PostID = 3, DateTime = DateTime.Today, Content = "test3" } };
+            yield return new object[] { new CommentDTONew() { PostID = 1, Content = "test" } };
+            yield return new object[] { new CommentDTONew() { PostID = 2, Content = "test2" } };
+            yield return new object[] { new CommentDTONew() { PostID = 3, Content = "test3" } };
 
         }
+        public static IEnumerable<object[]> CommentDTOEditData()
+        {
+
+            yield return new object[] { new CommentDTOEdit() { Content = "test" } };
+            yield return new object[] { new CommentDTOEdit() { Content = "test2" } };
+            yield return new object[] { new CommentDTOEdit() { Content = "test3" } };
+        }
+
         public static IEnumerable<object[]> CommentPOCOData()
         {
             yield return new object[] { new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = DateTime.Today, Content = "test" } };
@@ -421,21 +443,7 @@ namespace WebApiTest.MapperTest
 
 
 
-        [Theory]
-        [MemberData(nameof(CommentPOCOData))]
-        public void CommentPOCOToDTOMapping(Comment input)
-        {
-
-            CommentDTO result = Mapper.Map(input);
-
-
-
-
-            Assert.Equal(input.Content, result.Content);
-            Assert.Equal(input.DateTime, result.DateTime);
-            Assert.Equal(input.PostID, result.PostID);
-            Assert.Equal(input.UserID, result.UserID);
-        }
+      
         [Theory]
         [MemberData(nameof(CommentPOCOData))]
         public void CommentPOCOToDTOOutputMapping(Comment input)
@@ -454,40 +462,28 @@ namespace WebApiTest.MapperTest
         }
 
         [Theory]
-        [MemberData(nameof(CommentDTOData))]
-        public void CommentDTOToPOCOMapping(CommentDTO input)
+        [MemberData(nameof(CommentDTONewData))]
+        public void CommentDTONewToPOCOMapping(CommentDTONew input)
         {
 
             Comment result = Mapper.Map(input);
-
-
-
-
-
             Assert.Equal(input.Content, result.Content);
-            Assert.Equal(input.DateTime, result.DateTime);
             Assert.Equal(input.PostID, result.PostID);
-            Assert.Equal(input.UserID, result.UserID);
+
         }
 
         [Theory]
-        [MemberData(nameof(CommentPOCODataList))]
-        public void CommentPOCOToDTOMapping_List(List<Comment> input)
+        [MemberData(nameof(CommentDTOEditData))]
+        public void CommentDTOEditToPOCOMapping(CommentDTOEdit input)
         {
-            var result = Mapper.Map(input.AsQueryable());
+
+            Comment result = Mapper.Map(input);
+            Assert.Equal(input.Content, result.Content);
 
 
-            Assert.True(result.All(result => input.Any(isItem =>
-
-
-
-                isItem.Content == result.Content &&
-                isItem.DateTime == result.DateTime &&
-                isItem.PostID == result.PostID &&
-                isItem.UserID == result.UserID
-
-            )));
         }
+
+      
 
         [Theory]
         [MemberData(nameof(CommentPOCODataList))]
@@ -507,25 +503,7 @@ namespace WebApiTest.MapperTest
             )));
         }
 
-        [Theory]
-        [MemberData(nameof(CommentDTODataList))]
-        public void CommentDTOTOPOCOMapping_List(List<CommentDTO> input)
-        {
-            var result = Mapper.Map(input.AsQueryable());
-
-
-            Assert.True(result.All(result => input.Any(isItem =>
-
-
-
-
-                isItem.Content == result.Content &&
-                isItem.DateTime.Value == result.DateTime &&
-                isItem.PostID.Value == result.PostID &&
-                isItem.UserID.Value == result.UserID
-
-            )));
-        }
+   
 
         public static IEnumerable<object[]> CommentLikePOCODataList()
         {
@@ -593,9 +571,9 @@ namespace WebApiTest.MapperTest
 
 
 
-                isItem.CommentID==result.CommentID &&
-                isItem.CommentLikeID==result.CommentLikeID &&
-                isItem.UserID==result.UserID
+                isItem.CommentID == result.CommentID &&
+                isItem.CommentLikeID == result.CommentLikeID &&
+                isItem.UserID == result.UserID
 
             )));
         }
@@ -655,10 +633,10 @@ namespace WebApiTest.MapperTest
         }
 
         [Theory]
-        [InlineData(1, 0,1)]
-        [InlineData(0,1,2)]
-        [InlineData(5, int.MaxValue,3)]
-        public void CommentLikeDTOtoPOCOMapping(int id1,int id2, int id3)
+        [InlineData(1, 0, 1)]
+        [InlineData(0, 1, 2)]
+        [InlineData(5, int.MaxValue, 3)]
+        public void CommentLikeDTOtoPOCOMapping(int id1, int id2, int id3)
         {
             CommentLikeDTO commentLikeDTO = new CommentLikeDTO { CommentID = id1, CommentLikeID = id2, UserID = id3 };
             CommentLike commentLike = Mapper.Map(commentLikeDTO);

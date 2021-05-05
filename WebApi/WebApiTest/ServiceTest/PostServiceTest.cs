@@ -28,6 +28,19 @@ namespace WebApiTest.ServiceTest
                     new Post { PostID = 2, UserID = 5, CategoryID = 5, Title= "Title32321", Date = new DateTime(2015, 6, 5), IsPromoted = false },
                     new Post()
         };
+        List<User> users = new List<User>
+        {
+            new User{UserID=1},
+            new User{UserID=8},
+            new User{UserID=5}
+        };
+        List<CommentDTOOutput> comments = new List<CommentDTOOutput>
+        {
+           new CommentDTOOutput() { id=1},
+           new CommentDTOOutput() { id = 2, authorID = 2, postId = 2, date = DateTime.Today, content = "test2" },
+           new CommentDTOOutput() { id = 3, authorID = 3, postId = 3, date = DateTime.Today, content = "test3"}
+
+        };
 
         [Fact]
         public void GetAll_ValidCall()
@@ -42,15 +55,16 @@ namespace WebApiTest.ServiceTest
                 .Returns(new ServiceResult<IQueryable<PostLike>>(new List<PostLike>().AsQueryable()));
 
             var mockIUserRepository = new Mock<IUserRepository>();
-            mockIUserRepository.Setup(x => x.GetById(It.IsAny<int>()))
-                .Returns(new ServiceResult<User>(new User()));
+            mockIUserRepository.Setup(x => x.GetAll())
+                .Returns(new ServiceResult<IQueryable<User>>((users.AsQueryable())));
 
             var mockICommentService = new Mock<ICommentService>();
+            mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object);
-            
+
             // act:
-            
+
             var actual = postService.GetAll(userID).Result.ToList();
 
             Assert.True(actual != null);
@@ -60,6 +74,7 @@ namespace WebApiTest.ServiceTest
         [Fact]
         public void GetById_ValidCall()
         {
+            var userID = 1;
             var expectedId = 1;
             var expected = new ServiceResult<Post>(posts.Where(x => x.PostID == expectedId).FirstOrDefault());
             var mockIPostRepository = new Mock<IPostRepository>();
@@ -70,9 +85,13 @@ namespace WebApiTest.ServiceTest
 
             var mockIUserRepository = new Mock<IUserRepository>();
             mockIUserRepository.Setup(x => x.GetById(It.IsAny<int>()))
-                .Returns(new ServiceResult<User>(new User()));
+                .Returns(new ServiceResult<User>(new User() { UserID=userID}));
+
+
+           
 
             var mockICommentService = new Mock<ICommentService>();
+            mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object);
             var actual = postService.GetById(expectedId, 1).Result;
@@ -80,7 +99,6 @@ namespace WebApiTest.ServiceTest
 
             Assert.True(actual != null);
             Assert.Equal(expected2.PostID, actual.id);
-            //Assert.Equal(expected2.UserID, actual.authorID);
             Assert.Equal(expected2.Title, actual.title);
             Assert.Equal(expected2.Content, actual.content);
             Assert.Equal(expected2.IsPromoted, actual.isPromoted);
@@ -168,5 +186,5 @@ namespace WebApiTest.ServiceTest
         }
 
     }
-    
+
 }
