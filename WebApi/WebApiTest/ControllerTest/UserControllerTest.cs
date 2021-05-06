@@ -48,7 +48,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp=date,
                 IsVerified=isVerified,
                 IsActive=active,
-                IsEnterprenuer=isEnterprenuer
+                IsEntrepreneur=isEnterprenuer
             })); 
             var mockLogger = new Mock<ILogger<UserController>>();
             var controller = new UserController(mockLogger.Object, mockService.Object);
@@ -61,7 +61,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             };
 
             //Act
@@ -86,7 +86,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             });
 
             people.Add(new UserDTO
@@ -97,7 +97,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp = date,
                 IsVerified = !isVerified,
                 IsActive = active,
-                IsEnterprenuer = !isEnterprenuer
+                IsEntrepreneur = !isEnterprenuer
             });
 
             //Arrange
@@ -137,7 +137,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             };
 
             //Act
@@ -149,7 +149,7 @@ namespace WebApiTest.ControllerTest
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             }).Result.Result;
 
             var val = (int)((ObjectResult)actual).Value;

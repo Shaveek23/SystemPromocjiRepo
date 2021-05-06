@@ -33,6 +33,13 @@ namespace WebApi.Controllers
             return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
+        [HttpGet("comments/{id}")]
+        public ActionResult<IQueryable<CommentDTOOutput>> GetAllUsersComments([Required][FromHeader] int userId, [Required][FromRoute] int id)
+        {
+            var result = _commentService.GetAllOfUser(id);
+            return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
+        }
+
         [HttpGet("comment/{id}")]
         public ActionResult<CommentDTOOutput> GetById([FromRoute] int id, [Required][FromHeader] int userId)
         {
@@ -65,14 +72,14 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("comment/{id}/likeUsers")]
-        public ActionResult<IQueryable<int>> GetCommentLikes([Required][FromRoute] int id)
+        [HttpGet("comment/{id}/likedUsers")]
+        public ActionResult<IQueryable<LikerDTO>> GetCommentLikes([Required][FromRoute] int id)
         {
             var result = _commentService.GetLikedUsers(id);
-            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+            return new ControllerResult<IQueryable<LikerDTO>>(result).GetResponse();
         }
 
-        [HttpPut("comment/{id}/likeUsers")]
+        [HttpPut("comment/{id}/likedUsers")]
         public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int id, [FromBody] LikeDTO like)
         {
             var result = await _commentService.EditLikeOnCommentAsync(userID, id, like);

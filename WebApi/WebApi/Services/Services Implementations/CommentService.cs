@@ -75,7 +75,7 @@ namespace WebApi.Services.Serives_Implementations
                 outputDTO.ownerMode = userId == (author.Result?.UserID ?? -1);
                 
                 outputDTO.likesCount = commentLikes.Result?.Count() ?? 0;
-                outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x == userId) ?? false; 
+                outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x.id == userId) ?? false; 
 
                 outputDTOlist.Add(outputDTO);
             }
@@ -102,17 +102,48 @@ namespace WebApi.Services.Serives_Implementations
             outputDTO.ownerMode = userId == (author.Result?.UserID ?? -1);
 
             outputDTO.likesCount = commentLikes.Result?.Count() ?? 0;
-            outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x == userId) ?? false;
+            outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x.id == userId) ?? false;
 
             return new ServiceResult<CommentDTOOutput>(outputDTO, result.Code, result.Message);
         }
 
-        public ServiceResult<IQueryable<int>> GetLikedUsers(int commentId)
+        public ServiceResult<IQueryable<LikerDTO>> GetLikedUsers(int commentId)
         {
             var result = _commentRepository.GetLikes(commentId);
-            return new ServiceResult<IQueryable<int>>(result.Result.Select(x => x.UserID), result.Code, result.Message);
+            
+            return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
 
-        
+        public ServiceResult<IQueryable<CommentDTOOutput>> GetAllOfUser(int userID)
+        {
+            var serviceResult = _commentRepository.GetAll();
+            var userInfo = _userRepository.GetById(userID);
+            if (serviceResult.Result == null || !userInfo.IsOk())
+            {
+                return new ServiceResult<IQueryable<CommentDTOOutput>>(null, serviceResult.Code, serviceResult.Message);
+            }
+
+            var result = serviceResult.Result.Where(comment => comment.UserID == userID); // LINQ w repozytorium !!!
+
+            List<CommentDTOOutput> commentsDTOs = new List<CommentDTOOutput>();
+            foreach (Comment comment in result.ToList())
+            {
+                CommentDTOOutput commentDTO = Mapper.MapOutput(comment);
+
+                commentDTO.authorID = userID;
+                commentDTO.authorName = userInfo.Result.UserName;
+
+                commentDTO.ownerMode = true;
+
+                var likes = this.GetLikedUsers(commentDTO.id.Value);
+
+                commentDTO.likesCount = likes.Result?.Count() ?? 0;
+                commentDTO.isLikedByUser = likes.Result?.Any(x => x.id == userID) ?? false;
+
+                commentsDTOs.Add(commentDTO);
+            }
+
+            return new ServiceResult<IQueryable<CommentDTOOutput>>(commentsDTOs.AsQueryable<CommentDTOOutput>());
+        }
     }
 }

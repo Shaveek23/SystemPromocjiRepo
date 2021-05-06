@@ -11,6 +11,7 @@ using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Controllers;
+using WebApi.Database.Mapper;
 using WebApi.Models.DTO;
 using WebApi.Services;
 using WebApi.Services.Services_Interfaces;
@@ -250,13 +251,13 @@ namespace WebApiTest.ControllerTest
             idList.Add(2);
 
             var mockService = new Mock<ICommentService>();
-            mockService.Setup(x => x.GetLikedUsers(id)).Returns(new ServiceResult<IQueryable<int>>(idList.AsQueryable()));
+            mockService.Setup(x => x.GetLikedUsers(id)).Returns(new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(idList.AsQueryable())));
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
 
-            var result = ((IQueryable<int>)((ObjectResult)controller.GetCommentLikes(id).Result).Value).ToList<int>(); ;
+            var result = ((IQueryable<LikerDTO>)((ObjectResult)controller.GetCommentLikes(id).Result).Value).ToList<LikerDTO>(); ;
             var expected = idList;
-            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem == shouldItem)));
+            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem.id == shouldItem)));
 
         }
 

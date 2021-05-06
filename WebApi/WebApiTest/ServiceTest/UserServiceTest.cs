@@ -82,7 +82,7 @@ namespace WebApiTest
 
         public void EditUser_ValidCall()
         {
-            var newUserDTO = new UserDTO { ID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, IsActive = false };
+            var newUserDTO = new UserDTO { ID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEntrepreneur = false, IsAdmin = false, IsVerified = false, IsActive = false };
             var newUser = new User { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, Active = false };
 
             var mockIUserRepository = new Mock<IUserRepository>();

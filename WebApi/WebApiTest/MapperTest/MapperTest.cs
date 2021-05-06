@@ -130,7 +130,7 @@ namespace WebApiTest.MapperTest
                     new UserDTO() { ID=0,
                         IsActive=true,
                         IsAdmin=false,
-                        IsEnterprenuer=true,
+                        IsEntrepreneur=true,
                         IsVerified=true,
                         Timestamp=new DateTime(1999,12,12,12,12,12),
                         UserEmail="konrad.gaw3@gmail.com",
@@ -139,7 +139,7 @@ namespace WebApiTest.MapperTest
                     new UserDTO() { ID=12,
                         IsActive=true,
                         IsAdmin=false,
-                        IsEnterprenuer=true,
+                        IsEntrepreneur=true,
                         IsVerified=true,
                         Timestamp=new DateTime(2012,12,12,12,12,12),
                         UserEmail="12@12.12",
@@ -148,7 +148,7 @@ namespace WebApiTest.MapperTest
                     new UserDTO() { ID=420,
                         IsActive=true,
                         IsAdmin=false,
-                        IsEnterprenuer=true,
+                        IsEntrepreneur=true,
                         IsVerified=true,
                         Timestamp=new DateTime(1932,11,11,11,11,11),
                         UserEmail="test@test.test",
@@ -205,13 +205,13 @@ namespace WebApiTest.MapperTest
         [InlineData(1, "", "", false, false, false, true)]
         public void UserDTOtoPOCOMapping(int id, string name, string email, bool active, bool entrepreneur, bool verified, bool admin)
         {
-            UserDTO userDTO = new UserDTO { ID = id, UserName = name, IsActive = active, IsEnterprenuer = entrepreneur, UserEmail = email, Timestamp = new DateTime(2012, 12, 12, 12, 12, 12), IsAdmin = admin, IsVerified = verified };
+            UserDTO userDTO = new UserDTO { ID = id, UserName = name, IsActive = active, IsEntrepreneur = entrepreneur, UserEmail = email, Timestamp = new DateTime(2012, 12, 12, 12, 12, 12), IsAdmin = admin, IsVerified = verified };
             User user = Mapper.Map(userDTO);
             Assert.Equal(user.UserID, userDTO.ID);
             Assert.Equal(user.UserName, userDTO.UserName);
             Assert.Equal(user.UserEmail, userDTO.UserEmail);
             Assert.Equal(user.Active, userDTO.IsActive);
-            Assert.Equal(user.IsEnterprenuer, userDTO.IsEnterprenuer);
+            Assert.Equal(user.IsEnterprenuer, userDTO.IsEntrepreneur);
         }
 
 
@@ -227,7 +227,7 @@ namespace WebApiTest.MapperTest
             Assert.Equal(user.UserName, userDTO.UserName);
             Assert.Equal(user.UserEmail, userDTO.UserEmail);
             Assert.Equal(user.Active, userDTO.IsActive);
-            Assert.Equal(user.IsEnterprenuer, userDTO.IsEnterprenuer);
+            Assert.Equal(user.IsEnterprenuer, userDTO.IsEntrepreneur);
         }
 
         [Theory]
@@ -243,7 +243,7 @@ namespace WebApiTest.MapperTest
                         isItem.UserEmail == result.UserEmail &&
                         isItem.Active == result.IsActive &&
                         isItem.Timestamp == result.Timestamp &&
-                        isItem.IsEnterprenuer == result.IsEnterprenuer
+                        isItem.IsEnterprenuer == result.IsEntrepreneur
 
 
             )));
@@ -262,7 +262,7 @@ namespace WebApiTest.MapperTest
                         isItem.UserEmail == result.UserEmail &&
                         isItem.IsActive == result.Active &&
                         isItem.Timestamp == result.Timestamp &&
-                        isItem.IsEnterprenuer == result.IsEnterprenuer
+                        isItem.IsEntrepreneur == result.IsEnterprenuer
 
 
             )));

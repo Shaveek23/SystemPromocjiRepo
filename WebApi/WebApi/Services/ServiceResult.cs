@@ -9,11 +9,12 @@ namespace WebApi.Services
 {
     public class ServiceResult<T>
     {
-        public ServiceResult(T result, HttpStatusCode code = HttpStatusCode.OK, string message = null)
+        public ServiceResult(T result, HttpStatusCode code = HttpStatusCode.OK, string message = null, string name = null)
         {
             Result = result;
             Code = code;
             Message = message;
+            Name = null;
         }
 
         public static ServiceResult<T> GetEntityNullResult()
@@ -36,6 +37,8 @@ namespace WebApi.Services
         public HttpStatusCode Code { get; set; }
 
         public string Message { get; set; }
+
+        public string Name { get; set; } = null;
 
         public bool IsOk()
         {

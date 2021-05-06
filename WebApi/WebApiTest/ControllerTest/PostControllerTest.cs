@@ -287,13 +287,13 @@ namespace WebApiTest.ControllerTest
             idList.Add(2);
 
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetLikes(id)).Returns(new ServiceResult<IQueryable<int>>(idList.AsQueryable()));
+            mockService.Setup(x => x.GetLikes(id)).Returns(new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(idList.AsQueryable())));
             var mockLogger = new Mock<ILogger<PostController>>();
             var controller = new PostController(mockLogger.Object, mockService.Object);
 
-            var result = ((IQueryable<int>)((ObjectResult)controller.GetPostLikes(id).Result).Value).ToList<int>(); ;
+            var result = ((IQueryable<LikerDTO>)((ObjectResult)controller.GetPostLikes(id).Result).Value).ToList<LikerDTO>(); ;
             var expected = idList;
-            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem == shouldItem)));
+            Assert.True(expected.All(shouldItem => result.Any(isItem => isItem.id == shouldItem)));
 
         }
 

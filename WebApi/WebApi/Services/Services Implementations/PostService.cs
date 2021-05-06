@@ -50,7 +50,7 @@ namespace WebApi.Services.Serives_Implementations
                 postDTO.authorID = user?.UserID ?? 0;
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
                 postDTO.comments = comments;
                
 
@@ -80,7 +80,7 @@ namespace WebApi.Services.Serives_Implementations
             postDTO.authorID = user.Result?.UserID ?? 0;
 
             postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-            postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+            postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
 
             postDTO.comments = comments;
 
@@ -121,7 +121,7 @@ namespace WebApi.Services.Serives_Implementations
                 postDTO.authorID = user?.UserID ?? 0;
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
 
                 postDTO.comments = comments;
 
@@ -150,10 +150,10 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public ServiceResult<IQueryable<int>> GetLikes(int postID)
+        public ServiceResult<IQueryable<LikerDTO>> GetLikes(int postID)
         {
             var result = _postRepository.GetLikes(postID);
-            return new ServiceResult<IQueryable<int>>(result.Result.Select(x => x.UserID), result.Code, result.Message);
+            return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
 
         public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)

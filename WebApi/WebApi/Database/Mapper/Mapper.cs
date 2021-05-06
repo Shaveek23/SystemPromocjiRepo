@@ -50,7 +50,7 @@ namespace WebApi.Database.Mapper
                 Timestamp = userDTO.Timestamp.Value,
                 IsVerified = userDTO.IsVerified.Value,
                 IsAdmin = userDTO.IsAdmin.Value,
-                IsEnterprenuer = userDTO.IsEnterprenuer.Value,
+                IsEnterprenuer = userDTO.IsEntrepreneur.Value,
                 Active = userDTO.IsActive.Value
             };
         }
@@ -66,7 +66,7 @@ namespace WebApi.Database.Mapper
                 Timestamp = user.Timestamp,
                 IsVerified = user.IsVerified,
                 IsAdmin = user.IsAdmin,
-                IsEnterprenuer = user.IsEnterprenuer,
+                IsEntrepreneur = user.IsEnterprenuer,
                 IsActive = user.Active
             };
         }
@@ -322,6 +322,16 @@ namespace WebApi.Database.Mapper
                 title = post.Title
 
             };
+        }
+
+        public static IQueryable<LikerDTO> Map(IQueryable<int> likers)
+        {
+            var likersDTO = new List<LikerDTO>();
+            foreach (int i in likers)
+            {
+                likersDTO.Add(new LikerDTO { id = i });
+            }
+            return likersDTO.AsQueryable<LikerDTO>();
         }
     }
 

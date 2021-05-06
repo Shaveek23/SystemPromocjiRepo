@@ -83,14 +83,14 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("post/{postID}/likeUsers")]
-        public ActionResult<IQueryable<int>> GetPostLikes([Required][FromRoute] int postID)
+        [HttpGet("post/{postID}/likedUsers")]
+        public ActionResult<IQueryable<LikerDTO>> GetPostLikes([Required][FromRoute] int postID)
         {
             var result = _postService.GetLikes(postID);
-            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+            return new ControllerResult<IQueryable<LikerDTO>>(result).GetResponse();
         }
 
-        [HttpPut("post/{postID}/likeUsers")]
+        [HttpPut("post/{postID}/likedUsers")]
         public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] LikeDTO like)
         {
             var result = await _postService.EditLikeStatusAsync(userID, postID, like);
