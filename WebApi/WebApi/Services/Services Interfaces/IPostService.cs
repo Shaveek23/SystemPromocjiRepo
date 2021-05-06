@@ -17,7 +17,7 @@ namespace WebApi.Services.Services_Interfaces
         public ServiceResult<IQueryable<PostDTO>> GetAllOfUser(int userID);
         public Task<ServiceResult<bool>> DeletePostAsync(int id);
         public Task<ServiceResult<bool>> EditPostAsync(int id, PostEditDTO body);
-        public ServiceResult<IQueryable<int>> GetLikes(int postID);
+        public ServiceResult<IQueryable<LikerDTO>> GetLikes(int postID);
         public Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like);
        public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID,int  userID);
     }

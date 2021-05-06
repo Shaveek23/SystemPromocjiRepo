@@ -42,34 +42,34 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IUserService>();
             mockService.Setup(x => x.GetById(0)).Returns(new ServiceResult<UserDTO>(new UserDTO
             {
-                UserID = id,
+                ID = id,
                 UserEmail = email,
                 UserName=name,
                 Timestamp=date,
                 IsVerified=isVerified,
                 IsActive=active,
-                IsEnterprenuer=isEnterprenuer
+                IsEntrepreneur=isEnterprenuer
             })); 
             var mockLogger = new Mock<ILogger<UserController>>();
             var controller = new UserController(mockLogger.Object, mockService.Object);
 
             var expected = new UserDTO
             {
-                UserID = id,
+                ID = id,
                 UserEmail = email,
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             };
 
             //Act
             var actual = (ObjectResult)controller.Get(0).Result;
-            int idActual = (int)((UserDTO)(actual.Value)).UserID;
+            int idActual = (int)((UserDTO)(actual.Value)).ID;
 
             //Assert
-            Assert.Equal(expected.UserID, idActual);
+            Assert.Equal(expected.ID, idActual);
 
         }
 
@@ -80,24 +80,24 @@ namespace WebApiTest.ControllerTest
             List<UserDTO> people = new List<UserDTO>();
             people.Add(new UserDTO
             {
-                UserID = id,
+                ID = id,
                 UserEmail = email,
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             });
 
             people.Add(new UserDTO
             {
-                UserID = id+1,
+                ID = id+1,
                 UserEmail = "cko"+email,
                 UserName = name+"XD",
                 Timestamp = date,
                 IsVerified = !isVerified,
                 IsActive = active,
-                IsEnterprenuer = !isEnterprenuer
+                IsEntrepreneur = !isEnterprenuer
             });
 
             //Arrange
@@ -131,30 +131,30 @@ namespace WebApiTest.ControllerTest
 
             var expected = new UserDTO
             {
-                UserID = id,
+                ID = id,
                 UserEmail = email,
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             };
 
             //Act
             var actual = controller.AddUser(1, new UserDTO
             {
-                UserID = id,
+                ID = id,
                 UserEmail = email,
                 UserName = name,
                 Timestamp = date,
                 IsVerified = isVerified,
                 IsActive = active,
-                IsEnterprenuer = isEnterprenuer
+                IsEntrepreneur = isEnterprenuer
             }).Result.Result;
 
             var val = (int)((ObjectResult)actual).Value;
             //Assert
-            Assert.Equal(expected.UserID, val);
+            Assert.Equal(expected.ID, val);
 
 
         }
@@ -193,7 +193,7 @@ namespace WebApiTest.ControllerTest
             DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<IUserService>();
-            var expected = new UserDTO { UserID = u_id, Timestamp = date, UserEmail = email, UserName = name };
+            var expected = new UserDTO { ID = u_id, Timestamp = date, UserEmail = email, UserName = name };
             mockService.Setup(x => x.EditUserAsync(a_id,expected, u_id)).Returns(Task.Run(() =>
             {
                 return new ServiceResult<bool>(true);

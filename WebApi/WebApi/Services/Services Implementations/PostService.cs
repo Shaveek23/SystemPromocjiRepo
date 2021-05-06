@@ -34,21 +34,25 @@ namespace WebApi.Services.Serives_Implementations
             {
                 return new ServiceResult<IQueryable<PostDTO>>(null, result.Code, result.Message);
             }
+            var users = _userRepository.GetAll();
+            var allComments = _commentService.GetAll(userID);
 
             List<PostDTO> postDTOs = new List<PostDTO>();
             foreach (var post in result.Result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
-
-                var user = _userRepository.GetById(post.UserID);
+                var user = users.Result?.Where(x => x.UserID == post.UserID).FirstOrDefault();
+                var comments = allComments.Result?.Where(x => x.postId == post.PostID);
 
                 var postDTO = PostMapper.Map(post);
 
-                postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
-                postDTO.authorID = user.Result?.UserID ?? 0;
+                postDTO.author = user?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorID = user?.UserID ?? 0;
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
+                postDTO.comments = comments;
+               
 
                 postDTOs.Add(postDTO);
             }
@@ -68,7 +72,7 @@ namespace WebApi.Services.Serives_Implementations
 
             var user = _userRepository.GetById(userID);
 
-
+            var comments = _commentService.GetAll(userID).Result?.Where(x => x.postId == postID);
 
             var postDTO = PostMapper.Map(result.Result);
 
@@ -76,7 +80,9 @@ namespace WebApi.Services.Serives_Implementations
             postDTO.authorID = user.Result?.UserID ?? 0;
 
             postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-            postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+            postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
+
+            postDTO.comments = comments;
 
             return new ServiceResult<PostDTO>(postDTO, result.Code, result.Message);
         }
@@ -96,6 +102,8 @@ namespace WebApi.Services.Serives_Implementations
             {
                 return new ServiceResult<IQueryable<PostDTO>>(null, serviceResult.Code, serviceResult.Message);
             }
+            var users = _userRepository.GetAll();
+            var allComments = _commentService.GetAll(userID);
 
             var result = serviceResult.Result.Where(post => post.UserID == userID); // LINQ w repozytorium !!!
 
@@ -104,15 +112,18 @@ namespace WebApi.Services.Serives_Implementations
             {
                 var postLikes = GetLikes(post.PostID);
 
-                var user = _userRepository.GetById(post.UserID);
+                var user = users.Result?.Where(x => x.UserID == post.UserID).FirstOrDefault();
+                var comments = allComments.Result?.Where(x => x.postId == post.PostID);
 
                 var postDTO = PostMapper.Map(post);
 
-                postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
-                postDTO.authorID = user.Result?.UserID ?? 0;
+                postDTO.author = user?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorID = user?.UserID ?? 0;
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
-                postDTO.isLikedByUser = postLikes.Result?.Any(x => x == userID) ?? false;
+                postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
+
+                postDTO.comments = comments;
 
                 postDTOs.Add(postDTO);
             }
@@ -139,10 +150,10 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
-        public ServiceResult<IQueryable<int>> GetLikes(int postID)
+        public ServiceResult<IQueryable<LikerDTO>> GetLikes(int postID)
         {
             var result = _postRepository.GetLikes(postID);
-            return new ServiceResult<IQueryable<int>>(result.Result.Select(x => x.UserID), result.Code, result.Message);
+            return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
 
         public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)
@@ -158,5 +169,6 @@ namespace WebApi.Services.Serives_Implementations
             result.Result = result.Result.Where(x => x.postId == postID);
             return new ServiceResult<IQueryable<CommentDTOOutput>>(result.Result, result.Code, result.Message);
         }
+
     }
 }

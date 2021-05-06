@@ -14,7 +14,7 @@ namespace IntegrationTest
 
         HttpClient client = new HttpClient
         {
-            BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/api/")
+            BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/")
         };
 
         public PostAPI getPost(string content)
