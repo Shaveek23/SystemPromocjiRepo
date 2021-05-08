@@ -28,7 +28,7 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.GetById(id)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO
 
             {
-                CategoryID = id,
+                ID = id,
                 Name=name
             }));
 
@@ -38,14 +38,14 @@ namespace WebApiTest.ControllerTest
             var expected = new CategoryDTO
 
             {
-                CategoryID = id,
+                ID = id,
                 Name = name
             };
 
 
             var actual = (CategoryDTO)((ObjectResult)controller.GetById(id).Result).Value;
 
-            Assert.Equal(expected.CategoryID, actual.CategoryID);
+            Assert.Equal(expected.ID, actual.ID);
             Assert.Equal(expected.Name, actual.Name);
         }
 
@@ -55,29 +55,29 @@ namespace WebApiTest.ControllerTest
         [InlineData(2, "Kategoria4")]
         public void GetAll_Test(int id, string name)
         {
-            List<CategoryDTO> categories = new List<CategoryDTO>();
-            categories.Add(new CategoryDTO
+            List<CategoryDTO> category = new List<CategoryDTO>();
+            category.Add(new CategoryDTO
             {
-                CategoryID = id,
+                ID = id,
                 Name = name
             });
-            categories.Add(new CategoryDTO
+            category.Add(new CategoryDTO
             {
-                CategoryID = id+1,
+                ID = id+1,
                 Name = name+"cokolwiek"
             });
+            var categories = new Categories { categories = category.AsQueryable() };
             var mockService = new Mock<ICategoryService>();
-            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()
-            ));
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<Categories>(categories));
 
             var mockLogger = new Mock<ILogger<CategoryController>>();
             var controller = new CategoryController(mockLogger.Object, mockService.Object);
 
             var expected = categories;
 
-            var actual = ((IEnumerable<CategoryDTO>)((ObjectResult)controller.GetAll().Result).Value).ToList();
+            var actual = ((Categories)((ObjectResult)controller.GetAll().Result).Value).categories.ToList();
 
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.CategoryID == shouldItem.CategoryID && isItem.Name==shouldItem.Name)));
+            Assert.True(expected.categories.All(shouldItem => actual.Any(isItem => isItem.ID == shouldItem.ID && isItem.Name==shouldItem.Name)));
 
 
         }
