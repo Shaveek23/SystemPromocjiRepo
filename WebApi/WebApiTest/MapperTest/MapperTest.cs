@@ -272,9 +272,9 @@ namespace WebApiTest.MapperTest
 
         public static IEnumerable<object[]> CategoryDTOData()
         {
-            yield return new object[] { new CategoryDTO { CategoryID = 1, Name = "test1" } };
-            yield return new object[] { new CategoryDTO { CategoryID = 0, Name = "" } };
-            yield return new object[] { new CategoryDTO { CategoryID = int.MaxValue, Name = "2" } };
+            yield return new object[] { new CategoryDTO { ID = 1, Name = "test1" } };
+            yield return new object[] { new CategoryDTO { ID = 0, Name = "" } };
+            yield return new object[] { new CategoryDTO { ID = int.MaxValue, Name = "2" } };
         }
 
         public static IEnumerable<object[]> CategoryDTOList()
@@ -284,9 +284,9 @@ namespace WebApiTest.MapperTest
                 new List<CategoryDTO>
                 {
 
-                    new CategoryDTO() { CategoryID=0,Name="test1" },
-                    new CategoryDTO() { CategoryID=int.MaxValue, Name="test2" },
-                    new CategoryDTO() {  CategoryID=1, Name="" },
+                    new CategoryDTO() { ID=0,Name="test1" },
+                    new CategoryDTO() { ID=int.MaxValue, Name="test2" },
+                    new CategoryDTO() {  ID=1, Name="" },
                 }
 
              };
@@ -312,9 +312,9 @@ namespace WebApiTest.MapperTest
         [InlineData(5, "Jakas kategoria")]
         public void CategoryDTOtoPOCOMapping(int id, string name)
         {
-            CategoryDTO categoryDTO = new CategoryDTO { CategoryID = id, Name = name };
+            CategoryDTO categoryDTO = new CategoryDTO { ID = id, Name = name };
             Category category = Mapper.Map(categoryDTO);
-            Assert.Equal(categoryDTO.CategoryID, category.CategoryID);
+            Assert.Equal(categoryDTO.ID, category.CategoryID);
             Assert.Equal(categoryDTO.Name, category.Name);
         }
 
@@ -326,7 +326,7 @@ namespace WebApiTest.MapperTest
         {
             Category category = new Category { CategoryID = id, Name = name };
             CategoryDTO categoryDTO = Mapper.Map(category);
-            Assert.Equal(categoryDTO.CategoryID, category.CategoryID);
+            Assert.Equal(categoryDTO.ID, category.CategoryID);
             Assert.Equal(categoryDTO.Name, category.Name);
         }
 
@@ -338,7 +338,7 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
-                isItem.CategoryID == result.CategoryID &&
+                isItem.CategoryID == result.ID &&
                 isItem.Name == result.Name
             )));
         }
@@ -351,7 +351,7 @@ namespace WebApiTest.MapperTest
 
 
             Assert.True(result.All(result => input.Any(isItem =>
-                isItem.CategoryID == result.CategoryID &&
+                isItem.ID == result.CategoryID &&
                 isItem.Name == result.Name
             )));
         }

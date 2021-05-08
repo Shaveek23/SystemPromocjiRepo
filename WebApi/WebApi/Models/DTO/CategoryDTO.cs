@@ -10,7 +10,7 @@ namespace WebApi.Models.DTO
     {
         [Key]
         [Required]
-        public int? CategoryID { get; set; }
+        public int? ID { get; set; }
         
         [Required]
         [MaxLength(50)]
