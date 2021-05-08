@@ -255,7 +255,7 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<CommentController>>();
             var controller = new CommentController(mockLogger.Object, mockService.Object);
 
-            var result = ((IQueryable<LikerDTO>)((ObjectResult)controller.GetCommentLikes(id).Result).Value).ToList<LikerDTO>(); ;
+            var result = ((IQueryable<LikerDTO>)((ObjectResult)controller.GetCommentLikes(id).Result).Value).ToList<LikerDTO>(); 
             var expected = idList;
             Assert.True(expected.All(shouldItem => result.Any(isItem => isItem.id == shouldItem)));
 
