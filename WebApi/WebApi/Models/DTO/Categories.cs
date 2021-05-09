@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace WebApi.Models.DTO
 {
     public class Categories
-    { 
+    {
         public IQueryable<CategoryDTO> categories { get; set; }
     }
 }
