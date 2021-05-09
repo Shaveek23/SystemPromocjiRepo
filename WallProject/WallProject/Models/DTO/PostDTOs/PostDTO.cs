@@ -17,5 +17,6 @@ namespace WallProject.Models.DTO
         public int authorID;
         public int likesCount;
         public bool isLikedByUser;
+        public List<CommentDTO> comments;
     }
 }

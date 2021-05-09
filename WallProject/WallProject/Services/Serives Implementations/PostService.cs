@@ -31,7 +31,7 @@ namespace WallProject.Services.Serives_Implementations
         {
             var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("userID", $"{userID}");
-            var result = await client.GetAsync("post");
+            var result = await client.GetAsync("posts");
             var jsonString = await result.Content.ReadAsStringAsync();
 
             if (result.IsSuccessStatusCode)
@@ -42,23 +42,12 @@ namespace WallProject.Services.Serives_Implementations
                 {
                     //Some information about it.  :TODO
                 }
-
-
                 List<PostViewModel> postVMs = new List<PostViewModel>();
                 foreach (PostDTO postDTO in postsDTO)
                 {
-                    var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
-                    if (!commentsResult.IsOk())
-                    {
-                        return new ServiceResult<List<PostViewModel>>(null, commentsResult.Code, commentsResult.Message);
-                    }
-                    else
-                    {
-                        var postVM = Mapper.Map(postDTO, commentsResult.Result);
-                        postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.authorID).FirstOrDefault();
-                        postVMs.Add(postVM);
-                    }
-                   
+                    var postVM = Mapper.Map(postDTO);
+                    postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.authorID).FirstOrDefault();
+                    postVMs.Add(postVM);
                 }
                 return new ServiceResult<List<PostViewModel>>(postVMs, result.StatusCode, null);
             }
@@ -78,11 +67,7 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 var postDTO = JsonConvert.DeserializeObject<PostDTO>(jsonString);
-                var commentsResult = await _commentService.getByPostId(postDTO.id, userID);
-                if (!commentsResult.IsOk())
-                    return new ServiceResult<PostViewModel>(null, commentsResult.Code, commentsResult.Message);
-                else
-                    return new ServiceResult<PostViewModel>(Mapper.Map(postDTO, commentsResult.Result));
+                return new ServiceResult<PostViewModel>(Mapper.Map(postDTO));
             }
             else
             {
@@ -126,7 +111,7 @@ namespace WallProject.Services.Serives_Implementations
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(postDTO);
             //przygotowanie HttpRequest
-            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"post/{postID}/likeUsers");
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"post/{postID}/likedUsers");
             HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             requestMessage.Headers.Add("userId", userID.ToString());
             requestMessage.Content = httpContent;

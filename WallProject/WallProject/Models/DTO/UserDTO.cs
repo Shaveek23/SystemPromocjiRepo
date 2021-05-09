@@ -7,7 +7,7 @@ namespace WallProject.Models.DTO
 {
     public class UserDTO
     {
-        public int userId { get; set; }
+        public int id { get; set; }
         public string userName { get; set; }
         public string userEmail { get; set; }
         public System.DateTime timestamp { get; set; }

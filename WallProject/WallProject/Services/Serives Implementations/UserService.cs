@@ -22,7 +22,7 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<UserViewModel>> getById(int userID)
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync($"user/{userID}");
+            var result = await client.GetAsync($"users/{userID}");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 
@@ -41,7 +41,7 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<List<UserViewModel>>> getAll()
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync($"user");
+            var result = await client.GetAsync($"users");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 

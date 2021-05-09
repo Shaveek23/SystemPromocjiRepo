@@ -127,11 +127,9 @@ namespace WallProject.Services.Serives_Implementations
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
           
-            CommentDTONoID comment = new CommentDTONoID();
+            CommentDTONew comment = new CommentDTONew();
             comment.content = commentText;
             comment.postID = postId;
-            comment.userID = userId;
-            comment.dateTime = DateTime.Now;
           
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(comment);
@@ -156,7 +154,7 @@ namespace WallProject.Services.Serives_Implementations
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(postDTO);
             //przygotowanie HttpRequest
-            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likeUsers");
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likedUsers");
             HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             requestMessage.Headers.Add("userId", userID.ToString());
             requestMessage.Content = httpContent;

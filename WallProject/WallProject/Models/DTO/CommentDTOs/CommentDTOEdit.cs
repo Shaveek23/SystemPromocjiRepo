@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace WallProject.Models.DTO
 {
-    public class CommentDTONew
+    public class CommentDTOEdit
     {
-        public int postID;
         public string content;
     }
 }

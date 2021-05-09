@@ -30,7 +30,7 @@ namespace WallProject.Services.Serives_Implementations
             var Posts = await _postService.getAll(userID);
             if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
             var Categories = await _categoryService.getAll();
-            if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
+            if (!Categories.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
 
 
             var sortedPosts = Posts.Result

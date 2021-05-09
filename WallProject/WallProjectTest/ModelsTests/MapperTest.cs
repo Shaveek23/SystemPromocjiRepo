@@ -23,14 +23,15 @@ namespace WallProjectTest.ModelsTests
 {
     public class MapperTest
     {
+        
         DateTime date = new DateTime(2012, 12, 12, 12, 12, 12);
         [Theory]
         [InlineData(0,"tytul","content", true, true, 10, "gawezi")]
         [InlineData(0,"avon","siema chcesz cos z avonu",true, false, 23, "znajoma z gimnazjum")]
-        [InlineData(0,"no fajnie","contencik xD",  false, true, 10, "test")]
+        [InlineData(0,"no fajnie","contencik",  false, true, 10, "test")]
         public void PostDTOtoViewModel_Test(int id, string title, string content,bool isPromoted, bool isLiked, int likeCount, string authorName )
         {
-            PostDTO postDTO = new PostDTO { id = id, author = authorName, datetime = date, content = content, isLikedByUser = isLiked, isPromoted = isPromoted, title = title, likesCount = likeCount };
+            PostDTO postDTO = new PostDTO { id = id, author = authorName, datetime = date, content = content, isLikedByUser = isLiked, isPromoted = isPromoted, title = title, likesCount = likeCount};
             PostViewModel postViewModel = Mapper.Map(postDTO);
             Assert.True(postDTO.isLikedByUser == postViewModel.IsLikedByUser &&
                 postViewModel.IsPromoted == postDTO.isPromoted &&
@@ -63,7 +64,7 @@ namespace WallProjectTest.ModelsTests
         [Theory]
         [InlineData(0,  "content", true,  10, "gawezi")]
         [InlineData(0,  "siema chcesz cos z avonu", true, 23, "znajoma z gimnazjum")]
-        [InlineData(0,  "contencik xD", false, 10, "test")]
+        [InlineData(0,  "contencik", false, 10, "test")]
         public void CommentDTOtoViewModel_Test(int id, string content, bool isLiked, int likeCount, string authorName)
         {
             CommentDTO postDTO = new CommentDTO { id = id, authorName = authorName, date = date, content = content, isLikedByUser = isLiked,  likesCount = likeCount };
@@ -82,7 +83,7 @@ namespace WallProjectTest.ModelsTests
         [InlineData(0, true, true, true, true, "testy@wp.pl", "test")]
         public void UserDTOtoViewModel_Test(int id, bool active, bool admin, bool enterpreneur, bool verified, string email, string name)
         {
-            UserDTO userDTO = new UserDTO { userId = id, isActive = active, isAdmin = admin, isEnterprenuer = enterpreneur, isVerified = verified, timestamp = date, userEmail = email, userName = name };
+            UserDTO userDTO = new UserDTO { id = id, isActive = active, isAdmin = admin, isEnterprenuer = enterpreneur, isVerified = verified, timestamp = date, userEmail = email, userName = name };
             UserViewModel user = Mapper.Map(userDTO);
             Assert.True(user.IsActive == userDTO.isActive &&
                 user.IsAdmin == userDTO.isAdmin &&
@@ -110,9 +111,9 @@ namespace WallProjectTest.ModelsTests
             {
                 new List<UserDTO>
                 {
-                    new UserDTO() { userId=0, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="cokowliek@cokolwiek.pl", userName="test"},
-                    new UserDTO() { userId=1, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="cokowlqewrewrwiek.pl", userName="test"},
-                    new UserDTO() { userId=3, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="hehe", userName="lol"},
+                    new UserDTO() { id=0, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="cokowliek@cokolwiek.pl", userName="test"},
+                    new UserDTO() { id=1, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="cokowlqewrewrwiek.pl", userName="test"},
+                    new UserDTO() { id=3, isActive=true, isAdmin=true, isEnterprenuer=true, isVerified=true, timestamp=new DateTime(2012,12,12,12,12,12), userEmail="hehe", userName="lol"},
                 }
 
              };
@@ -143,23 +144,21 @@ namespace WallProjectTest.ModelsTests
                 result.IsEnterprenuer == isItem.isEnterprenuer &&
                 result.IsVerified == isItem.isVerified &&
                 result.UserName == isItem.userName &&
-                result.UserID == isItem.userId
+                result.UserID == isItem.id
 
-)));
+                )));
         }
 
         [Theory]
         [MemberData(nameof(CategoryDTODataList))]
         public void CategoryDTOListToViewModel(List<CategoryDTO> categoryDTOs)
         {
-            List<CategoryViewModel> categories= Mapper.Map(categoryDTOs);
-
+            CategoriesDTO categoriesDTO = new CategoriesDTO { categories = categoryDTOs };
+            List<CategoryViewModel> categories= Mapper.Map(categoriesDTO);
             Assert.True(categories.AsQueryable().All(result => categoryDTOs.AsQueryable().Any(isItem =>
-    result.CategoryID == isItem.id &&
-    result.CategoryName == isItem.name
-
-
-)));
+            result.CategoryID == isItem.id &&
+            result.CategoryName == isItem.name
+            )));
         }
 
     }
