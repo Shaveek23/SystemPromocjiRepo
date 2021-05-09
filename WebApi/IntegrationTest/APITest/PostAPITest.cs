@@ -24,122 +24,124 @@ namespace IntegrationTest.APITest
         }
 
 
-        [Fact]
-        public async void Post_ValidCall()
-        {
-            //POST
-            var expectedPost = getPost("before edit");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
-            //GET
-            var beforePutGetRequestMessage = API.CreateRequest(HttpMethod.Get, $"post/{postID}");
-            var beforePutGetResult = await API.client.SendAsync(beforePutGetRequestMessage);
-            var beforePutJsonString = await beforePutGetResult.Content.ReadAsStringAsync();
-            var beforePutPost = JsonConvert.DeserializeObject<PostDTO>(beforePutJsonString);
+        //[Fact]
+        //public async void Post_ValidCall()
+        //{
+        //    //POST
+        //    var expectedPost = getPost("before edit");
+        //    var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
+        //    var PostResult = await client.SendAsync(PostRequestMessage);
+        //    var PostJsonString = await PostResult.Content.ReadAsStringAsync();
+        //    var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
-            //PUT
-            var editedPost = getPost("edited");
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+        //    //GET
+        //    var beforePutGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
+        //    var beforePutGetResult = await client.SendAsync(beforePutGetRequestMessage);
+        //    var beforePutJsonString = await beforePutGetResult.Content.ReadAsStringAsync();
+        //    var beforePutPost = JsonConvert.DeserializeObject<PostDTO>(beforePutJsonString);
 
-            //GET
-            var afterPutGetRequestMessage = API.CreateRequest(HttpMethod.Get, $"post/{postID}");
-            var afterPutGetResult = await API.client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            var afterPutPost = JsonConvert.DeserializeObject<PostDTO>(afterPutJsonString);
+        //    //PUT
+        //    var editedPost = getPost("edited");
+        //    var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+        //    var PutResult = await client.SendAsync(PutRequestMessage);
+        //    var PutJsonString = await PutResult.Content.ReadAsStringAsync();
+        //    var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+        //    //GET
+        //    var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
+        //    var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
+        //    var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
+        //    var afterPutPost = JsonConvert.DeserializeObject<PostDTO>(afterPutJsonString);
 
-            //GET
-            var afterDeleteGetRequestMessage = API.CreateRequest(HttpMethod.Get, $"post/{postID}");
-            var afterDeleteGetResult = await API.client.SendAsync(afterDeleteGetRequestMessage);
+        //    //DELETE
+        //    var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
+        //    var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+        //    var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
+        //    var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, beforePutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, afterDeleteGetResult.StatusCode);
+        //    //GET
+        //    var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
+        //    var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
 
-            Assert.Equal(postID, beforePutPost.id);
-            Assert.Equal(beforePutPost.content, expectedPost.Content);
-            Assert.Equal(afterPutPost.content, editedPost.Content);
-            Assert.True(isEdited);
-            Assert.True(isDeleted);
-        }
+        //    Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, beforePutGetResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.NotFound, afterDeleteGetResult.StatusCode);
 
-        [Fact]
-        public async void AllPosts_ValidCall()
-        {
-            //GET all
-            var beforePostGetRequestMessage = API.CreateRequest(HttpMethod.Get, "posts");
-            var beforePostGetResult = await API.client.SendAsync(beforePostGetRequestMessage);
-            var beforePostJsonString = await beforePostGetResult.Content.ReadAsStringAsync();
-            List<PostAPI> beforePostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(beforePostJsonString);
+        //    Assert.Equal(postID, beforePutPost.id);
+        //    Assert.Equal(beforePutPost.content, expectedPost.Content);
+        //    Assert.Equal(afterPutPost.content, editedPost.Content);
+        //    Assert.True(isEdited);
+        //    Assert.True(isDeleted);
+        //}
 
-            //POST
-            var expectedPost = getPost("before edit");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+        //[Fact]
+        //public async void AllPosts_ValidCall()
+        //{
+        //    //GET all
+        //    var beforePostGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
+        //    var beforePostGetResult = await client.SendAsync(beforePostGetRequestMessage);
+        //    var beforePostJsonString = await beforePostGetResult.Content.ReadAsStringAsync();
+        //    List<PostAPI> beforePostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(beforePostJsonString);
 
-            //GET all
-            var afterPostGetRequestMessage = API.CreateRequest(HttpMethod.Get, "posts");
-            var afterPostGetResult = await API.client.SendAsync(afterPostGetRequestMessage);
-            var afterPostJsonString = await afterPostGetResult.Content.ReadAsStringAsync();
-            List<PostAPI> afterPostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPostJsonString);
+        //    //POST
+        //    var expectedPost = getPost("before edit");
+        //    var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
+        //    var PostResult = await client.SendAsync(PostRequestMessage);
+        //    var PostJsonString = await PostResult.Content.ReadAsStringAsync();
+        //    var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
-            //PUT
-            var editedPost = getPost("edited");
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+        //    //GET all
+        //    var afterPostGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
+        //    var afterPostGetResult = await client.SendAsync(afterPostGetRequestMessage);
+        //    var afterPostJsonString = await afterPostGetResult.Content.ReadAsStringAsync();
+        //    List<PostAPI> afterPostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPostJsonString);
 
-            //GET all
-            var afterPutGetRequestMessage = API.CreateRequest(HttpMethod.Get, "posts");
-            var afterPutGetResult = await API.client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            List<PostAPI> afterPutPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPutJsonString);
+        //    //PUT
+        //    var editedPost = getPost("edited");
+        //    var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+        //    var PutResult = await client.SendAsync(PutRequestMessage);
+        //    var PutJsonString = await PutResult.Content.ReadAsStringAsync();
+        //    var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+        //    //GET all
+        //    var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
+        //    var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
+        //    var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
+        //    List<PostAPI> afterPutPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPutJsonString);
 
-            //GET all
-            var afterDeleteGetRequestMessage = API.CreateRequest(HttpMethod.Get, "posts");
-            var afterDeleteGetResult = await API.client.SendAsync(afterDeleteGetRequestMessage);
-            var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
-            List<PostAPI> afterDeletePosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterDeleteJsonString);
+        //    //DELETE
+        //    var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
+        //    var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+        //    var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
+        //    var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+
+        //    //GET all
+        //    var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
+        //    var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
+        //    var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
+        //    List<PostAPI> afterDeletePosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterDeleteJsonString);
+
 
             
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterDeleteGetResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
+        //    Assert.Equal(HttpStatusCode.OK, afterDeleteGetResult.StatusCode);
 
-            Assert.NotEmpty(beforePostPosts);
-            Assert.NotEmpty(afterPostPosts);
-            Assert.NotEmpty(afterPutPosts);
-            Assert.NotEmpty(afterDeletePosts);
+        //    Assert.NotEmpty(beforePostPosts);
+        //    Assert.NotEmpty(afterPostPosts);
+        //    Assert.NotEmpty(afterPutPosts);
+        //    Assert.NotEmpty(afterDeletePosts);
 
-            Assert.Equal(beforePostPosts.Count, afterDeletePosts.Count);
-            Assert.Equal(afterPostPosts.Count, afterPutPosts.Count);
-            Assert.Equal(beforePostPosts.Count + 1, afterPostPosts.Count);
+        //    Assert.Equal(beforePostPosts.Count, afterDeletePosts.Count);
+        //    Assert.Equal(afterPostPosts.Count, afterPutPosts.Count);
+        //    Assert.Equal(beforePostPosts.Count + 1, afterPostPosts.Count);
 
-        }
+        //}
 
         [Fact]
         public async void PostPost_InvalidCall_NoContent()
