@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Models.DTO;
+using WebApi.Services;
 using WebApi.Services.Services_Interfaces;
 
 namespace WebApi.Controllers
@@ -21,10 +22,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("categories")]
-        public ActionResult<IQueryable<CategoryDTO>> GetAll()
+        public ActionResult<Categories> GetAll()
         {
             var result = _categoryService.GetAll();
-            return new ControllerResult<IQueryable<CategoryDTO>>(result).GetResponse();
+            return new ControllerResult<Categories>(result).GetResponse();
         }
 
         [HttpGet("categories/{categoryId}")]

@@ -7,16 +7,10 @@ using System.Text;
 using WebApi.Models.DTO;
 using Xunit;
 
-namespace IntegrationTest
+namespace IntegrationTest.APITest
 {
     public class PostAPITest
-    {
-
-        HttpClient client = new HttpClient
-        {
-            BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/")
-        };
-
+    { 
         public PostAPI getPost(string content)
         {
             return new PostAPI {
@@ -29,16 +23,7 @@ namespace IntegrationTest
             };
         }
 
-        public HttpRequestMessage CreateRequest(HttpMethod method, string requestUri, object expected = null)
-        {
-            HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestUri);
-            requestMessage.Headers.Add("userId", "1"); //można zparametryzować
 
-            string jsonPost = JsonConvert.SerializeObject(expected);
-            requestMessage.Content = new StringContent(jsonPost, Encoding.UTF8, "application/json");
-
-            return requestMessage;
-        }
 
         //[Fact]
         //public async void Post_ValidCall()
@@ -139,6 +124,7 @@ namespace IntegrationTest
         //    var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
         //    List<PostAPI> afterDeletePosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterDeleteJsonString);
 
+
             
         //    Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
         //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
@@ -163,8 +149,8 @@ namespace IntegrationTest
             //POST
             var expectedPost = getPost("content");
                 expectedPost.Content = null;
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
         }
@@ -175,8 +161,8 @@ namespace IntegrationTest
             //POST
             var expectedPost = getPost("content");
                 expectedPost.Title = null;
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
         }
@@ -187,8 +173,8 @@ namespace IntegrationTest
             //POST
             var expectedPost = getPost("content");
             expectedPost.Category = null;
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
         }
@@ -199,8 +185,8 @@ namespace IntegrationTest
             //POST
             var expectedPost = getPost("content");
             expectedPost.IsPromoted = null;
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
         }
@@ -210,8 +196,8 @@ namespace IntegrationTest
             //POST
             var expectedPost = getPost("content");
             expectedPost.Datetime = null;
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
         }
@@ -221,9 +207,9 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
             PostRequestMessage.Headers.Clear();
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var jsonString = await PostResult.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
@@ -234,19 +220,19 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //DELETE Invalid
-            var InvalidDeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var InvalidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
                 InvalidDeleteRequestMessage.Headers.Clear();
-            var InvalidDeleteResult = await client.SendAsync(InvalidDeleteRequestMessage);
+            var InvalidDeleteResult = await API.client.SendAsync(InvalidDeleteRequestMessage);
 
             //DELETE Valid
-            var ValidDeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var ValidDeleteResult = await client.SendAsync(ValidDeleteRequestMessage);
+            var ValidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var ValidDeleteResult = await API.client.SendAsync(ValidDeleteRequestMessage);
             var ValidDeleteJsonString = await ValidDeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(ValidDeleteJsonString);
 
@@ -261,20 +247,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //DELETE Valid
-            var ValidDeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var ValidDeleteResult = await client.SendAsync(ValidDeleteRequestMessage);
+            var ValidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var ValidDeleteResult = await API.client.SendAsync(ValidDeleteRequestMessage);
             var ValidDeleteJsonString = await ValidDeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(ValidDeleteJsonString);
 
             //DELETE Invalid
-            var InvalidDeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var InvalidDeleteResult = await client.SendAsync(InvalidDeleteRequestMessage);
+            var InvalidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var InvalidDeleteResult = await API.client.SendAsync(InvalidDeleteRequestMessage);
 
             Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
             Assert.Equal(HttpStatusCode.OK, ValidDeleteResult.StatusCode);
@@ -288,20 +274,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
                 editedPost.Title = null;
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -316,20 +302,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
             editedPost.Content = null;
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -344,20 +330,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
             editedPost.Datetime = null;
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -372,20 +358,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
             editedPost.Category = null;
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -400,20 +386,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
             editedPost.IsPromoted = null;
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -428,20 +414,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //PUT
             var editedPost = getPost("edited");
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
                 PutRequestMessage.Headers.Clear();
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
@@ -456,21 +442,21 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
             //PUT
             var editedPost = getPost("edited");
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
             Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
@@ -483,20 +469,20 @@ namespace IntegrationTest
         {
             //POST
             var expectedPost = getPost("content");
-            var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await client.SendAsync(PostRequestMessage);
+            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostResult = await API.client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
+            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
 
             //GET
-            var PutRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
-            var PutResult = await client.SendAsync(PutRequestMessage);
+            var PutRequestMessage = API.CreateRequest(HttpMethod.Get, $"post/{postID}");
+            var PutResult = await API.client.SendAsync(PutRequestMessage);
 
             Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
             Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
