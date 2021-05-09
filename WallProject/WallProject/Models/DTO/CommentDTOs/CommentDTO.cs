@@ -15,6 +15,5 @@ namespace WallProject.Models.DTO
         public string authorName { get; set; }
         public int likesCount { get; set; }
         public bool isLikedByUser { get; set; }
-        public int postId { get; set; }
     }
 }
