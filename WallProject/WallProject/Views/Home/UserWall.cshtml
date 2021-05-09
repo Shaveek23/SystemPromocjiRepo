@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Privacy Policy";
 }
+ 
 <link rel="stylesheet" type="text/css" href="~/css/Wall.css" media="screen" />
 <head>
     <meta charset="utf-8">
@@ -36,8 +37,15 @@
 
                         @foreach (var category in Model.Categories)
                         {
-                            <div >
-                                <label> -@category.CategoryName </label>
+                            <div class="checkbox">
+                                @if (Model.SelectedCategories[category.CategoryID])
+                                {
+                                    <label><input type="checkbox" class="icheck" checked onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+                                }
+                                else
+                                {
+                                    <label><input type="checkbox" class="icheck" onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+                                }
                             </div>
                         }
 
@@ -71,102 +79,105 @@
                         <div class="panel-body">
                             @foreach (var post in Model.Posts)
                             {
-                            <div id="post_@post.Id">
-                                <!-- OBSZAR POJEDYNCZEGO POSTA -->
-                                <!-- Info -->
-                                <div style="text-align:right; color:@(post.IsPromoted ? "orangered": "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
-                                <div class="fb-user-thumb">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
-                                </div>
-
-                                <div class="fb-user-details">
-                                    <h3><a href="#" class="#">@post.OwnerName </a></h3>
-                                    <div style="color:grey"> Dodano: @post.Datetime </div>
-                                    <div style="text-align:right; color:chocolate">@Model.Categories[post.Category-1].CategoryName </div>
-                                </div>
-                                <div class="clearfix"></div>
-
-
-                                <!-- Content -->
-
-                                <p class="fb-user-status">
-                                    @post.Content
-                                </p>
-
-                                <!-- Liki itp -->
-
-                                <div class="fb-status-container fb-border">
-                                    <div class="fb-time-action">
-                                        <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "midnightblue" : "blue")">
-                                            @(post.IsLikedByUser ? "You like it!. Click to unlike.": "Like it!" )
-                                        </a>
-                                    </div>
-                                    <div class="fb-time-action like-info" style="text-align:right">
-                                        <a href="#">@post.Likes people like it.</a>
-                                    </div>
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="panel">
-                                    <div class="fb-status-container  fb-gray-bg">
-                                        <div><h3>Comments:</h3></div>
+                                if (Model.SelectedCategories[post.Category])
+                                {
+                                    <div id="post_@post.Id">
                                         <!-- OBSZAR POJEDYNCZEGO POSTA -->
-                                        <ul class="fb-comments">
-                                            @foreach (var comment in post.Comments)
-                                            {
-                                                <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
-                                                <li>
-                                                    <a href="#" class="cmt-thumb">
-                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                                    </a>
-                                                    <div class="cmt-details">
-                                                        <a href="#"><h5>@comment.OwnerName</h5></a>
-                                                        <br />
-                                                        <p class="fb-user-status">
-                                                            @comment.Content
-                                                        </p>
-                                                        <div style="overflow: hidden;">
-                                                            <p style="float: left; color:Highlight">
-                                                                @comment.Likes people like this.
-                                                            <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
-                                                                @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
-                                                            </a>
-                                                        </p>
-                                                        <p style="float: right;">@comment.Time</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+                                        <!-- Info -->
+                                        <div style="text-align:right; color:@(post.IsPromoted ? "orangered" : "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
+                                        <div class="fb-user-thumb">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
+                                        </div>
 
-                                        }
-                                            <!-- DODAJ KOMENTARZ -->
-                                            <li>
-                                                <a href="#" class="cmt-thumb">
-                                                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
-                                                </a>
-                                                <div class="cmt-form">
-                                                    <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
-                                                </div>
-
-                                                <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
-                                            </li>
-                                            <!-- DODAJ KOMENTARZ -->
-                                        </ul>
+                                        <div class="fb-user-details">
+                                            <h3><a href="#" class="#">@post.OwnerName </a></h3>
+                                            <div style="color:grey"> Dodano: @post.Datetime </div>
+                                            <div style="text-align:right; color:chocolate">@Model.Categories[post.Category - 1].CategoryName </div>
+                                        </div>
                                         <div class="clearfix"></div>
-                                        <hr />
-                                    </div>
-                                </div>
-                            </div>
-                                }
-                            </div>
-                        </div>
 
+
+                                        <!-- Content -->
+
+                                        <p class="fb-user-status">
+                                            @post.Content
+                                        </p>
+
+                                        <!-- Liki itp -->
+
+                                        <div class="fb-status-container fb-border">
+                                            <div class="fb-time-action">
+                                                <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "midnightblue" : "blue")">
+                                                    @(post.IsLikedByUser ? "You like it!. Click to unlike." : "Like it!" )
+                                                </a>
+                                            </div>
+                                            <div class="fb-time-action like-info" style="text-align:right">
+                                                <a href="#">@post.Likes people like it.</a>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="panel">
+                                            <div class="fb-status-container  fb-gray-bg">
+                                                <div><h3>Comments:</h3></div>
+                                                <!-- OBSZAR POJEDYNCZEGO POSTA -->
+                                                <ul class="fb-comments">
+                                                    @foreach (var comment in post.Comments)
+                                                    {
+                                                        <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+                                                        <li>
+                                                            <a href="#" class="cmt-thumb">
+                                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                                            </a>
+                                                            <div class="cmt-details">
+                                                                <a href="#"><h5>@comment.OwnerName</h5></a>
+                                                                <br />
+                                                                <p class="fb-user-status">
+                                                                    @comment.Content
+                                                                </p>
+                                                                <div style="overflow: hidden;">
+                                                                    <p style="float: left; color:Highlight">
+                                                                        @comment.Likes people like this.
+                                                                        <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
+                                                                            @(comment.IsLikedByUser ? "You like it! Click to unlike." : "Like this comment!" )
+                                                                        </a>
+                                                                    </p>
+                                                                    <p style="float: right;">@comment.Time</p>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+
+                                                    }
+                                                    <!-- DODAJ KOMENTARZ -->
+                                                    <li>
+                                                        <a href="#" class="cmt-thumb">
+                                                            <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
+                                                        </a>
+                                                        <div class="cmt-form">
+                                                            <textarea id="@("NewComment_" + post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
+                                                        </div>
+
+                                                        <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+                                                    </li>
+                                                    <!-- DODAJ KOMENTARZ -->
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </div>
+
+                </div>
             </div>
 
 
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+            <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+            <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+            <script type="text/javascript">
         function CreateNewPost(userId) {
             var postText = document.getElementById("NewPost").value;
             //postText = $("#NewPost").value;
@@ -250,5 +261,16 @@
             });
             location.reload(true);
         }
-    </script>
+
+           function ChooseCategory(categoryId) {
+
+            $.ajax({
+                url: '@Url.Action("ChangeCategoryFilterStatus", "Home")',
+                data: { "categoryId": categoryId }
+            });
+               location.reload(true);
+
+        }
+
+            </script>
 </body>

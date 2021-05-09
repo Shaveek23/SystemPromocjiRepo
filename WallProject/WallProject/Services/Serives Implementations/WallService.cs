@@ -12,7 +12,7 @@ namespace WallProject.Services.Serives_Implementations
 {
     public class WallService : IWallService
     {
-        
+
         private readonly IPostService _postService;
         private readonly IUserService _userService;
         private readonly ICategoryService _categoryService;
@@ -37,15 +37,15 @@ namespace WallProject.Services.Serives_Implementations
                           .OrderByDescending(x => x.IsPromoted).ThenByDescending(x => x.Datetime)
                           .ToList();
 
+            SessionData.WallModel.Posts = sortedPosts;
+            SessionData.WallModel.Owner = Owner.Result;
+            SessionData.WallModel.Categories = Categories.Result;
+            return new ServiceResult<WallViewModel>(SessionData.WallModel, System.Net.HttpStatusCode.OK, null);
+        }
 
-            WallViewModel wallVM = new WallViewModel
-            {
-                Posts = sortedPosts,
-                Owner = Owner.Result,
-                Categories = Categories.Result,
-                SelectedCategories = new bool[Categories.Result.Count()]          
-            };
-            return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
+        public void ChangeCategoryFilterStatus(int categoryId)
+        {
+            SessionData.WallModel.SelectedCategories[categoryId] = !SessionData.WallModel.SelectedCategories[categoryId];
         }
     }
 }

@@ -96,12 +96,12 @@ namespace WallProjectTest.ModelsTests
         [Theory]
         [InlineData(0, "cokolwiek")]
         [InlineData(3, "kategoria")]
-        [InlineData(int.MaxValue, "kategoria o maksymalnym category id")]
+        [InlineData(int.MaxValue, "kategoria o maksymalnym category categoryId")]
         public void CategoryDTOToViewModel_Test(int id, string name)
         {
-            CategoryDTO categoryDTO = new CategoryDTO { id = id, name = name };
+            CategoryDTO categoryDTO = new CategoryDTO { categoryId = id, name = name };
             CategoryViewModel category = Mapper.Map(categoryDTO);
-            Assert.True(category.CategoryID == categoryDTO.id && category.CategoryName == categoryDTO.name);
+            Assert.True(category.CategoryID == categoryDTO.categoryId && category.CategoryName == categoryDTO.name);
         }
 
         public static IEnumerable<object[]> UserDTODataList()
@@ -124,9 +124,9 @@ namespace WallProjectTest.ModelsTests
             {
                 new List<CategoryDTO>
                 {
-                    new CategoryDTO{id=0, name="Poziomki"},
-                    new CategoryDTO{id=1, name="po"},
-                    new CategoryDTO{id=2, name="ziomki"},
+                    new CategoryDTO{categoryId=0, name="Poziomki"},
+                    new CategoryDTO{categoryId=1, name="po"},
+                    new CategoryDTO{categoryId=2, name="ziomki"},
                 }
 
              };
@@ -155,7 +155,7 @@ namespace WallProjectTest.ModelsTests
             List<CategoryViewModel> categories= Mapper.Map(categoryDTOs);
 
             Assert.True(categories.AsQueryable().All(result => categoryDTOs.AsQueryable().Any(isItem =>
-    result.CategoryID == isItem.id &&
+    result.CategoryID == isItem.categoryId &&
     result.CategoryName == isItem.name
 
 

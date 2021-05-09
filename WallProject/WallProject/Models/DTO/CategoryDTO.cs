@@ -7,7 +7,7 @@ namespace WallProject.Models.DTO
 {
     public class CategoryDTO
     {
-        public int id { get; set; }
+        public int categoryId { get; set; }
         public string name { get; set; }
     }
 }
