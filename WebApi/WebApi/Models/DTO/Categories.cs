@@ -7,6 +7,6 @@ namespace WebApi.Models.DTO
 {
     public class Categories
     {
-        public IQueryable<CategoryDTO> categories;
+        public IQueryable<CategoryDTO> categories { get; set; }
     }
 }
