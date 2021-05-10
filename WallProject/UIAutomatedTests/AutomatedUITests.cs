@@ -124,6 +124,7 @@ namespace UIAutomatedTests
                 {
                     id = commentContent.GetProperty("id");
                     foundContent = currText;
+                    break;
                 }
             }
 
