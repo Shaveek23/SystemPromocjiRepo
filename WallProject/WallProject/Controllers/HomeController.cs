@@ -32,9 +32,7 @@ namespace WallProject.Controllers
         {
             ServiceResult<WallViewModel> wall = await _service.getWall(1);
             if (wall.IsOk())
-            {
                 return View(wall.Result);
-            }
             else
                 return View("Privacy");
         }
@@ -56,21 +54,7 @@ namespace WallProject.Controllers
         {
             ServiceResult<WallViewModel> wall = await _service.getWall(userID);
             if (wall.IsOk())
-            {
                 return View(wall.Result);
-            }
-            else
-                return View("Privacy", wall.Message);
-        }
-
-        public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryId)
-        {
-            _service.ChangeCategoryFilterStatus(categoryId);
-            ServiceResult<WallViewModel> wall = await _service.getWall(1);
-            if (wall.IsOk())
-            {
-                return View(wall.Result);
-            }
             else
                 return View("Privacy", wall.Message);
         }
