@@ -102,5 +102,15 @@ namespace WallProject.Models.Mapper
             }
             return VMlist;
         }
+
+        public static List<CategoryViewModel> Map(List<CategoryDTO> categoryDTOs)
+        {
+            List<CategoryViewModel> VMlist = new List<CategoryViewModel>();
+            foreach (var item in categoryDTOs)
+            {
+                VMlist.Add(Map(item));
+            }
+            return VMlist;
+        }
     }
 }

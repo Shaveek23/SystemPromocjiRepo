@@ -20,57 +20,57 @@
             <div class="panel-header"> <h1 class="text-header">System Promocji</h1></div>
         </div>
         @*filtry*@
-        <div class="row">
-            <div class="col-sm-3">
+    <div class="row">
+        <div class="col-sm-3">
 
-                <div class="filters">
+            <div class="filters">
 
-                    <div class="panel">
+                <div class="panel">
 
-                        <!-- BEGIN FILTERS -->
-                        <h3 class="grid-title">Hello @Model.Owner.UserName!</h3>
-                        <hr>
+                    <!-- BEGIN FILTERS -->
+                    <h3 class="grid-title">Hello @Model.Owner.UserName!</h3>
+                    <hr>
 
-                        <!-- BEGIN FILTER BY CATEGORY -->
-                        <h4>All categories:</h4>
+                    <!-- BEGIN FILTER BY CATEGORY -->
+                    <h4>All categories:</h4>
 
-                        @foreach (var category in Model.Categories)
-                        {
-                            <div >
-                                <label> -@category.CategoryName </label>
-                            </div>
-                        }
-
-                    </div>
-                    <!-- END FILTERS -->
-
-
+                    @foreach (var category in Model.Categories)
+                    {
+                        <div>
+                            <label> -@category.CategoryName </label>
+                        </div>
+                    }
 
                 </div>
-            </div>
+                <!-- END FILTERS -->
 
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="panel profile-info">
-                        <form>
-                            <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today, @Model.Owner.UserName.Split().First()?"></textarea>
-                        </form>
-                        <footer class="panel-footer">
-                            <button id="PostBtnId" onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
-                            <ul class="nav nav-pills">
-                                <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
-                                <li><a href="#"><i class="fa fa-camera"></i></a></li>
-                                <li><a href="#"><i class=" fa fa-film"></i></a></li>
-                                <li><a href="#"><i class="fa fa-microphone"></i></a></li>
-                            </ul>
-                        </footer>
-                    </div>
-                    <div class="row" style="background-color:black; height:5px; width:1000px; "></div>
-                    <br /><hr />
-                    <div class="panel">
-                        <div class="panel-body">
-                            @foreach (var post in Model.Posts)
-                            {
+
+
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row">
+                <div class="panel profile-info">
+                    <form>
+                        <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today, @Model.Owner.UserName.Split().First()?"></textarea>
+                    </form>
+                    <footer class="panel-footer">
+                        <button id="PostBtnId" onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
+                        <ul class="nav nav-pills">
+                            <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
+                            <li><a href="#"><i class="fa fa-camera"></i></a></li>
+                            <li><a href="#"><i class=" fa fa-film"></i></a></li>
+                            <li><a href="#"><i class="fa fa-microphone"></i></a></li>
+                        </ul>
+                    </footer>
+                </div>
+                <div class="row" style="background-color:black; height:5px; width:1000px; "></div>
+                <br /><hr />
+                <div class="panel">
+                    <div class="panel-body">
+                        @foreach (var post in Model.Posts)
+                        {
                             <div id="post_@post.Id">
                                 <!-- OBSZAR POJEDYNCZEGO POSTA -->
                                 <!-- Info -->
@@ -82,7 +82,7 @@
                                 <div class="fb-user-details">
                                     <h3><a href="#" class="#">@post.OwnerName </a></h3>
                                     <div style="color:grey"> Dodano: @post.Datetime </div>
-                                    <div style="text-align:right; color:chocolate">@Model.Categories[post.Category-1].CategoryName </div>
+                                    <div style="text-align:right; color:chocolate">@Model.Categories[post.Category - 1].CategoryName </div>
                                 </div>
                                 <div class="clearfix"></div>
 
@@ -114,30 +114,34 @@
                                             @foreach (var comment in post.Comments)
                                             {
                                                 <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+
                                                 <li>
+
                                                     <a href="#" class="cmt-thumb">
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
                                                     </a>
                                                     <div class="cmt-details">
                                                         <a href="#"><h5>@comment.OwnerName</h5></a>
                                                         <br />
-                                                        <p class="fb-user-status">
+
+                                                        <p id="@comment.Id" class="fb-user-status">
+
                                                             @comment.Content
                                                         </p>
                                                         <div style="overflow: hidden;">
                                                             <p style="float: left; color:Highlight">
                                                                 @comment.Likes people like this.
-                                                            <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
-                                                                @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
-                                                            </a>
-                                                        </p>
-                                                        <p style="float: right;">@comment.Time</p>
+                                                                <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
+                                                                    @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
+                                                                </a>
+                                                            </p>
+                                                            <p style="float: right;">@comment.Time</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                            <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+                                                </li>
+                                                <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
 
-                                        }
+                                            }
                                             <!-- DODAJ KOMENTARZ -->
                                             <li>
                                                 <a href="#" class="cmt-thumb">
@@ -147,26 +151,28 @@
                                                     <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
                                                 </div>
 
-                                                <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+
+                                                <button id="AddNewComment" onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
                                             </li>
                                             <!-- DODAJ KOMENTARZ -->
                                         </ul>
+
                                         <div class="clearfix"></div>
                                         <hr />
                                     </div>
                                 </div>
                             </div>
-                                }
-                            </div>
-                        </div>
-
+                        }
                     </div>
+                </div>
+
             </div>
+        </div>
 
 
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
         function CreateNewPost(userId) {
             var postText = document.getElementById("NewPost").value;
             //postText = $("#NewPost").value;
@@ -250,5 +256,5 @@
             });
             location.reload(true);
         }
-    </script>
+        </script>
 </body>

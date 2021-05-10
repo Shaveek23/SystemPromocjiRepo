@@ -1,8 +1,10 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using Xunit;
 
 namespace UIAutomatedTests
@@ -12,7 +14,9 @@ namespace UIAutomatedTests
         private readonly IWebDriver _driver;
         public AutomatedUITests()
         {
-            _driver = new ChromeDriver("driver");
+           _driver = new ChromeDriver("driver");
+           
+     
         }
         public void Dispose()
         {
@@ -36,6 +40,7 @@ namespace UIAutomatedTests
 
             _driver.Navigate()
                 .GoToUrl("https://localhost:44399/getWall/1");
+        
 
             // Dodanie nowego posta:
             var textBox = _driver.FindElement(By.Id("NewPost"));
@@ -77,13 +82,65 @@ namespace UIAutomatedTests
             //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/api/");
+                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
             }
 
             Assert.Equal(foundContent, postRandomContent);
+            Assert.True(isDeleted);
+
+        }
+        [Fact]
+        public async void Create_Comment()
+        {
+            string commentRandomContent = "Nowy komentarz utworzony przez selenium: " + RandomString(20);
+
+            _driver.Navigate()
+                .GoToUrl("https://localhost:44399/getWall/1");
+            var textBox = _driver.FindElement(By.CssSelector("textarea[id ^= 'NewComment_']"));
+
+            textBox.Click();
+
+            textBox.Clear();
+            textBox.SendKeys(commentRandomContent);
+            var commentButton = _driver.FindElement(By.Id("AddNewComment"));
+
+            commentButton.Click();
+
+            _driver.Navigate()
+               .GoToUrl("https://localhost:44399/getWall/1");
+
+
+            var commentsContents = _driver.FindElements(By.ClassName("fb-user-status"));
+            // Odnalezienie dodanego komentarza
+            string id = "";
+            string foundContent = "";
+            foreach (var commentContent in commentsContents)
+            {
+                var currText = commentContent.Text;
+                if (currText == commentRandomContent)
+                {
+                    id = commentContent.GetProperty("id");
+                    foundContent = currText;
+                    break;
+                }
+            }
+
+            
+         
+            bool isDeleted;
+            //Wysy³anie Request z delete
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
+                client.DefaultRequestHeaders.Add("userID", "1");
+                var response = await client.DeleteAsync($"comment/{id}");
+                isDeleted = response.IsSuccessStatusCode;
+            }
+
+            Assert.Equal(foundContent, commentRandomContent);
             Assert.True(isDeleted);
 
         }

@@ -26,10 +26,12 @@ namespace WallProjectTest.ModelsTests
         
         DateTime date = new DateTime(2012, 12, 12, 12, 12, 12);
         [Theory]
-        [InlineData(0,"tytul","content", true, true, 10, "gawezi")]
-        [InlineData(0,"avon","siema chcesz cos z avonu",true, false, 23, "znajoma z gimnazjum")]
-        [InlineData(0,"no fajnie","contencik",  false, true, 10, "test")]
-        public void PostDTOtoViewModel_Test(int id, string title, string content,bool isPromoted, bool isLiked, int likeCount, string authorName )
+
+        [InlineData(0, "tytul", "content", true, true, 10, "gawezi")]
+        [InlineData(0, "avon", "siema chcesz cos z avonu", true, false, 23, "znajoma z gimnazjum")]
+        [InlineData(0, "no fajnie", "contencik xD", false, true, 10, "test")]
+        public void PostDTOtoViewModel_Test(int id, string title, string content, bool isPromoted, bool isLiked, int likeCount, string authorName)
+
         {
             PostDTO postDTO = new PostDTO { id = id, author = authorName, datetime = date, content = content, isLikedByUser = isLiked, isPromoted = isPromoted, title = title, likesCount = likeCount};
             PostViewModel postViewModel = Mapper.Map(postDTO);
@@ -62,12 +64,14 @@ namespace WallProjectTest.ModelsTests
 
 
         [Theory]
-        [InlineData(0,  "content", true,  10, "gawezi")]
-        [InlineData(0,  "siema chcesz cos z avonu", true, 23, "znajoma z gimnazjum")]
-        [InlineData(0,  "contencik", false, 10, "test")]
+
+        [InlineData(0, "content", true, 10, "gawezi")]
+        [InlineData(0, "siema chcesz cos z avonu", true, 23, "znajoma z gimnazjum")]
+        [InlineData(0, "contencik xD", false, 10, "test")]
+
         public void CommentDTOtoViewModel_Test(int id, string content, bool isLiked, int likeCount, string authorName)
         {
-            CommentDTO postDTO = new CommentDTO { id = id, authorName = authorName, date = date, content = content, isLikedByUser = isLiked,  likesCount = likeCount };
+            CommentDTO postDTO = new CommentDTO { id = id, authorName = authorName, date = date, content = content, isLikedByUser = isLiked, likesCount = likeCount };
             CommentViewModel postViewModel = Mapper.Map(postDTO);
             Assert.True(postDTO.isLikedByUser == postViewModel.IsLikedByUser &&
                 postViewModel.IsLikedByUser == postDTO.isLikedByUser &&
@@ -138,9 +142,9 @@ namespace WallProjectTest.ModelsTests
         public void UserDTOListToViewModel(List<UserDTO> userDTOs)
         {
             List<UserViewModel> users = Mapper.Map(userDTOs);
-            
+
             Assert.True(users.AsQueryable().All(result => userDTOs.AsQueryable().Any(isItem =>
-                result.IsActive== isItem.isActive &&
+                result.IsActive == isItem.isActive &&
                 result.IsEnterprenuer == isItem.isEnterprenuer &&
                 result.IsVerified == isItem.isVerified &&
                 result.UserName == isItem.userName &&
@@ -153,8 +157,10 @@ namespace WallProjectTest.ModelsTests
         [MemberData(nameof(CategoryDTODataList))]
         public void CategoryDTOListToViewModel(List<CategoryDTO> categoryDTOs)
         {
+
             CategoriesDTO categoriesDTO = new CategoriesDTO { categories = categoryDTOs };
             List<CategoryViewModel> categories= Mapper.Map(categoriesDTO);
+
             Assert.True(categories.AsQueryable().All(result => categoryDTOs.AsQueryable().Any(isItem =>
             result.CategoryID == isItem.id &&
             result.CategoryName == isItem.name
