@@ -87,7 +87,7 @@ namespace WallProject.Models.Mapper
         {
             return new CategoryViewModel
             {
-                CategoryID = categoryDTO.categoryId,
+                CategoryID = categoryDTO.id,
                 CategoryName = categoryDTO.name
             };
         }

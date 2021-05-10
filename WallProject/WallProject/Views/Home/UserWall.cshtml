@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Privacy Policy";
 }
- 
 <link rel="stylesheet" type="text/css" href="~/css/Wall.css" media="screen" />
 <head>
     <meta charset="utf-8">
@@ -37,15 +36,8 @@
 
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="checkbox">
-                                @if (Model.SelectedCategories[category.CategoryID])
-                                {
-                                    <label><input type="checkbox" class="icheck" checked onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
-                                }
-                                else
-                                {
-                                    <label><input type="checkbox" class="icheck" onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
-                                }
+                            <div >
+                                <label> -@category.CategoryName </label>
                             </div>
                         }
 
@@ -80,8 +72,10 @@
                             @foreach (var post in Model.Posts)
                             {
 
+
                             <div id="post_@post.Id">
                                 <!-- OBSZAR POJEDYNCZEGO POSTA -->
+
 
                                 <!-- Info -->
                                 <div style="text-align:right; color:@(post.IsPromoted ? "orangered": "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
@@ -124,14 +118,18 @@
                                             @foreach (var comment in post.Comments)
                                             {
                                                 <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
+
                                                 <li> 
+
                                                     <a href="#" class="cmt-thumb">
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
                                                     </a>
                                                     <div class="cmt-details">
                                                         <a href="#"><h5>@comment.OwnerName</h5></a>
                                                         <br />
+
                                                         <p  id="@comment.Id" class="fb-user-status">
+
                                                             @comment.Content
                                                         </p>
                                                         <div style="overflow: hidden;">
@@ -157,6 +155,7 @@
                                                     <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
                                                 </div>
 
+
                                                 <button id="AddNewComment" onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
                                             </li>
                                             <!-- DODAJ KOMENTARZ -->
@@ -166,19 +165,24 @@
                                                 <hr />
                                             </div>
                                         </div>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
 
-                </div>
+                                                <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+                                            </li>
+
+                                    </div>
+                                </div>
+                            </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
             </div>
 
 
-            <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-            <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-            <script type="text/javascript">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
         function CreateNewPost(userId) {
             var postText = document.getElementById("NewPost").value;
             //postText = $("#NewPost").value;
@@ -262,16 +266,5 @@
             });
             location.reload(true);
         }
-
-           function ChooseCategory(categoryId) {
-
-            $.ajax({
-                url: '@Url.Action("ChangeCategoryFilterStatus", "Home")',
-                data: { "categoryId": categoryId }
-            });
-               location.reload(true);
-
-        }
-
-            </script>
+    </script>
 </body>
