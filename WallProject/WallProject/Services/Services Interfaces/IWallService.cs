@@ -9,6 +9,8 @@ namespace WallProject.Services.Services_Interfaces
     public interface IWallService
     {
         public Task<ServiceResult<WallViewModel>> getWall(int userID);
+        public void ChangeCategoryFilterStatus(int categoryId);
+
 
     }
 }

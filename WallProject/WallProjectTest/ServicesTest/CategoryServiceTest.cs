@@ -32,9 +32,8 @@ namespace WallProjectTest.ServicesTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("{\"categories\":[{\"id\":1,\"name\":\"Obuwdsavcie\"},{\"id\":2,\"name\":\"RTV/AGD\"}," +
-                    "{\"id\":3,\"name\":\"ElektVZXCXZCXZronika\"},{\"id\":4,\"name\":\"Odziez\"}," +
-                    "{\"id\":5,\"name\":\"Telefdsadsadsaony\"},{\"id\":6,\"name\":\"dasdsa\"}]}")
+                    Content = new StringContent("[{\"categoryId\":1,\"name\":\"cokolwiek\"}," +
+                    "{\"categoryId\":2,\"name\":\"cokolwiekxD\"}]")
                 });
 
             var client = new HttpClient(mockHttpMessageHandler.Object);
