@@ -114,14 +114,14 @@
                                             @foreach (var comment in post.Comments)
                                             {
                                                 <!-- OBSZAR POJEDYNCZEGO KOMENTARZA -->
-                                                <li>
+                                                <li> 
                                                     <a href="#" class="cmt-thumb">
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
                                                     </a>
                                                     <div class="cmt-details">
                                                         <a href="#"><h5>@comment.OwnerName</h5></a>
                                                         <br />
-                                                        <p class="fb-user-status">
+                                                        <p  id="@comment.Id" class="fb-user-status">
                                                             @comment.Content
                                                         </p>
                                                         <div style="overflow: hidden;">
@@ -147,7 +147,7 @@
                                                     <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
                                                 </div>
 
-                                                <button onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+                                                <button id="AddNewComment" onclick="AddComment( @post.Id,@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
                                             </li>
                                             <!-- DODAJ KOMENTARZ -->
                                         </ul>
