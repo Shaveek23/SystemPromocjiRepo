@@ -36,8 +36,15 @@
 
                     @foreach (var category in Model.Categories)
                     {
-                        <div>
-                            <label> -@category.CategoryName </label>
+                        <div class="checkbox">
+                            @if (Model.SelectedCategories[category.CategoryID])
+                            {
+                                <label><input type="checkbox" class="icheck" checked onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+                            }
+                            else
+                            {
+                                <label><input type="checkbox" class="icheck" onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+                            }
                         </div>
                     }
 
@@ -71,10 +78,12 @@
                     <div class="panel-body">
                         @foreach (var post in Model.Posts)
                         {
+                            if (Model.SelectedCategories[post.Category])
+                            {
                             <div id="post_@post.Id">
                                 <!-- OBSZAR POJEDYNCZEGO POSTA -->
                                 <!-- Info -->
-                                <div style="text-align:right; color:@(post.IsPromoted ? "orangered": "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
+                                <div style="text-align:right; color:@(post.IsPromoted ? "orangered" : "grey")">@(post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
                                 <div class="fb-user-thumb">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
                                 </div>
@@ -98,7 +107,7 @@
                                 <div class="fb-status-container fb-border">
                                     <div class="fb-time-action">
                                         <a href="#" onclick="LikePost(@post.Id, @Model.Owner.UserID, @(post.IsLikedByUser ? "false" : "true")  )" style="color:@(post.IsLikedByUser ? "midnightblue" : "blue")">
-                                            @(post.IsLikedByUser ? "You like it!. Click to unlike.": "Like it!" )
+                                            @(post.IsLikedByUser ? "You like it!. Click to unlike." : "Like it!" )
                                         </a>
                                     </div>
                                     <div class="fb-time-action like-info" style="text-align:right">
@@ -132,7 +141,7 @@
                                                             <p style="float: left; color:Highlight">
                                                                 @comment.Likes people like this.
                                                                 <a href="#" class="btn-block" onclick="LikeComment( @comment.Id, @Model.Owner.UserID, @(comment.IsLikedByUser ? "false" : "true") )">
-                                                                    @(comment.IsLikedByUser ? "You like it! Click to unlike.": "Like this comment!" )
+                                                                    @(comment.IsLikedByUser ? "You like it! Click to unlike." : "Like this comment!" )
                                                                 </a>
                                                             </p>
                                                             <p style="float: right;">@comment.Time</p>
@@ -148,7 +157,7 @@
                                                     <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
                                                 </a>
                                                 <div class="cmt-form">
-                                                    <textarea id="@("NewComment_"+post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
+                                                    <textarea id="@("NewComment_" + post.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
                                                 </div>
 
 
@@ -162,6 +171,7 @@
                                     </div>
                                 </div>
                             </div>
+                            }
                         }
                     </div>
                 </div>
@@ -255,6 +265,16 @@
                 }
             });
             location.reload(true);
+            }
+
+           function ChooseCategory(categoryId) {
+
+            $.ajax({
+                url: '@Url.Action("ChangeCategoryFilterStatus", "Home")',
+                data: { "categoryId": categoryId }
+            });
+               location.reload(true);
+
         }
         </script>
 </body>

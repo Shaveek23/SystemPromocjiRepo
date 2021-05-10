@@ -95,5 +95,17 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
+        public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryId)
+        {
+            _service.ChangeCategoryFilterStatus(categoryId);
+            ServiceResult<WallViewModel> wall = await _service.getWall(1);
+            if (wall.IsOk())
+            {
+                return View(wall.Result);
+            }
+            else
+                return View("Privacy", wall.Message);
+        }
     }
+
 }
