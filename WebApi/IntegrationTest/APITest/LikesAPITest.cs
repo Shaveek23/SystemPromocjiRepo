@@ -41,6 +41,7 @@ namespace IntegrationTest.APITest
             public int postId;
         }
 
+        /*
         private async Task<int> PreparePost()
         {
             var post = new PostAPI
@@ -202,6 +203,6 @@ namespace IntegrationTest.APITest
 
 
 
-
+        */
     }
 }

@@ -6,28 +6,34 @@ using System.Net.Http;
 using System.Text;
 using WebApi.Models.DTO;
 using Xunit;
-
+using IntegrationTest.APITest.Models.Category;
 namespace IntegrationTest.APITest
 {
 
-    public class CategoryAPITest
+    public class CategoryAPITest : APItester<CategoryAPI_get, CategoryAPI_get> //TO DO: może coś mądrzejszego można, ale działa
     {
+
+        #region GET
         [Fact]
         public async void Categories_ValidCall()
         {
-            var requestMessage = API.CreateRequest(HttpMethod.Get, "categories");
-            var result = await API.client.SendAsync(requestMessage);
-            var jsonString = await result.Content.ReadAsStringAsync();
-            var actual = JsonConvert.DeserializeObject<Categories>(jsonString);
+            HttpStatusCode statusCode;
+            CategoryAPI_get categories;
 
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.NotNull(actual);
-            Assert.NotEmpty(actual.categories);
-            foreach (var category in actual.categories)
+            //GET
+            (categories, statusCode) = await Get("categories");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.NotNull(categories.categories);
+            Assert.NotEmpty(categories.categories);
+            foreach (var category in categories.categories)
             {
                 Assert.NotNull(category.Name);
                 Assert.NotEqual("", category.Name);
             }
         }
+        #endregion
+
     }
 }

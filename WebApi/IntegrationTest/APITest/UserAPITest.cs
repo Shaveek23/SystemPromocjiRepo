@@ -1,4 +1,5 @@
-﻿using IntegrationTest.APITest.Models;
+﻿using IntegrationTest.APITest.Models.User;
+using IntegrationTest.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,248 +11,470 @@ using Xunit;
 
 namespace IntegrationTest.APITest
 {
-    public class UserAPITest
+    public class UserAPITest : APItester<UserAPI_get, UserAPI_post>
     {
-
-        HttpClient client = new HttpClient
+        public UserAPI_post GetUser(string userName = "userName")
         {
-            BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/")
-        };
-
-        public UserApi getUser(string userName)
-        {
-            return new UserApi
+            return new UserAPI_post
             {
-                UserName = userName,
-                UserEmail = "damian@bis.pl",
-                Timestamp = new DateTime(2008, 3, 1, 7, 0, 0),
-                IsAdmin = false,
-                IsEntrepreneur = false,
-                IsVerified = true,
-                IsActive = true
+                userName = userName,
+                userEmail = "damian@bis.pl",
+                timestamp = DateTime.Now,
+                isAdmin = false,
+                isEntrepreneur = false,
+                isVerified = true,
+                isActive = true
             };
         }
-        public LikeApi getLike()
-        {
-            return new LikeApi
-            {
-                like = true
-            };
-        }
-
+        #region ALL
         [Fact]
         public async void User_ValidCall()
         {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isPuted, isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            UserAPI_get userAfterPost, userAfterPut;
+
             //POST
-            var expectedUser = getUser("created user");
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-            var UserJsonString = await UserResult.Content.ReadAsStringAsync();
-            var UserId = JsonConvert.DeserializeObject<int>(UserJsonString);
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
-            var beforePutGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, $"users/{UserId}");
-            var beforePutGetResult = await client.SendAsync(beforePutGetRequestMessage);
-            var beforePutJsonString = await beforePutGetResult.Content.ReadAsStringAsync();
-            var beforePutUser = JsonConvert.DeserializeObject<UserDTO>(beforePutJsonString);
+            (userAfterPost, statusCode) = await Get($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            var editedUser = getUser("edited username");
-            var PutRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Put, $"users/{UserId}", editedUser);
-            var PutResult = await client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            (isPuted, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
-            var afterPutGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, $"users/{UserId}");
-            var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            var afterPutUser = JsonConvert.DeserializeObject<UserDTO>(afterPutJsonString);
+            (userAfterPut, statusCode) = await Get($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            var DeleteRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Delete, $"users/{UserId}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
             //GET
-            var afterDeleteGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, $"users/{UserId}");
-            var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
+            (_, statusCode) = await Get($"users/{userID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, UserResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, beforePutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, afterDeleteGetResult.StatusCode);
-
-            Assert.Equal(UserId, beforePutUser.ID);
-            Assert.Equal(beforePutUser.UserName, expectedUser.UserName);
-            Assert.Equal(afterPutUser.UserName, editedUser.UserName);
-            Assert.True(isEdited);
+            Assert.Equal(userID, userAfterPost.id);
+            Assert.Equal(userToPost.userName, userAfterPost.userName);
+            Assert.Equal(userToPut.userName, userAfterPut.userName);
+            Assert.True(isPuted);
             Assert.True(isDeleted);
 
         }
+        
         [Fact]
         public async void AllUsers_ValidCall()
         {
-            //Getall
-            var beforePostGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, "users");
-            var beforePostGetResult = await client.SendAsync(beforePostGetRequestMessage);
-            var beforePostJsonString = await beforePostGetResult.Content.ReadAsStringAsync();
-            List<UserDTO> beforePostUsers = JsonConvert.DeserializeObject<List<UserDTO>>(beforePostJsonString);
+            HttpStatusCode statusCode;
+            int userID;
+            bool isPuted, isDeleted;
+            UserAPI_post postToPost = GetUser("before edit");
+            UserAPI_post postToPut = GetUser("edited");
+            List<UserAPI_get> users, usersAfterPost, usersAfterPut, usersAfterDelete;
+
+
+            //GET ALL
+            (users, statusCode) = await GetAll("users");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //POST
-            var expectedUser = getUser("New user to list");
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-            var UserJsonString = await UserResult.Content.ReadAsStringAsync();
-            var UserId = JsonConvert.DeserializeObject<int>(UserJsonString);
+            (userID, statusCode) = await Post("users", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
-
-            var afterPostGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, "users");
-            var afterPostGetResult = await client.SendAsync(afterPostGetRequestMessage);
-            var afterPostJsonString = await afterPostGetResult.Content.ReadAsStringAsync();
-            List<UserDTO> afterPostUsers = JsonConvert.DeserializeObject<List<UserDTO>>(afterPostJsonString);
+            //GET ALL
+            (usersAfterPost, statusCode) = await GetAll("users");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            var editedUser = getUser("edited");
-            var PutRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Put, $"users/{UserId}", editedUser);
-            var PutResult = await client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            (isPuted, statusCode) = await Put($"users/{userID}", postToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
-
-            var afterPutGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, "users");
-            var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            List<UserDTO> afterPutUsers = JsonConvert.DeserializeObject<List<UserDTO>>(afterPutJsonString);
+            //GET ALL
+            (usersAfterPut, statusCode) = await GetAll("users");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            var DeleteRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Delete, $"users/{UserId}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
+            //GET ALL
+            (usersAfterDelete, statusCode) = await GetAll("users");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            var afterDeleteGetRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, "users");
-            var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
-            var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
-            List<UserDTO> afterDeleteUsers = JsonConvert.DeserializeObject<List<UserDTO>>(afterDeleteJsonString);
+            Assert.True(isPuted);
+            Assert.True(isDeleted);
 
-            Assert.Equal(HttpStatusCode.OK, UserResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterDeleteGetResult.StatusCode);
+            Assert.NotEmpty(users);
+            Assert.NotEmpty(usersAfterPost);
+            Assert.NotEmpty(usersAfterPut);
+            Assert.NotEmpty(usersAfterDelete);
 
-            Assert.NotEmpty(beforePostUsers);
-            Assert.NotEmpty(afterPostUsers);
-            Assert.NotEmpty(afterPutUsers);
-            Assert.NotEmpty(afterDeleteUsers);
+            Assert.Equal(users.Count, usersAfterDelete.Count);
+            Assert.Equal(usersAfterPost.Count, usersAfterPut.Count);
+            Assert.Equal(users.Count + 1, usersAfterPost.Count);
+        }
+        #endregion
 
-            Assert.Equal(beforePostUsers.Count, afterDeleteUsers.Count);
-            Assert.Equal(afterPostUsers.Count, afterPutUsers.Count);
-            Assert.Equal(beforePostUsers.Count + 1, afterPostUsers.Count);
+        #region GET
+        [Fact]
+        public async void GetUser_InvalidCall_NoIdFound()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post post = GetUser();
+
+            //POST
+            (userID, statusCode) = await Post("users", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Get($"users/{userID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+
+            Assert.True(isDeleted);
         }
 
+        [Fact]
+        public async void GetPost_ValidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post post = GetUser();
 
+            //POST
+            (userID, statusCode) = await Post("users", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Get($"users/{userID}", null);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+
+            Assert.True(isDeleted);
+        }
+        #endregion
+
+        #region POST
         [Fact]
         public async void PostUser_InvalidCall_NoUserName()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.UserName = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.userName = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_NoUserEmail()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.UserEmail = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.userEmail = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_No_IsVerified_Information()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.IsVerified = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.isVerified = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_No_IsActive_Information()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.IsActive = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.isActive = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_No_IsAdmin_Information()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.IsAdmin = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.isAdmin = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_No_IsEntrepreneur_Information()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.IsEntrepreneur = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.isEntrepreneur = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
         [Fact]
         public async void PostUser_InvalidCall_No_TimeStamp_Information()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            expectedUser.Timestamp = null;
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            user.timestamp = null;
+            (_, HttpStatusCode statusCode) = await Post("user", user);
+            Assert.False(statusCode.IsOK());
         }
 
 
         [Fact]
         public async void PostUser_InvalidCall_NoUserIdHeader()
         {
-            //POST
-            var expectedUser = getUser("SomeUsername");
-            var UserRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "users", expectedUser);
-            UserRequestMessage.Headers.Clear();
-            var UserResult = await client.SendAsync(UserRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, UserResult.StatusCode);
+            //POST Invalid
+            UserAPI_post user = GetUser();
+            (_, HttpStatusCode statusCode) = await Post("user", user, null);
+            Assert.False(statusCode.IsOK());
         }
+        #endregion
+
+        #region DELETE
+        [Fact]
+        public async void DeleteUser_InvalidCall_NoIdFound()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post post = GetUser();
+
+            //POST
+            (userID, statusCode) = await Post("users", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void DeleteUser_InvalidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post post = GetUser();
+
+            //POST
+            (userID, statusCode) = await Post("users", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Delete($"users/{userID}", null);
+            Assert.False(statusCode.IsOK());
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+        #endregion
+
+        #region PUT
+        [Fact]
+        public async void PutUser_InvalidCall_NoUserName()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.userName = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoUserEmail()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.userEmail = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoIsVerified()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.isVerified = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoIsActive()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.isActive = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoIsAdmin()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.isAdmin = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoIsEntrepreneur()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+            userToPut.isEntrepreneur = null;
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutUser_InvalidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int userID;
+            bool isDeleted;
+            UserAPI_post userToPost = GetUser("before edit");
+            UserAPI_post userToPut = GetUser("edited");
+
+            //POST
+            (userID, statusCode) = await Post("users", userToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"users/{userID}", userToPut, null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"users/{userID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+        #endregion
     }
 }

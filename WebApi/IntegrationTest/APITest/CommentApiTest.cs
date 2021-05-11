@@ -1,4 +1,6 @@
 ﻿using IntegrationTest.APITest.Models;
+using IntegrationTest.APITest.Models.Comment;
+using IntegrationTest.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,23 +11,16 @@ using WebApi.Models.DTO;
 using Xunit;
 
 
-namespace IntegrationTest
+namespace IntegrationTest.APITest
 {
-    public class CommentApiTest
+    public class CommentApiTest : APItester<CommentAPI_get, CommentAPI_post>
     {
-        HttpClient client = new HttpClient
+        public CommentAPI_post GetComment(string content = "contnet")
         {
-            BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/")
-        };
-        public CommentApi getComment(string content)
-        {
-            return new CommentApi
+            return new CommentAPI_post
             {
-                Content = content,
-                UserID = 1,
-                PostID = 1,
-                DateTime= new DateTime(2008, 3, 1, 7, 0, 0)
-
+                postID = 1,
+                content = content
             };
         }
         public LikeApi getLike()
@@ -35,135 +30,106 @@ namespace IntegrationTest
                like=true
             };
         }
-        public HttpRequestMessage CreateRequest(HttpMethod method, string requestUri, object expected = null)
-        {
-            HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestUri);
-            requestMessage.Headers.Add("userId", "1"); 
 
-            string jsonPost = JsonConvert.SerializeObject(expected);
-            requestMessage.Content = new StringContent(jsonPost, Encoding.UTF8, "application/json");
-
-            return requestMessage;
-        }
+        #region ALL
         [Fact]
-        public async void Comment_ValidCall()
+        public async void GetComment_ValidCall()
         {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isPuted, isDeleted;
+            CommentAPI_post commentToPost = GetComment("before edit");
+            CommentAPI_post commentToPut = GetComment("edited");
+            CommentAPI_get commentAfterPost, commentAfterPut;
+
             //POST
-            var expectedComment = getComment("before edit");
-            var CommentRequestMessage = CreateRequest(HttpMethod.Post, "comment", expectedComment);
-            var CommentResult = await client.SendAsync(CommentRequestMessage);
-            var CommentJsonString = await CommentResult.Content.ReadAsStringAsync();
-            var commentId = JsonConvert.DeserializeObject<int>(CommentJsonString);
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
-            var beforePutGetRequestMessage = CreateRequest(HttpMethod.Get, $"comment/{commentId}");
-            var beforePutGetResult = await client.SendAsync(beforePutGetRequestMessage);
-            var beforePutJsonString = await beforePutGetResult.Content.ReadAsStringAsync();
-            var beforePutComment = JsonConvert.DeserializeObject<CommentDTOOutput>(beforePutJsonString);
+            (commentAfterPost, statusCode) = await Get($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            var editedComment= getComment("edited");
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"comment/{commentId}", editedComment);
-            var PutResult = await client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            (isPuted, statusCode) = await Put($"comment/{commentID}", commentToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
-            var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, $"comment/{commentId}");
-            var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            var afterPutComment = JsonConvert.DeserializeObject<PostDTO>(afterPutJsonString);
+            (commentAfterPut, statusCode) = await Get($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"comment/{commentId}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
             //GET
-            var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, $"comment/{commentId}");
-            var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
+            (_, statusCode) = await Get($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, CommentResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, beforePutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, afterDeleteGetResult.StatusCode);
-
-            Assert.Equal(commentId, beforePutComment.id);
-            Assert.Equal(beforePutComment.content, expectedComment.Content);
-            Assert.Equal(afterPutComment.content, editedComment.Content);
-            Assert.True(isEdited);
+            Assert.Equal(commentID, commentAfterPost.id);
+            Assert.Equal(commentToPost.content, commentAfterPost.content);
+            Assert.Equal(commentToPut.content, commentAfterPut.content);
+            Assert.True(isPuted);
             Assert.True(isDeleted);
 
         }
+        
         [Fact]
-        public async void AllComments_ValidCall()
+        public async void GetAllComments_ValidCall()
         {
-            //Getall
-           
-            var beforePostGetRequestMessage = CreateRequest(HttpMethod.Get, "comments");
-            var beforePostGetResult = await client.SendAsync(beforePostGetRequestMessage);
-            var beforePostJsonString = await beforePostGetResult.Content.ReadAsStringAsync();
-            List<CommentApi> beforePostComments = JsonConvert.DeserializeObject<List<CommentApi>>(beforePostJsonString);
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isPuted, isDeleted;
+            CommentAPI_post commentToPost = GetComment("before edit");
+            CommentAPI_post commentToPut = GetComment("edited");
+            List<CommentAPI_get> comments, commentsAfterPost, commentsAfterPut, commentsAfterDelete;
+
+
+            //GET ALL
+            (comments, statusCode) = await GetAll("comments");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
             //POST
-            var expectedComment = getComment("before edit");
-            var CommentRequestMessage = CreateRequest(HttpMethod.Post, "comment", expectedComment);
-            var CommentResult = await client.SendAsync(CommentRequestMessage);
-            var CommentJsonString = await CommentResult.Content.ReadAsStringAsync();
-            var commentId = JsonConvert.DeserializeObject<int>(CommentJsonString);
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
-
-            var afterPostGetRequestMessage = CreateRequest(HttpMethod.Get, "comments");
-            var afterPostGetResult = await client.SendAsync(afterPostGetRequestMessage);
-            var afterPostJsonString = await afterPostGetResult.Content.ReadAsStringAsync();
-            List<CommentApi> afterPostComments = JsonConvert.DeserializeObject<List<CommentApi>>(afterPostJsonString);
+            //GET ALL
+            (commentsAfterPost, statusCode) = await GetAll("comments");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            var editedComment = getComment("edited");
-            var PutRequestMessage = CreateRequest(HttpMethod.Put, $"comment/{commentId}", editedComment);
-            var PutResult = await client.SendAsync(PutRequestMessage);
-            var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-            var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            (isPuted, statusCode) = await Put($"comment/{commentID}", commentToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
-
-            var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, "comments");
-            var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-            var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-            List<CommentApi> afterPutComments = JsonConvert.DeserializeObject<List<CommentApi>>(afterPutJsonString);
+            //GET ALL
+            (commentsAfterPut, statusCode) = await GetAll("comments");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"comment/{commentId}");
-            var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //Getall
+            //GET ALL
+            (commentsAfterDelete, statusCode) = await GetAll("comments");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, "comments");
-            var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
-            var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
-            List<CommentApi> afterDeleteComments = JsonConvert.DeserializeObject<List<CommentApi>>(afterDeleteJsonString);
+            Assert.True(isPuted);
+            Assert.True(isDeleted);
 
-            Assert.Equal(HttpStatusCode.OK, CommentResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, afterDeleteGetResult.StatusCode);
+            Assert.NotEmpty(comments);
+            Assert.NotEmpty(commentsAfterPost);
+            Assert.NotEmpty(commentsAfterPut);
+            Assert.NotEmpty(commentsAfterDelete);
 
-            Assert.NotEmpty(beforePostComments);
-            Assert.NotEmpty(afterPostComments);
-            Assert.NotEmpty(afterPutComments);
-            Assert.NotEmpty(afterDeleteComments);
-
-            Assert.Equal(beforePostComments.Count, afterDeleteComments.Count);
-            Assert.Equal(afterPostComments.Count, afterPutComments.Count);
-            Assert.Equal(beforePostComments.Count + 1, afterPostComments.Count);
+            Assert.Equal(comments.Count, commentsAfterDelete.Count);
+            Assert.Equal(commentsAfterPost.Count, commentsAfterPut.Count);
+            Assert.Equal(comments.Count + 1, commentsAfterPost.Count);
 
         }
-        [Fact]
+        #endregion
 
+        /*
+        [Fact]
         public async  void GetCommentLikes_ValidCall()
         {
             //POST
@@ -228,30 +194,184 @@ namespace IntegrationTest
             Assert.Equal(1,Math.Abs( beforePutLikes.Count- afterPutLikes.Count));
             Assert.Equal( 1, Math.Abs(afterPutLikes.Count- afterRePutLikes.Count));
         }
+        */
+
+        #region GET
+        [Fact]
+        public async void GetComment_InvalidCall_NoIdFound()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post comment = GetComment();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", comment);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Get($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+
+            Assert.True(isDeleted);
+        }
+        #endregion
+
+        #region POST
         [Fact]
         public async void PostComment_InvalidCall_NoContent()
         {
             //POST
-            var expectedComment = getComment("content");
-            expectedComment.Content = null;
-            var CommentRequestMessage = CreateRequest(HttpMethod.Post, "comment", expectedComment);
-            var CommentResult = await client.SendAsync(CommentRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, CommentResult.StatusCode);
+            CommentAPI_post comment = GetComment();
+            comment.content = null;
+            (_, HttpStatusCode statusCode) = await Post("comment", comment);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
         [Fact]
-        public async void PostComment_InvalidCall_NoUserIdHeader()
+        public async void PostComment_InvalidCall_NoPostID()
         {
             //POST
-            var expectedComment = getComment("content");
-            expectedComment.Content = null;
-            var CommentRequestMessage = CreateRequest(HttpMethod.Post, "comment", expectedComment);
-            CommentRequestMessage.Headers.Clear();
-            var CommentResult = await client.SendAsync(CommentRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, CommentResult.StatusCode);
+            CommentAPI_post comment = GetComment();
+            comment.postID = null;
+            (_, HttpStatusCode statusCode) = await Post("comment", comment);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
+        [Fact]
+        public async void PostCommet_InvalidCall_NoUserIdHeader()
+        {
+            //POST
+            CommentAPI_post comment = GetComment();
+            (_, HttpStatusCode statusCode) = await Post("comment", comment, null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+        }
+        #endregion
+
+        #region DELETE
+        [Fact]
+        public async void DeleteComment_InvalidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post commentToPost = GetComment();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE Invalid
+            (_, statusCode) = await Delete($"comment/{commentID}", null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void DeletePost_InvalidCall_NoIdFound()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post commentToPost = GetComment();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE Invalid
+            (_, statusCode) = await Delete($"comment/{commentID}", null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+
+            Assert.True(isDeleted);
+        }
+        #endregion
+
+        [Fact]
+        public async void PutComment_InvalidCall_NoContent()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post commentToPost = GetComment();
+            CommentAPI_post commentToPut = GetComment();
+            commentToPut.content = null;
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut);
+            Assert.False(statusCode.IsOK());
+
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutComment_InvalidCall_NoPostID()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post commentToPost = GetComment();
+            CommentAPI_post commentToPut = GetComment();
+            commentToPut.postID = null;
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut);
+            Assert.False(statusCode.IsOK());
+
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void PutComment_InvalidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            bool isDeleted;
+            CommentAPI_post commentToPost = GetComment();
+            CommentAPI_post commentToPut = GetComment();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Invalid
+            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut, null);
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            Assert.True(isDeleted);
+        }
 
     }
 }

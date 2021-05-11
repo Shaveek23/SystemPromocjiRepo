@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using IntegrationTest.APITest.Models;
+using IntegrationTest.APITest.Models.Post;
+using IntegrationTest.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,487 +12,447 @@ using Xunit;
 
 namespace IntegrationTest.APITest
 {
-    public class PostAPITest
-    { 
-        public PostAPI getPost(string content)
+    public class PostAPITest : APItester<PostAPI_get, PostAPI_post>
+    {
+        public PostAPI_post GetPost(string content = "content")
         {
-            return new PostAPI {
-                Content = content,
-                Title = "interation_title",
-                UserID = 1,
-                Datetime = new DateTime(2008, 3, 1, 7, 0, 0),
-                Category = 1,
-                IsPromoted = false
+            return new PostAPI_post
+            {
+                title = "API title",
+                content = content,
+                datetime = DateTime.Now,
+                category = 1,
+                isPromoted = true
             };
         }
 
+        #region ALL
+        [Fact]
+        public async void GetPost_ValidCall()
+        {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isPuted, isDeleted;
+            PostAPI_post postToPost = GetPost("before edit");
+            PostAPI_post postToPut = GetPost("edited");
+            PostAPI_get postAfterPost, postAfterPut;
+
+            //POST
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (postAfterPost, statusCode) = await Get($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT
+            (isPuted, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (postAfterPut, statusCode) = await Get($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //GET
+            (_, statusCode) = await Get($"post/{postID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+
+            Assert.Equal(postID, postAfterPost.id);
+            Assert.Equal(postToPost.content, postAfterPost.content);
+            Assert.Equal(postToPut.content, postAfterPut.content);
+            Assert.True(isPuted);
+            Assert.True(isDeleted);
+        }
+
+        [Fact]
+        public async void GetAllPosts_ValidCall()
+        {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isPuted, isDeleted;
+            PostAPI_post postToPost = GetPost("before edit");
+            PostAPI_post postToPut = GetPost("edited");
+            List<PostAPI_get> posts, postsAfterPost, postsAfterPut, postsAfterDelete;
 
 
-        //[Fact]
-        //public async void Post_ValidCall()
-        //{
-        //    //POST
-        //    var expectedPost = getPost("before edit");
-        //    var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-        //    var PostResult = await client.SendAsync(PostRequestMessage);
-        //    var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-        //    var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            //GET ALL
+            (posts, statusCode) = await GetAll("posts");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //GET
-        //    var beforePutGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
-        //    var beforePutGetResult = await client.SendAsync(beforePutGetRequestMessage);
-        //    var beforePutJsonString = await beforePutGetResult.Content.ReadAsStringAsync();
-        //    var beforePutPost = JsonConvert.DeserializeObject<PostDTO>(beforePutJsonString);
+            //POST
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //PUT
-        //    var editedPost = getPost("edited");
-        //    var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-        //    var PutResult = await client.SendAsync(PutRequestMessage);
-        //    var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-        //    var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            //GET ALL
+            (postsAfterPost, statusCode) = await GetAll("posts");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //GET
-        //    var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
-        //    var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-        //    var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-        //    var afterPutPost = JsonConvert.DeserializeObject<PostDTO>(afterPutJsonString);
+            //PUT
+            (isPuted, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //DELETE
-        //    var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-        //    var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-        //    var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-        //    var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //GET ALL
+            (postsAfterPut, statusCode) = await GetAll("posts");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //GET
-        //    var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, $"post/{postID}");
-        //    var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, beforePutGetResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.NotFound, afterDeleteGetResult.StatusCode);
+            //GET ALL
+            (postsAfterDelete, statusCode) = await GetAll("posts");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    Assert.Equal(postID, beforePutPost.id);
-        //    Assert.Equal(beforePutPost.content, expectedPost.Content);
-        //    Assert.Equal(afterPutPost.content, editedPost.Content);
-        //    Assert.True(isEdited);
-        //    Assert.True(isDeleted);
-        //}
+            Assert.True(isPuted);
+            Assert.True(isDeleted);
 
-        //[Fact]
-        //public async void AllPosts_ValidCall()
-        //{
-        //    //GET all
-        //    var beforePostGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
-        //    var beforePostGetResult = await client.SendAsync(beforePostGetRequestMessage);
-        //    var beforePostJsonString = await beforePostGetResult.Content.ReadAsStringAsync();
-        //    List<PostAPI> beforePostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(beforePostJsonString);
+            Assert.NotEmpty(posts);
+            Assert.NotEmpty(postsAfterPost);
+            Assert.NotEmpty(postsAfterPut);
+            Assert.NotEmpty(postsAfterDelete);
 
-        //    //POST
-        //    var expectedPost = getPost("before edit");
-        //    var PostRequestMessage = CreateRequest(HttpMethod.Post, "post", expectedPost);
-        //    var PostResult = await client.SendAsync(PostRequestMessage);
-        //    var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-        //    var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            Assert.Equal(posts.Count, postsAfterDelete.Count);
+            Assert.Equal(postsAfterPost.Count, postsAfterPut.Count);
+            Assert.Equal(posts.Count + 1, postsAfterPost.Count);
+        }
+        #endregion
 
-        //    //GET all
-        //    var afterPostGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
-        //    var afterPostGetResult = await client.SendAsync(afterPostGetRequestMessage);
-        //    var afterPostJsonString = await afterPostGetResult.Content.ReadAsStringAsync();
-        //    List<PostAPI> afterPostPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPostJsonString);
+        #region GET
+        [Fact]
+        public async void GetPost_InvalidCall_NoIdFound()
+        {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post post = GetPost();
 
-        //    //PUT
-        //    var editedPost = getPost("edited");
-        //    var PutRequestMessage = CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-        //    var PutResult = await client.SendAsync(PutRequestMessage);
-        //    var PutJsonString = await PutResult.Content.ReadAsStringAsync();
-        //    var isEdited = JsonConvert.DeserializeObject<bool>(PutJsonString);
+            //POST
+            (postID, statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //GET all
-        //    var afterPutGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
-        //    var afterPutGetResult = await client.SendAsync(afterPutGetRequestMessage);
-        //    var afterPutJsonString = await afterPutGetResult.Content.ReadAsStringAsync();
-        //    List<PostAPI> afterPutPosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterPutJsonString);
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    //DELETE
-        //    var DeleteRequestMessage = CreateRequest(HttpMethod.Delete, $"post/{postID}");
-        //    var DeleteResult = await client.SendAsync(DeleteRequestMessage);
-        //    var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-        //    var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //GET
+            (_, statusCode) = await Get($"post/{postID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
 
-        //    //GET all
-        //    var afterDeleteGetRequestMessage = CreateRequest(HttpMethod.Get, "post");
-        //    var afterDeleteGetResult = await client.SendAsync(afterDeleteGetRequestMessage);
-        //    var afterDeleteJsonString = await afterDeleteGetResult.Content.ReadAsStringAsync();
-        //    List<PostAPI> afterDeletePosts = JsonConvert.DeserializeObject<List<PostAPI>>(afterDeleteJsonString);
+            Assert.True(isDeleted);
+        }
 
+        [Fact]
+        public async void GetPost_InvalidCall_NoUserIdHeader()
+        {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post post = GetPost();
 
-            
-        //    Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, PutResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, afterPutGetResult.StatusCode);
-        //    Assert.Equal(HttpStatusCode.OK, afterDeleteGetResult.StatusCode);
+            //POST
+            (postID, statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //    Assert.NotEmpty(beforePostPosts);
-        //    Assert.NotEmpty(afterPostPosts);
-        //    Assert.NotEmpty(afterPutPosts);
-        //    Assert.NotEmpty(afterDeletePosts);
+            //GET
+            (_, statusCode) = await Get($"post/{postID}", null);
+            Assert.False(statusCode.IsOK());
 
-        //    Assert.Equal(beforePostPosts.Count, afterDeletePosts.Count);
-        //    Assert.Equal(afterPostPosts.Count, afterPutPosts.Count);
-        //    Assert.Equal(beforePostPosts.Count + 1, afterPostPosts.Count);
+            //DELETE
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-        //}
+            Assert.True(isDeleted);
+        }
+        #endregion
 
+        #region POST
         [Fact]
         public async void PostPost_InvalidCall_NoContent()
         {
-            //POST
-            var expectedPost = getPost("content");
-                expectedPost.Content = null;
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            post.content = null;
+            (_, HttpStatusCode statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
         [Fact]
         public async void PostPost_InvalidCall_NoTitle()
         {
-            //POST
-            var expectedPost = getPost("content");
-                expectedPost.Title = null;
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            post.title = null;
+            (_, HttpStatusCode statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
         [Fact]
         public async void PostPost_InvalidCall_NoCatgory()
         {
-            //POST
-            var expectedPost = getPost("content");
-            expectedPost.Category = null;
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            post.category = null;
+            (_, HttpStatusCode statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
         [Fact]
         public async void PostPost_InvalidCall_NoIsPromoted()
         {
-            //POST
-            var expectedPost = getPost("content");
-            expectedPost.IsPromoted = null;
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            post.isPromoted = null;
+            (_, HttpStatusCode statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
+
         [Fact]
         public async void PostPost_InvalidCall_NoDatetime()
         {
-            //POST
-            var expectedPost = getPost("content");
-            expectedPost.Datetime = null;
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            post.datetime = null;
+            (_, HttpStatusCode statusCode) = await Post("post", post);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
         [Fact]
         public async void PostPost_InvalidCall_NoUserIdHeader()
         {
-            //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            PostRequestMessage.Headers.Clear();
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var jsonString = await PostResult.Content.ReadAsStringAsync();
-
-            Assert.Equal(HttpStatusCode.BadRequest, PostResult.StatusCode);
+            //POST Invalid
+            PostAPI_post post = GetPost();
+            (_, HttpStatusCode statusCode) = await Post("post", post, null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
+        #endregion
 
+        #region DELETE
         [Fact]
         public async void DeletePost_InvalidCall_NoUserIdHeader()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Invalid
-            var InvalidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-                InvalidDeleteRequestMessage.Headers.Clear();
-            var InvalidDeleteResult = await API.client.SendAsync(InvalidDeleteRequestMessage);
+            (_, statusCode) = await Delete($"post/{postID}", null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             //DELETE Valid
-            var ValidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var ValidDeleteResult = await API.client.SendAsync(ValidDeleteRequestMessage);
-            var ValidDeleteJsonString = await ValidDeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(ValidDeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, InvalidDeleteResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, ValidDeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void DeletePost_InvalidCall_NoIdFound()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Valid
-            var ValidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var ValidDeleteResult = await API.client.SendAsync(ValidDeleteRequestMessage);
-            var ValidDeleteJsonString = await ValidDeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(ValidDeleteJsonString);
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Invalid
-            var InvalidDeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var InvalidDeleteResult = await API.client.SendAsync(InvalidDeleteRequestMessage);
-
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, ValidDeleteResult.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, InvalidDeleteResult.StatusCode);
+            (_, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            
             Assert.True(isDeleted);
-
         }
+        #endregion
 
+        #region PUT
         [Fact]
         public async void PutPost_InvalidCall_NoTitle()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.title = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-                editedPost.Title = null;
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoContent()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.content = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            editedPost.Content = null;
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoDatetime()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.datetime = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            editedPost.Datetime = null;
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoCategory()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.category = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            editedPost.Category = null;
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoIsPromoted()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.isPromoted = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            editedPost.IsPromoted = null;
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoUserIdHeader()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.title = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-                PutRequestMessage.Headers.Clear();
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut, null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //DELETE Valid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, PutResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
             Assert.True(isDeleted);
         }
 
         [Fact]
         public async void PutPost_InvalidCall_NoIdFound()
         {
+            HttpStatusCode statusCode;
+            int postID;
+            bool isDeleted;
+            PostAPI_post postToPost = GetPost();
+            PostAPI_post postToPut = GetPost();
+            postToPut.title = null;
+
             //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
+            (postID, statusCode) = await Post("post", postToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
+            //PUT Invalid
+            (isDeleted, statusCode) = await Delete($"post/{postID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            //PUT
-            var editedPost = getPost("edited");
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Put, $"post/{postID}", editedPost);
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
+            //PUT Invalid
+            (_, statusCode) = await Put($"post/{postID}", postToPut);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
-            Assert.Equal(HttpStatusCode.InternalServerError, PutResult.StatusCode); //Czy tak powinno być?
             Assert.True(isDeleted);
         }
-
-        [Fact]
-        public async void GetPost_InvalidCall_NoIdFound()
-        {
-            //POST
-            var expectedPost = getPost("content");
-            var PostRequestMessage = API.CreateRequest(HttpMethod.Post, "post", expectedPost);
-            var PostResult = await API.client.SendAsync(PostRequestMessage);
-            var PostJsonString = await PostResult.Content.ReadAsStringAsync();
-            var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
-
-            //DELETE
-            var DeleteRequestMessage = API.CreateRequest(HttpMethod.Delete, $"post/{postID}");
-            var DeleteResult = await API.client.SendAsync(DeleteRequestMessage);
-            var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
-            var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
-
-            //GET
-            var PutRequestMessage = API.CreateRequest(HttpMethod.Get, $"post/{postID}");
-            var PutResult = await API.client.SendAsync(PutRequestMessage);
-
-            Assert.Equal(HttpStatusCode.OK, PostResult.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, DeleteResult.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, PutResult.StatusCode);
-            Assert.True(isDeleted);
-        }
-
-
+        #endregion
     }
 }
