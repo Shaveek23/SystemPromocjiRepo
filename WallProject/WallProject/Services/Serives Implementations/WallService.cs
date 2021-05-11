@@ -38,14 +38,14 @@ namespace WallProject.Services.Serives_Implementations
                           .ToList();
 
 
-            WallViewModel wallVM = new WallViewModel
-            {
-                Posts = sortedPosts,
-                Owner = Owner.Result,
-                Categories = Categories.Result,
-                SelectedCategories = new bool[Categories.Result.Count()]          
-            };
-            return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
+            SessionData.WallModel.Posts = sortedPosts;
+            SessionData.WallModel.Owner = Owner.Result;
+            SessionData.WallModel.Categories = Categories.Result;
+            return new ServiceResult<WallViewModel>(SessionData.WallModel, System.Net.HttpStatusCode.OK, null);
+        }
+        public void ChangeCategoryFilterStatus(int categoryId)
+        {
+            SessionData.WallModel.SelectedCategories[categoryId] = !SessionData.WallModel.SelectedCategories[categoryId];
         }
     }
 }
