@@ -74,7 +74,7 @@ namespace WallProject.Services.Serives_Implementations
                 return ServiceResult<PostViewModel>.GetMessage(jsonString, result.StatusCode);
             }
         }
-        async public Task<ServiceResult<bool>> AddNewPost(string postText, int userId)
+        async public Task<ServiceResult<bool>> AddNewPost(string postText, int userId,int categoryId,string title)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
             PostDTONoID post = new PostDTONoID();
@@ -83,9 +83,15 @@ namespace WallProject.Services.Serives_Implementations
             post.datetime = DateTime.Now;
             //DO ZMIANY !!!
 
-            post.category = 1;
+            post.category = categoryId;
+         // zeby sie nie wywaloalo dodawanie 1 kategorii
+            if (post.category == 0)
+                post.category = 1;
             post.isPromoted = false;
-            post.title = "brak";
+            post.title = title;
+            if (title is null)
+                post.title = " No Title";
+
 
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(post);
