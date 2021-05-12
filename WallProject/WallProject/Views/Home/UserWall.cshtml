@@ -90,9 +90,11 @@
                         <div class="panel-body">
                             @foreach (var post in Model.Posts)
                             {
+
                                 if (Model.SelectedCategories[post.Category])
                                 {
                                     <div id="post_@post.Id">
+
                                         <!-- OBSZAR POJEDYNCZEGO POSTA -->
                                         <div class="post_title"style="font-size:160%;font-family:Lucida Console;text-align:center"> @post.Title</div>
                                         <!-- Info -->
