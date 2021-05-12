@@ -1,10 +1,8 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using Xunit;
 
 namespace UIAutomatedTests
@@ -14,9 +12,7 @@ namespace UIAutomatedTests
         private readonly IWebDriver _driver;
         public AutomatedUITests()
         {
-           _driver = new ChromeDriver("driver");
-           
-     
+            _driver = new ChromeDriver("driver");
         }
         public void Dispose()
         {
@@ -142,6 +138,59 @@ namespace UIAutomatedTests
 
             Assert.Equal(foundContent, commentRandomContent);
             Assert.True(isDeleted);
+
+        }
+        [Fact]
+        public void FiltrationTest()
+        {
+            _driver.Navigate()
+                   .GoToUrl("https://localhost:44399/getWall/1");
+           
+            var categories = _driver.FindElements(By.ClassName("icheck"));
+            var postsContents = _driver.FindElements(By.ClassName("displayedCategories"));
+            var firstCategory = categories[0].FindElement(By.XPath("..")).Text;
+           
+         
+            categories[0].Click();
+            var postsContentsAfter = _driver.FindElements(By.ClassName("displayedCategories"));
+            var containsAfter = false;
+            foreach (var postContent in postsContentsAfter)
+            {
+                var currText = postContent.Text;
+                if (currText == firstCategory)
+                {
+                    containsAfter = true;
+                    break;
+                }
+
+
+            }
+           
+            Assert.False(containsAfter);
+
+
+        }
+        [Fact]
+        public async void Like_Post_Test()
+        {
+            _driver.Navigate()
+              .GoToUrl("https://localhost:44399/getWall/1");
+            var posts = _driver.FindElements(By.ClassName("fb-user-status"));
+            string likeName= "Like_"+ posts[0].FindElement(By.XPath("..")).GetProperty("id");
+
+            var like = _driver.FindElement(By.Id(likeName));
+            var likeContent1 = like.Text;
+            like.Click();
+
+            like = _driver.FindElement(By.Id(likeName));
+            var likeContent2 = like.Text;
+            like.Click();
+
+            like = _driver.FindElement(By.Id(likeName));
+            var likeContent3 = like.Text;
+
+            Assert.Equal(likeContent1, likeContent3);
+            Assert.NotEqual(likeContent1, likeContent2);
 
         }
     }
