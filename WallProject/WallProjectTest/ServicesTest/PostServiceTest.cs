@@ -87,11 +87,11 @@ namespace WallProjectTest.ServicesTest
         }
 
         [Theory]
-        [InlineData("text", 1)]
-        [InlineData("lol", 3)]
-        [InlineData("cokolwiek do testu", 420)]
-        [InlineData("jakis test", 6)]
-        public async void Test_AddNewPost(string postText, int userId)
+        [InlineData("text", 1,1, "text")]
+        [InlineData("lol", 3, 1, "text")]
+        [InlineData("cokolwiek do testu", 420, 2, "text")]
+        [InlineData("jakis test", 6, 1, "text")]
+        public async void Test_AddNewPost(string postText, int userId,int categoryId,string title)
         {
 
 
@@ -117,7 +117,7 @@ namespace WallProjectTest.ServicesTest
             PostService postService = new PostService(mockFactory.Object, commentService, mockUserService.Object);
 
 
-            var result = await postService.AddNewPost(postText, userId);
+            var result = await postService.AddNewPost(postText, userId,categoryId,title);
             Assert.True(result.Result);
 
 

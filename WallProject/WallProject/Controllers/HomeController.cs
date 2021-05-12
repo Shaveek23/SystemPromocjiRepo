@@ -59,9 +59,9 @@ namespace WallProject.Controllers
                 return View("Privacy", wall.Message);
         }
 
-        public async Task<IActionResult> AddNewPost(string postText, int userId)
+        public async Task<IActionResult> AddNewPost(string postText, int userId, int categoryId, string title)
         {
-            var result = await _postService.AddNewPost(postText, userId);
+            var result = await _postService.AddNewPost(postText, userId,categoryId,title);
             if (result.Result)
                 return View();
             else
