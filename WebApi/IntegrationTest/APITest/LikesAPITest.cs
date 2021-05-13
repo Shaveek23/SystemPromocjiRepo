@@ -41,7 +41,7 @@ namespace IntegrationTest.APITest
             public int postId;
         }
 
-        /*
+        
         private async Task<int> PreparePost()
         {
             var post = new PostAPI
@@ -54,7 +54,7 @@ namespace IntegrationTest.APITest
                 IsPromoted = false
             };
             var expectedPost = post;
-            var PostRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "post", expectedPost);
+            var PostRequestMessage = APItester.CreateRequest(HttpMethod.Post, "post", expectedPost);
             var PostResult = await client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var postID = JsonConvert.DeserializeObject<int>(PostJsonString);
@@ -70,7 +70,7 @@ namespace IntegrationTest.APITest
                 postId = postID
             };
             
-            var PostRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Post, "comment", comment);
+            var PostRequestMessage = APItester.CreateRequest(HttpMethod.Post, "comment", comment);
             var PostResult = await client.SendAsync(PostRequestMessage);
             var PostJsonString = await PostResult.Content.ReadAsStringAsync();
             var commentID = JsonConvert.DeserializeObject<int>(PostJsonString);
@@ -83,7 +83,7 @@ namespace IntegrationTest.APITest
 
         private async void DeletePost(int postID)
         {
-            var DeleteRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Delete, $"post/{postID}");
+            var DeleteRequestMessage = APItester.CreateRequest(HttpMethod.Delete, $"post/{postID}");
             var DeleteResult = await client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
@@ -91,7 +91,7 @@ namespace IntegrationTest.APITest
 
         private async void DeleteComment(int commentID)
         {
-            var DeleteRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Delete, $"comment/{commentID}");
+            var DeleteRequestMessage = APItester.CreateRequest(HttpMethod.Delete, $"comment/{commentID}");
             var DeleteResult = await client.SendAsync(DeleteRequestMessage);
             var DeleteJsonString = await DeleteResult.Content.ReadAsStringAsync();
             var isDeleted = JsonConvert.DeserializeObject<bool>(DeleteJsonString);
@@ -110,14 +110,14 @@ namespace IntegrationTest.APITest
             // PUT
 
             LikeAPI like = getLike(true);
-            var putRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Put, $"post/{postID}/likedUsers", like, likerID);
+            var putRequestMessage = APItester.CreateRequest(HttpMethod.Put, $"post/{postID}/likedUsers", like, likerID);
             var putResult = await client.SendAsync(putRequestMessage);
             var putJsonString = await putResult.Content.ReadAsStringAsync();
             var putActual = JsonConvert.DeserializeObject<bool>(putJsonString);
 
 
             // GET
-            var getRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, $"post/{postID}/likedUsers");
+            var getRequestMessage = APItester.CreateRequest(HttpMethod.Get, $"post/{postID}/likedUsers");
             var getResult = await client.SendAsync(getRequestMessage);
 
             var getJsonString = await getResult.Content.ReadAsStringAsync();
@@ -125,14 +125,14 @@ namespace IntegrationTest.APITest
 
             // DISLIKE:
             LikeAPI dislike = getLike(false);
-            var putRequestMessage2 = ApiTestManager.CreateRequest(HttpMethod.Put, $"post/{postID}/likedUsers", dislike, likerID);
+            var putRequestMessage2 = APItester.CreateRequest(HttpMethod.Put, $"post/{postID}/likedUsers", dislike, likerID);
             var putResult2 = await client.SendAsync(putRequestMessage2);
             var putJsonString2 = await putResult2.Content.ReadAsStringAsync();
             var putActual2 = JsonConvert.DeserializeObject<bool>(putJsonString2);
 
 
             // GET
-            var getRequestMessage2 = ApiTestManager.CreateRequest(HttpMethod.Get, $"post/{postID}/likedUsers");
+            var getRequestMessage2 = APItester.CreateRequest(HttpMethod.Get, $"post/{postID}/likedUsers");
             var getResult2 = await client.SendAsync(getRequestMessage2);
             var getJsonString2 = await getResult2.Content.ReadAsStringAsync();
             var likes2 = JsonConvert.DeserializeObject<List<LikeResultAPI>>(getJsonString2);
@@ -162,14 +162,14 @@ namespace IntegrationTest.APITest
             // PUT
 
             LikeAPI like = getLike(true);
-            var putRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Put, $"post/{commentID}/likedUsers", like, likerID);
+            var putRequestMessage = APItester.CreateRequest(HttpMethod.Put, $"post/{commentID}/likedUsers", like, likerID);
             var putResult = await client.SendAsync(putRequestMessage);
             var putJsonString = await putResult.Content.ReadAsStringAsync();
             var putActual = JsonConvert.DeserializeObject<bool>(putJsonString);
 
 
             // GET
-            var getRequestMessage = ApiTestManager.CreateRequest(HttpMethod.Get, $"post/{commentID}/likedUsers");
+            var getRequestMessage = APItester.CreateRequest(HttpMethod.Get, $"post/{commentID}/likedUsers");
             var getResult = await client.SendAsync(getRequestMessage);
 
             var getJsonString = await getResult.Content.ReadAsStringAsync();
@@ -177,14 +177,14 @@ namespace IntegrationTest.APITest
 
             // DISLIKE:
             LikeAPI dislike = getLike(false);
-            var putRequestMessage2 = ApiTestManager.CreateRequest(HttpMethod.Put, $"post/{commentID}/likedUsers", dislike, likerID);
+            var putRequestMessage2 = APItester.CreateRequest(HttpMethod.Put, $"post/{commentID}/likedUsers", dislike, likerID);
             var putResult2 = await client.SendAsync(putRequestMessage2);
             var putJsonString2 = await putResult2.Content.ReadAsStringAsync();
             var putActual2 = JsonConvert.DeserializeObject<bool>(putJsonString2);
 
 
             // GET
-            var getRequestMessage2 = ApiTestManager.CreateRequest(HttpMethod.Get, $"post/{commentID}/likedUsers");
+            var getRequestMessage2 = APItester.CreateRequest(HttpMethod.Get, $"post/{commentID}/likedUsers");
             var getResult2 = await client.SendAsync(getRequestMessage2);
             var getJsonString2 = await getResult2.Content.ReadAsStringAsync();
             var likes2 = JsonConvert.DeserializeObject<List<LikeResultAPI>>(getJsonString2);
@@ -203,6 +203,6 @@ namespace IntegrationTest.APITest
 
 
 
-        */
+        
     }
 }

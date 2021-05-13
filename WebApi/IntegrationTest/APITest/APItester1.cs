@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IntegrationTest.APITest
 {
-    static class ApiTestManager
+    static class APItester
     {
 
     }

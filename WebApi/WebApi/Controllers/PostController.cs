@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
+using WebApi.Services.Hosted_Service;
+using WebApi.Services.Services_Implementations;
 using WebApi.Services.Services_Interfaces;
 
 
@@ -19,10 +21,13 @@ namespace WebApi.Controllers
     {
         private readonly IPostService _postService;
         private readonly ILogger<PostController> _logger;
-        public PostController(ILogger<PostController> logger, IPostService postService)
+        private readonly INewsletterService _newsletterService;
+
+        public PostController(ILogger<PostController> logger, IPostService postService, INewsletterService newsletterService)
         {
             _logger = logger;
             _postService = postService;
+            _newsletterService = newsletterService;
         }
 
 
@@ -69,6 +74,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = await _postService.AddPostAsync(body, userID);
+            _newsletterService.SendNewsletterNotifications(result.IsOk(), body.title, body.category.Value);
             return new ControllerResult<int?>(result).GetResponse();
         }
 
