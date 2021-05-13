@@ -195,7 +195,6 @@ namespace UIAutomatedTests
             Assert.NotEqual(likeContent1, likeContent2);
 
         }
-
         [Fact]
         public async void AdddPostWithCategory()
         {
@@ -250,7 +249,8 @@ namespace UIAutomatedTests
             bool isDeleted;
 
 
-            //Wysy³anie Request z delete
+
+            //WysyÂ³anie Request z delete
 
             using (HttpClient client = new HttpClient())
             {
@@ -323,7 +323,9 @@ namespace UIAutomatedTests
             bool isDeleted;
 
 
-            //Wysy³anie Request z delete
+
+            //WysyÂ³anie Request z delete
+
 
             using (HttpClient client = new HttpClient())
             {
@@ -337,6 +339,5 @@ namespace UIAutomatedTests
             Assert.Equal(title, titleRandomContent);
             Assert.True(isDeleted);
         }
-
     }
 }
