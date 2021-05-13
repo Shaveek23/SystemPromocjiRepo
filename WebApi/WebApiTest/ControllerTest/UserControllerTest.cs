@@ -22,6 +22,8 @@ using WebApi.Database.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations;
+using WebApi.Database.Repositories.Implementations;
+using WebApi.Services.Services_Implementations;
 
 namespace WebApiTest.ControllerTest
 {
@@ -51,7 +53,8 @@ namespace WebApiTest.ControllerTest
                 IsEntrepreneur=isEnterprenuer
             })); 
             var mockLogger = new Mock<ILogger<UserController>>();
-            var controller = new UserController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = new UserDTO
             {
@@ -104,7 +107,8 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IUserService>();
             mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<UserDTO>>(people.AsQueryable()));
             var mockLogger = new Mock<ILogger<UserController>>();
-            var controller = new UserController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = people;
             //Act
@@ -127,7 +131,8 @@ namespace WebApiTest.ControllerTest
             }));
 
             var mockLogger = new Mock<ILogger<UserController>>();
-            var controller = new UserController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = new UserDTO
             {
@@ -173,7 +178,8 @@ namespace WebApiTest.ControllerTest
 
 
             var mockLogger = new Mock<ILogger<UserController>>();
-            var controller = new UserController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             mockService.Setup(x => x.DeleteUserAsync(a_id,u_id)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
             var actual =controller.DeleteUser(a_id,u_id).Result.Result;
             var val = (bool)((ObjectResult)actual).Value;
@@ -200,7 +206,8 @@ namespace WebApiTest.ControllerTest
 
             }));
             var mockLogger = new Mock<ILogger<UserController>>();
-            var controller = new UserController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
 
             var actual = controller.EditUser(a_id, expected, u_id).Result;
