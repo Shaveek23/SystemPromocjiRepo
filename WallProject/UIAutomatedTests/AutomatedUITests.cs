@@ -76,7 +76,7 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //WysyÂ³anie Request z delete
+            //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -128,7 +128,7 @@ namespace UIAutomatedTests
             
          
             bool isDeleted;
-            //WysyÂ³anie Request z delete
+            //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -179,6 +179,7 @@ namespace UIAutomatedTests
             var posts = _driver.FindElements(By.ClassName("fb-user-status"));
             string likeName= "Like_"+ posts[0].FindElement(By.XPath("..")).GetProperty("id");
 
+
             var like = _driver.FindElement(By.Id(likeName));
             var likeContent1 = like.Text;
             like.Click();
@@ -194,7 +195,6 @@ namespace UIAutomatedTests
             Assert.NotEqual(likeContent1, likeContent2);
 
         }
-
         [Fact]
         public async void AdddPostWithCategory()
         {
@@ -248,7 +248,7 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //WysyÂ³anie Request z delete
+            //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -319,7 +319,7 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //WysyÂ³anie Request z delete
+            //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -332,6 +332,5 @@ namespace UIAutomatedTests
             Assert.Equal(title, titleRandomContent);
             Assert.True(isDeleted);
         }
-
     }
 }
