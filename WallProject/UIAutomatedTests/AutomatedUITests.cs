@@ -76,7 +76,7 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //Wysy³anie Request z delete
+            //WysyÂ³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -128,7 +128,7 @@ namespace UIAutomatedTests
             
          
             bool isDeleted;
-            //Wysy³anie Request z delete
+            //WysyÂ³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -248,7 +248,10 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //Wysy³anie Request z delete
+
+
+            //WysyÂ³anie Request z delete
+
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
@@ -319,7 +322,11 @@ namespace UIAutomatedTests
                 testPostId = id.Split("_")[1];
             bool isDeleted;
 
-            //Wysy³anie Request z delete
+
+
+            //WysyÂ³anie Request z delete
+
+
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
