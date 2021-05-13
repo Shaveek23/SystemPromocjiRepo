@@ -87,11 +87,13 @@ namespace WallProjectTest.ServicesTest
         }
 
         [Theory]
+
         [InlineData("text", 1,1, "text")]
         [InlineData("lol", 3, 1, "text")]
         [InlineData("cokolwiek do testu", 420, 2, "text")]
         [InlineData("jakis test", 6, 1, "text")]
         public async void Test_AddNewPost(string postText, int userId,int categoryId,string title)
+
         {
 
 
