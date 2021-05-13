@@ -16,7 +16,7 @@ namespace WebApi.Controllers
     {
 
         // DEPENDENCY INJECTION: 
-        private readonly IUserService _userService; 
+        private readonly IUserService _userService;
 
         private readonly ILogger<UserController> _logger;
 
@@ -63,5 +63,15 @@ namespace WebApi.Controllers
             return new ControllerResult<bool>(result).GetResponse();
 
         }
+
+        // TO DO
+        /*
+        [HttpGet("users/{id}/subscribedCategories")]
+
+        public async Task<ActionResult<IQueryable<int>>> getSubscribedCategories([Required][FromHeader] int UserID, [FromRoute] int id)
+        {
+          
+        }
+        */
     }
 }

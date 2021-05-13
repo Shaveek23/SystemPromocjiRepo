@@ -24,6 +24,8 @@ namespace WebApi.Database
         virtual public DbSet<PostLike> PostLikes { get; set; }
         virtual public DbSet<CommentLike> CommentLikes { get; set; }
         
+        virtual public DbSet<Newsletter> Newsletters { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
@@ -150,6 +152,16 @@ namespace WebApi.Database
                 modelBuilder.Entity<CommentLike>().Property(p => p.UserID).IsRequired();
 
              
+
+            });
+
+            modelBuilder.Entity<Newsletter>(entity =>
+            {
+                modelBuilder.Entity<Newsletter>().ToTable("Newsletter");
+                modelBuilder.Entity<Newsletter>().HasKey(p => p.NewsletterID);
+                modelBuilder.Entity<Newsletter>().Property(p => p.NewsletterID).IsRequired().ValueGeneratedOnAdd();
+                modelBuilder.Entity<Newsletter>().Property(p => p.CategoryID).IsRequired();
+                modelBuilder.Entity<Newsletter>().Property(p => p.UserID).IsRequired();
 
             });
         }
