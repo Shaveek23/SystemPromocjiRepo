@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Models.DTO;
+using WebApi.Services.Services_Implementations;
 using WebApi.Services.Services_Interfaces;
 
 namespace WebApi.Controllers
@@ -20,10 +21,13 @@ namespace WebApi.Controllers
 
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger, IUserService userService)
+        private readonly INewsletterService _newsletterService;
+
+        public UserController(ILogger<UserController> logger, IUserService userService, INewsletterService newsletterService)
         {
             _logger = logger;
             _userService = userService;
+            _newsletterService = newsletterService;
         }
 
         [HttpGet("users")]
@@ -64,14 +68,12 @@ namespace WebApi.Controllers
 
         }
 
-        // TO DO
-        /*
         [HttpGet("users/{id}/subscribedCategories")]
-
-        public async Task<ActionResult<IQueryable<int>>> getSubscribedCategories([Required][FromHeader] int UserID, [FromRoute] int id)
+        public ActionResult<IQueryable<idDTO>> getSubscribedCategories([Required][FromHeader] int UserID, [FromRoute] int id)
         {
-          
+            var result = _newsletterService.getSubscribedCategories(id);
+            return new ControllerResult<IQueryable<idDTO>>(result).GetResponse();
         }
-        */
+       
     }
 }

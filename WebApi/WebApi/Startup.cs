@@ -64,6 +64,7 @@ namespace WebApi
             services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<INewsletterRepository, NewsletterRepository>();
 
             services.AddSwaggerGen();
 

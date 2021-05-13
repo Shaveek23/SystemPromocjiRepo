@@ -333,6 +333,21 @@ namespace WebApi.Database.Mapper
             }
             return likersDTO.AsQueryable<LikerDTO>();
         }
+
+        public static IQueryable<idDTO> MapNewslettersToUserIds(IQueryable<Newsletter> newsletters)
+        {
+            if (newsletters == null)
+                return new List<idDTO>().AsQueryable<idDTO>();
+
+            List<int> ids = newsletters.Select(p => p.CategoryID).ToList();
+            List<idDTO> result = new List<idDTO>();
+            foreach (int id in ids)
+            {
+                result.Add(new idDTO { id = id });
+            }
+
+            return result.AsQueryable();
+        }
     }
 
 }

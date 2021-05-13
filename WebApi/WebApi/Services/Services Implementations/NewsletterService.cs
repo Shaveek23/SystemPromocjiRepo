@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Database.Mapper;
+using WebApi.Database.Repositories.Implementations;
+using WebApi.Database.Repositories.Interfaces;
+using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Services.Hosted_Service;
 using WebApi.Services.Services_Interfaces;
@@ -11,14 +15,16 @@ namespace WebApi.Services.Services_Implementations
     public class NewsletterService : INewsletterService
     {
         private readonly ISendingMonitorService _sendingMonitorService;
-        private readonly ICategoryService _categoryService;
-        private readonly IUserService _userService;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly INewsletterRepository _newsletterRepository;
         
-        public NewsletterService(ISendingMonitorService sendingMonitorService, ICategoryService categoryService, IUserService userService)
+        public NewsletterService(ISendingMonitorService sendingMonitorService, ICategoryRepository categoryRepository, IUserRepository userRepository, INewsletterRepository newsletterRepository)
         {
             _sendingMonitorService = sendingMonitorService;
-            _categoryService = categoryService;
-            _userService = userService;
+            _categoryRepository = categoryRepository;
+            _userRepository = userRepository;
+            _newsletterRepository = newsletterRepository;
         }
 
         public void SendNewsletterNotifications(bool isPostAddedSuccessfuly, string title, int categoryId) // tutaj zamiast PostEditDTO chyba wystarczy tylko tytul oraz id kategorii
@@ -41,8 +47,10 @@ namespace WebApi.Services.Services_Implementations
         // TO DO:
         //tutaj dodać funckje do pobierania subskrybentów danej kategorii
 
-
-        // TO DO:
-        //tutaj dodać funckje do pobierania kategorii które subskrybuje użytkownik o id = x
+        public ServiceResult<IQueryable<idDTO>> getSubscribedCategories(int userID)
+        {
+            var res = _newsletterRepository.GetAllSubscribedCategories(userID);
+            return new ServiceResult<IQueryable<idDTO>>(Mapper.MapNewslettersToUserIds(res.Result));
+        }
     }
 }
