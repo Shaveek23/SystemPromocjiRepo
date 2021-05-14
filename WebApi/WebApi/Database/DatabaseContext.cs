@@ -33,8 +33,6 @@ namespace WebApi.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             base.OnModelCreating(modelBuilder);
             // configuring Person in database
             modelBuilder.Entity<Person>(entity =>

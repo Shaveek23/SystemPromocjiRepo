@@ -29,7 +29,7 @@ namespace WebApi.Services
 
         public static ServiceResult<T> GetResourceNotFoundResult()
         {
-            return new ServiceResult<T>(default(T), HttpStatusCode.NotFound, "Requested resource has not been found.");
+            return new ServiceResult<T>(default(T), HttpStatusCode.BadRequest, "Requested resource has not been found.");
         }
 
         public T Result { get; set; }
