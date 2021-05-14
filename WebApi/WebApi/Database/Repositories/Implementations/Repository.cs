@@ -36,6 +36,7 @@ namespace WebApi.Database
 
         public async Task<ServiceResult<TEntity>> AddAsync(TEntity entity)
         {
+            
             if (entity == null)
                 return ServiceResult<TEntity>.GetEntityNullResult();
 

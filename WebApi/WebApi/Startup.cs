@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using WebApi.Database;
 using WebApi.Database.Repositories.Implementations;
 using WebApi.Database.Repositories.Interfaces;
+using WebApi.Filters;
 using WebApi.Middlewares;
 using WebApi.Services.Hosted_Service;
 using WebApi.Services.Hosted_Service.EmailSenderHostedService;
@@ -38,8 +39,11 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddControllers();
+
+            services.AddControllers(config =>
+            {
+                config.Filters.Add(new CustomAuthorizationFilter());
+            });
 
             // configuring DatabaseContext:
             services.AddDbContext<DatabaseContext>(options =>
