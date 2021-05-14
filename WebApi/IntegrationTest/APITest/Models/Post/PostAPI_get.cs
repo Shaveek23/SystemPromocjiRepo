@@ -10,12 +10,11 @@ namespace IntegrationTest.APITest.Models.Post
         public string title;
         public string content;
         public DateTime? datetime;
-        public int? category;
+        public string category;
         public bool? isPromoted;
-        public string author;
+        public string authorName;
         public int authorID;
         public int likesCount;
         public bool isLikedByUser;
-        public List<CommentAPI_get> comments;
     }
 }

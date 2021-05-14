@@ -5,6 +5,7 @@ namespace IntegrationTest.APITest.Models.Category
 {
     public class CategoryAPI_get
     {
-        public List<CategoryDTO> categories;
+        public int id;
+        public string name;
     }
 }

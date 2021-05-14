@@ -13,9 +13,9 @@ using Xunit;
 
 namespace IntegrationTest.APITest
 {
-    public class CommentApiTest : APItester<CommentAPI_get, CommentAPI_post>
+    public class CommentApiTest : APItester<CommentAPI_get, CommentAPI_post, CommentAPI_put>
     {
-        public CommentAPI_post GetComment(string content = "contnet")
+        public CommentAPI_post GetCommentToPost(string content = "content")
         {
             return new CommentAPI_post
             {
@@ -23,23 +23,22 @@ namespace IntegrationTest.APITest
                 content = content
             };
         }
-        public LikeApi getLike()
+        public CommentAPI_put GetCommentToPut(string content = "content")
         {
-            return new LikeApi
+            return new CommentAPI_put
             {
-               like=true
+                content = content
             };
         }
 
         #region ALL
         [Fact]
-        public async void GetComment_ValidCall()
+        public async void Single_ValidCall()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isPuted, isDeleted;
-            CommentAPI_post commentToPost = GetComment("before edit");
-            CommentAPI_post commentToPut = GetComment("edited");
+            CommentAPI_post commentToPost = GetCommentToPost("before edit");
+            CommentAPI_put commentToPut = GetCommentToPut("edited");
             CommentAPI_get commentAfterPost, commentAfterPut;
 
             //POST
@@ -51,7 +50,7 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            (isPuted, statusCode) = await Put($"comment/{commentID}", commentToPut);
+            statusCode = await Put($"comment/{commentID}", commentToPut);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
@@ -59,7 +58,7 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
@@ -69,19 +68,16 @@ namespace IntegrationTest.APITest
             Assert.Equal(commentID, commentAfterPost.id);
             Assert.Equal(commentToPost.content, commentAfterPost.content);
             Assert.Equal(commentToPut.content, commentAfterPut.content);
-            Assert.True(isPuted);
-            Assert.True(isDeleted);
 
         }
-        
+
         [Fact]
-        public async void GetAllComments_ValidCall()
+        public async void All_ValidCall()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isPuted, isDeleted;
-            CommentAPI_post commentToPost = GetComment("before edit");
-            CommentAPI_post commentToPut = GetComment("edited");
+            CommentAPI_post commentToPost = GetCommentToPost("before edit");
+            CommentAPI_put commentToPut = GetCommentToPut("edited");
             List<CommentAPI_get> comments, commentsAfterPost, commentsAfterPut, commentsAfterDelete;
 
 
@@ -98,7 +94,7 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT
-            (isPuted, statusCode) = await Put($"comment/{commentID}", commentToPut);
+            statusCode = await Put($"comment/{commentID}", commentToPut);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET ALL
@@ -106,15 +102,12 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET ALL
             (commentsAfterDelete, statusCode) = await GetAll("comments");
             Assert.Equal(HttpStatusCode.OK, statusCode);
-
-            Assert.True(isPuted);
-            Assert.True(isDeleted);
 
             Assert.NotEmpty(comments);
             Assert.NotEmpty(commentsAfterPost);
@@ -198,115 +191,209 @@ namespace IntegrationTest.APITest
 
         #region GET
         [Fact]
+        public async void GetComment_ValidCall()
+        {
+            HttpStatusCode statusCode;
+            CommentAPI_get comment;
+            //GET
+            (comment, statusCode) = await Get($"comment/{existingCommentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.Equal(existingCommentID, comment.id);
+        }
+        [Fact]
         public async void GetComment_InvalidCall_NoIdFound()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isDeleted;
-            CommentAPI_post comment = GetComment();
+            CommentAPI_post comment = GetCommentToPost();
 
             //POST
             (commentID, statusCode) = await Post("comment", comment);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //GET
             (_, statusCode) = await Get($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.NotFound, statusCode);
 
-            Assert.True(isDeleted);
         }
         #endregion
 
         #region POST
         [Fact]
+        public async void PostComment_ValidCall()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            statusCode = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        [Fact]
         public async void PostComment_InvalidCall_NoContent()
         {
+            HttpStatusCode statusCode;
+            int commentID;
             //POST
-            CommentAPI_post comment = GetComment();
+            CommentAPI_post comment = GetCommentToPost();
             comment.content = null;
-            (_, HttpStatusCode statusCode) = await Post("comment", comment);
+            (commentID, statusCode) = await Post("comment", comment);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            if(statusCode.IsOK())
+            {
+                //DELETE
+                statusCode = await Delete($"comment/{commentID}");
+                Assert.Equal(HttpStatusCode.OK, statusCode);
+            }
         }
         [Fact]
         public async void PostComment_InvalidCall_NoPostID()
         {
+            HttpStatusCode statusCode;
+            int commentID;
             //POST
-            CommentAPI_post comment = GetComment();
+            CommentAPI_post comment = GetCommentToPost();
             comment.postID = null;
-            (_, HttpStatusCode statusCode) = await Post("comment", comment);
+            (commentID, statusCode) = await Post("comment", comment);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            if (statusCode.IsOK())
+            {
+                //DELETE
+                statusCode = await Delete($"comment/{commentID}");
+                Assert.Equal(HttpStatusCode.OK, statusCode);
+            }
         }
-
         [Fact]
-        public async void PostCommet_InvalidCall_NoUserIdHeader()
+        public async void PostComment_InvalidCall_NoUserIdHeader()
         {
+            HttpStatusCode statusCode;
+            int commentID;
             //POST
-            CommentAPI_post comment = GetComment();
-            (_, HttpStatusCode statusCode) = await Post("comment", comment, null);
+            CommentAPI_post comment = GetCommentToPost();
+            (commentID, statusCode) = await Post("comment", comment, null);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            if (statusCode.IsOK())
+            {
+                //DELETE
+                statusCode = await Delete($"comment/{commentID}");
+                Assert.Equal(HttpStatusCode.OK, statusCode);
+            }
         }
         #endregion
 
         #region DELETE
         [Fact]
+        public async void DeleteComment_ValidCall()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            statusCode = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        [Fact]
+        public async void DeleteComment_InvalidCall_NotAnOwner()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost, existingUserID);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE Invalid
+            statusCode = await Delete($"comment/{commentID}", NotOwnerUserID);
+            Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+
+            //DELETE Valid
+            statusCode = await Delete($"comment/{commentID}", existingUserID);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        [Fact]
+        public async void DeleteComment_ValidCall_Admin()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost, existingUserID);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE
+            statusCode = await Delete($"comment/{commentID}", AdminUserID);
+            Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+            if (!statusCode.IsOK())
+            {
+                //DELETE
+                statusCode = await Delete($"comment/{commentID}", existingUserID);
+                Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+            }
+        }
+        [Fact]
         public async void DeleteComment_InvalidCall_NoUserIdHeader()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isDeleted;
-            CommentAPI_post commentToPost = GetComment();
+            CommentAPI_post commentToPost = GetCommentToPost();
 
             //POST
             (commentID, statusCode) = await Post("comment", commentToPost);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Invalid
-            (_, statusCode) = await Delete($"comment/{commentID}", null);
+            statusCode = await Delete($"comment/{commentID}", null);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             //DELETE Valid
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
-
-            Assert.True(isDeleted);
         }
-
         [Fact]
-        public async void DeletePost_InvalidCall_NoIdFound()
+        public async void DeleteComment_InvalidCall_NoIdFound()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isDeleted;
-            CommentAPI_post commentToPost = GetComment();
+            CommentAPI_post commentToPost = GetCommentToPost();
 
             //POST
             (commentID, statusCode) = await Post("comment", commentToPost);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Valid
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //DELETE Invalid
-            (_, statusCode) = await Delete($"comment/{commentID}", null);
+            statusCode = await Delete($"comment/{commentID}", null);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
-
-            Assert.True(isDeleted);
         }
         #endregion
 
+        #region PUT
         [Fact]
         public async void PutComment_InvalidCall_NoContent()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isDeleted;
-            CommentAPI_post commentToPost = GetComment();
-            CommentAPI_post commentToPut = GetComment();
+            CommentAPI_post commentToPost = GetCommentToPost();
+            CommentAPI_put commentToPut = GetCommentToPut();
             commentToPut.content = null;
 
             //POST
@@ -314,64 +401,73 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT Invalid
-            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut);
+            statusCode = await Put($"commnet/{commentID}", commentToPut);
             Assert.False(statusCode.IsOK());
 
             //DELETE Valid
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
             Assert.Equal(HttpStatusCode.OK, statusCode);
-
-            Assert.True(isDeleted);
         }
-
-        [Fact]
-        public async void PutComment_InvalidCall_NoPostID()
-        {
-            HttpStatusCode statusCode;
-            int commentID;
-            bool isDeleted;
-            CommentAPI_post commentToPost = GetComment();
-            CommentAPI_post commentToPut = GetComment();
-            commentToPut.postID = null;
-
-            //POST
-            (commentID, statusCode) = await Post("comment", commentToPost);
-            Assert.Equal(HttpStatusCode.OK, statusCode);
-
-            //PUT Invalid
-            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut);
-            Assert.False(statusCode.IsOK());
-
-            //DELETE Valid
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
-            Assert.Equal(HttpStatusCode.OK, statusCode);
-
-            Assert.True(isDeleted);
-        }
-
         [Fact]
         public async void PutComment_InvalidCall_NoUserIdHeader()
         {
             HttpStatusCode statusCode;
             int commentID;
-            bool isDeleted;
-            CommentAPI_post commentToPost = GetComment();
-            CommentAPI_post commentToPut = GetComment();
+            CommentAPI_post commentToPost = GetCommentToPost();
+            CommentAPI_put commentToPut = GetCommentToPut();
 
             //POST
             (commentID, statusCode) = await Post("comment", commentToPost);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT Invalid
-            (_, statusCode) = await Put($"commnet/{commentID}", commentToPut, null);
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            statusCode = await Put($"commnet/{commentID}", commentToPut, null);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             //DELETE Valid
-            (isDeleted, statusCode) = await Delete($"comment/{commentID}");
+            statusCode = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        [Fact]
+        public async void PutComment_InvalidCall_NotAnOwner()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+            CommentAPI_put commentToPut = GetCommentToPut();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
-            Assert.True(isDeleted);
-        }
+            //PUT Invalid
+            statusCode = await Put($"commnet/{commentID}", commentToPut, NotOwnerUserID);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
+            //DELETE Valid
+            statusCode = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        [Fact]
+        public async void PutComment_ValidCall_Admin()
+        {
+            HttpStatusCode statusCode;
+            int commentID;
+            CommentAPI_post commentToPost = GetCommentToPost();
+            CommentAPI_put commentToPut = GetCommentToPut();
+
+            //POST
+            (commentID, statusCode) = await Post("comment", commentToPost);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //PUT Valid
+            statusCode = await Put($"commnet/{commentID}", commentToPut, AdminUserID);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+
+            //DELETE Valid
+            statusCode = await Delete($"comment/{commentID}");
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+        }
+        #endregion
     }
 }

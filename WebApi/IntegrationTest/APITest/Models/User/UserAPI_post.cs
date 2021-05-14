@@ -8,7 +8,6 @@ namespace IntegrationTest.APITest.Models.User
     {
         public string userName;
         public string userEmail;
-        public DateTime? timestamp;
         public bool? isAdmin;
         public bool? isEntrepreneur;
         public bool? isVerified;
