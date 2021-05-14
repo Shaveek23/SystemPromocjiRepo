@@ -32,26 +32,26 @@ namespace WebApi.Controllers
 
 
         [HttpGet("posts")]
-        public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
+        public ActionResult<IQueryable<PostDTOOutput>> GetAll([Required][FromHeader] int userID)
         {
             var result = _postService.GetAll(userID);
-            return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
+            return new ControllerResult<IQueryable<PostDTOOutput>>(result).GetResponse();
         }
 
 
         [HttpGet("posts/{UserID}")]
-        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
+        public ActionResult<IQueryable<PostDTOOutput>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
         {
             var result = _postService.GetAllOfUser(UserID);
-            return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
+            return new ControllerResult<IQueryable<PostDTOOutput>>(result).GetResponse();
         }
 
 
         [HttpGet("post/{postID}")]
-        public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
+        public ActionResult<PostDTOOutput> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
             var result = _postService.GetById(postID, userID);
-            return new ControllerResult<PostDTO>(result).GetResponse();
+            return new ControllerResult<PostDTOOutput>(result).GetResponse();
         }
 
 
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("post/{postID}")]
-        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
+        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostDTOEdit body)
         {
             var result = await _postService.EditPostAsync(postID, body);
             return new ControllerResult<bool>(result).GetResponse();
@@ -71,7 +71,7 @@ namespace WebApi.Controllers
 
 
         [HttpPost("post")]
-        public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostDTOCreate body) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = await _postService.AddPostAsync(body, userID);
             _newsletterService.SendNewsletterNotifications(result.IsOk(), body.title, body.category.Value);

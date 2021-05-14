@@ -16,119 +16,114 @@ namespace WebApi.Services.Serives_Implementations
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
-
         private readonly ICommentService _commentService;
+        private readonly ICategoryService _categoryService;
+     
 
 
-        public PostService(IPostRepository postRepository, IUserRepository userRepository, ICommentService commentService)
+        public PostService(IPostRepository postRepository, IUserRepository userRepository, ICommentService commentService, ICategoryService categoryService)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _commentService = commentService;
+            _categoryService = categoryService;
         }
 
-        public ServiceResult<IQueryable<PostDTO>> GetAll(int userID)
+        public ServiceResult<IQueryable<PostDTOOutput>> GetAll(int userID)
         {
             var result = _postRepository.GetAll();
             if (result.Result == null)
             {
-                return new ServiceResult<IQueryable<PostDTO>>(null, result.Code, result.Message);
+                return new ServiceResult<IQueryable<PostDTOOutput>>(null, result.Code, result.Message);
             }
             var users = _userRepository.GetAll();
-            var allComments = _commentService.GetAll(userID);
 
-            List<PostDTO> postDTOs = new List<PostDTO>();
+            List<PostDTOOutput> postDTOs = new List<PostDTOOutput>();
             foreach (var post in result.Result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
                 var user = users.Result?.Where(x => x.UserID == post.UserID).FirstOrDefault();
-                var comments = allComments.Result?.Where(x => x.postId == post.PostID);
 
                 var postDTO = PostMapper.Map(post);
 
-                postDTO.author = user?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorName = user?.UserName ?? "Nie ma takiego użytkownika";
                 postDTO.authorID = user?.UserID ?? 0;
+                postDTO.category = _categoryService.GetById(post.CategoryID).Result?.Name ?? "Category with given Id does not exist.";
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
                 postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
-                postDTO.comments = comments;
-               
 
                 postDTOs.Add(postDTO);
             }
 
-            return new ServiceResult<IQueryable<PostDTO>>(postDTOs.AsQueryable(), result.Code, result.Message);
+            return new ServiceResult<IQueryable<PostDTOOutput>>(postDTOs.AsQueryable(), result.Code, result.Message);
         }
 
-        public ServiceResult<PostDTO> GetById(int postID, int userID)
+        public ServiceResult<PostDTOOutput> GetById(int postID, int userID)
         {
             var result = _postRepository.GetById(postID);
             if (result.Result == null)
             {
-                return new ServiceResult<PostDTO>(null, result.Code, result.Message);
+                return new ServiceResult<PostDTOOutput>(null, result.Code, result.Message);
             }
 
             var postLikes = GetLikes(postID);
-
             var user = _userRepository.GetById(userID);
-
-            var comments = _commentService.GetAll(userID).Result?.Where(x => x.postId == postID);
 
             var postDTO = PostMapper.Map(result.Result);
 
-            postDTO.author = user.Result?.UserName ?? "Nie ma takiego użytkownika";
+            postDTO.authorName = user.Result?.UserName ?? "Nie ma takiego użytkownika";
             postDTO.authorID = user.Result?.UserID ?? 0;
+            postDTO.category = _categoryService.GetById(result.Result.CategoryID).Result?.Name ?? "Category with given Id does not exist.";
 
             postDTO.likesCount = postLikes.Result?.Count() ?? 0;
             postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
 
-            postDTO.comments = comments;
-
-            return new ServiceResult<PostDTO>(postDTO, result.Code, result.Message);
+            return new ServiceResult<PostDTOOutput>(postDTO, result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddPostAsync(PostEditDTO newPostDTO, int userID)
+        public async Task<ServiceResult<int?>> AddPostAsync(PostDTOCreate newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
             createdPost.UserID = userID;
+            createdPost.Date = DateTime.Now;
+            createdPost.IsPromoted = false;
             var result = await _postRepository.AddAsync(createdPost);
             return new ServiceResult<int?>(result.Result?.PostID, result.Code, result.Message);
         }
 
-        public ServiceResult<IQueryable<PostDTO>> GetAllOfUser(int userID)
+        public ServiceResult<IQueryable<PostDTOOutput>> GetAllOfUser(int userID)
         {
             var serviceResult = _postRepository.GetAll();
             if (serviceResult.Result == null)
             {
-                return new ServiceResult<IQueryable<PostDTO>>(null, serviceResult.Code, serviceResult.Message);
+                return new ServiceResult<IQueryable<PostDTOOutput>>(null, serviceResult.Code, serviceResult.Message);
             }
             var users = _userRepository.GetAll();
-            var allComments = _commentService.GetAll(userID);
 
             var result = serviceResult.Result.Where(post => post.UserID == userID); // LINQ w repozytorium !!!
 
-            List<PostDTO> postDTOs = new List<PostDTO>();
+            List<PostDTOOutput> postDTOs = new List<PostDTOOutput>();
             foreach (var post in result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
 
                 var user = users.Result?.Where(x => x.UserID == post.UserID).FirstOrDefault();
-                var comments = allComments.Result?.Where(x => x.postId == post.PostID);
 
                 var postDTO = PostMapper.Map(post);
 
-                postDTO.author = user?.UserName ?? "Nie ma takiego użytkownika";
+                postDTO.authorName = user?.UserName ?? "Nie ma takiego użytkownika";
                 postDTO.authorID = user?.UserID ?? 0;
+
+                postDTO.category = _categoryService.GetById(post.CategoryID).Result?.Name ?? "Category with given Id does not exist.";
 
                 postDTO.likesCount = postLikes.Result?.Count() ?? 0;
                 postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
 
-                postDTO.comments = comments;
-
                 postDTOs.Add(postDTO);
             }
 
-            return new ServiceResult<IQueryable<PostDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
+            return new ServiceResult<IQueryable<PostDTOOutput>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
         }
 
         public async Task<ServiceResult<bool>> DeletePostAsync(int id)
@@ -142,10 +137,11 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostEditDTO body)
+        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostDTOEdit body)
         {
             Post post = PostEditMapper.Map(body);
             post.PostID = id;
+            post.Date = DateTime.Now;
             var result = await _postRepository.UpdateAsync(post);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }

@@ -9,28 +9,24 @@ namespace WebApi.Database.Mapper
 {
     public class PostMapper
     {
-        public static Post Map(PostDTO postDTO)
+        public static Post Map(PostDTOOutput postDTO)
         {
             Post post = new Post();
 
             if (postDTO.id.HasValue) post.PostID = postDTO.id.Value;
             if (postDTO.authorID.HasValue) post.UserID = postDTO.authorID.Value;
-            if (postDTO.category.HasValue) post.CategoryID = postDTO.category.Value;
             if (postDTO.datetime.HasValue) post.Date = postDTO.datetime.Value;
             if (postDTO.isPromoted.HasValue) post.IsPromoted = postDTO.isPromoted.Value;
-
-
             post.Title = postDTO.title;
             post.Content = postDTO.content;
 
             return post;
         }
 
-        public static PostDTO Map(Post post)
+        public static PostDTOOutput Map(Post post)
         {
-            if (post == null)
-                return null;
-            PostDTO postDTO = new PostDTO();
+            if (post == null) return null;
+            PostDTOOutput postDTO = new PostDTOOutput();
 
             postDTO.id = post.PostID;
             postDTO.authorID = post.UserID;
@@ -38,24 +34,16 @@ namespace WebApi.Database.Mapper
             postDTO.title = post.Title;
             postDTO.content = post.Content;
             postDTO.isPromoted = post.IsPromoted;
-            postDTO.category = post.CategoryID;
-
-            //TODO:
-            //These fields should be found in database:
-            postDTO.author = "Jan";
-            postDTO.likesCount = 5;
-            postDTO.isLikedByUser = false;
-            //postDTO.comments = ....
 
             return postDTO;
         }
 
-        public static IQueryable<PostDTO> Map(IQueryable<Post> posts)
+        public static IQueryable<PostDTOOutput> Map(IQueryable<Post> posts)
         {
             if (posts == null)
                 return null;
 
-            List<PostDTO> list = new List<PostDTO>();
+            List<PostDTOOutput> list = new List<PostDTOOutput>();
             foreach (var post in posts)
             {
                 list.Add(Map(post));
@@ -65,7 +53,7 @@ namespace WebApi.Database.Mapper
         }
 
 
-        public static IQueryable<Post> Map(IQueryable<PostDTO> posts)
+        public static IQueryable<Post> Map(IQueryable<PostDTOOutput> posts)
         {
             List<Post> list = new List<Post>();
             foreach (var post in posts)

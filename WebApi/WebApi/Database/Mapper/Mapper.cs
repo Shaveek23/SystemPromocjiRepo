@@ -306,15 +306,14 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
-        public static PostDTO Map(Post post)
+        public static PostDTOOutput Map(Post post)
         {
             if (post == null)
                 return null;
 
-            return new PostDTO
+            return new PostDTOOutput
             {
                 authorID = post.UserID,
-                category = post.CategoryID,
                 content = post.Content,
                 datetime = post.Date,
                 id = post.PostID,

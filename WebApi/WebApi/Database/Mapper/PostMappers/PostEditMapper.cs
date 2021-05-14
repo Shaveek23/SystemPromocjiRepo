@@ -10,23 +10,25 @@ namespace WebApi.Database.Mapper.PostMappers
 {
     public class PostEditMapper
     {
-        public static Post Map(PostEditDTO postEditDTO)
+        public static Post Map(PostDTOEdit postDTOEdit)
+        {
+            Post post = new Post();
+            
+            if (postDTOEdit.category.HasValue) post.CategoryID = postDTOEdit.category.Value;
+            if (postDTOEdit.isPromoted.HasValue) post.IsPromoted = postDTOEdit.isPromoted.Value;
+            post.Title = postDTOEdit.title;
+            post.Content = postDTOEdit.content;
+
+            return post;
+        }
+
+        public static Post Map(PostDTOCreate postDTOCreate)
         {
             Post post = new Post();
 
-            if (postEditDTO.category.HasValue) post.CategoryID = postEditDTO.category.Value;
-            if (postEditDTO.dateTime.HasValue) post.Date = postEditDTO.dateTime.Value;
-            if (postEditDTO.isPromoted.HasValue) post.IsPromoted = postEditDTO.isPromoted.Value;
-
-            post.Title = postEditDTO.title;
-            post.Content = postEditDTO.content;
-
-
-
-            //TODO:
-            //post.CategoryID = search category name in database to find its ID?
-            //post.Localization = "Miasto";
-            //post.ShopName = "Sklep";
+            if (postDTOCreate.category.HasValue) post.CategoryID = postDTOCreate.category.Value;
+            post.Title = postDTOCreate.title;
+            post.Content = postDTOCreate.content;
 
             return post;
         }

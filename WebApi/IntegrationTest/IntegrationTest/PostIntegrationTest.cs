@@ -50,7 +50,7 @@ namespace IntegrationTest
             
             var postController = GetPostController(options);
 
-            var actual = (PostDTO)((ObjectResult)postController.Get(expectedPost.PostID, expectedUser.UserID).Result).Value;
+            var actual = (PostDTOOutput)((ObjectResult)postController.Get(expectedPost.PostID, expectedUser.UserID).Result).Value;
 
             Assert.NotNull(actual);
             Assert.Equal(expectedPost.PostID, actual.id);
@@ -109,7 +109,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
             Assert.Equal(expected.Count, actual.Count);
@@ -131,7 +131,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.Empty(actual);
         }
@@ -158,14 +158,14 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
 
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
             Assert.Equal(expected.Count, actual.Count);
-            foreach (PostDTO post in actual)
+            foreach (PostDTOOutput post in actual)
                 Assert.Equal("Nie ma takiego użytkownika", post.author);
-            foreach (PostDTO post in actual)
+            foreach (PostDTOOutput post in actual)
                 Assert.Equal(0, post.authorID);
         }
 
@@ -194,15 +194,15 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTO>)((ObjectResult)postController.GetUserPosts(expectedUser.UserID).Result).Value).ToList();
+            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetUserPosts(expectedUser.UserID).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.Equal(2, actual.Count);
-            foreach (PostDTO post in actual)
+            foreach (PostDTOOutput post in actual)
                 Assert.Equal(1, post.authorID);
         }
-        public PostEditDTO GetPostablePost()
+        public PostDTOEdit GetPostablePost()
         {
-           return new PostEditDTO() { title = "title", content = "content", category = 1, dateTime = DateTime.Now, isPromoted = false };
+           return new PostDTOEdit() { title = "title", content = "content", category = 1, dateTime = DateTime.Now, isPromoted = false };
         }
 
         [Fact]

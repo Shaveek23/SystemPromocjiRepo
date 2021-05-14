@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.DTO
 {
-    public class PostDTO : IValidatableObject
+    public class PostDTOOutput : IValidatableObject
     {
         [Required]
         public int? id { get; set; }
@@ -18,11 +18,11 @@ namespace WebApi.Models.DTO
         [Required]
         public DateTime? datetime { get; set; }
         [Required]
-        public int? category { get; set; }
+        public string category { get; set; }
         [Required]
         public bool? isPromoted { get; set; }
         [Required]
-        public string author { get; set; }
+        public string authorName { get; set; }
         [Required]
         public int? authorID { get; set; }
         [Required]
@@ -30,12 +30,10 @@ namespace WebApi.Models.DTO
         [Required]
         public bool? isLikedByUser { get; set; }
 
-        [Required]
-        public IQueryable<CommentDTOOutput> comments { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (content == "" && title == "")
-                yield return new ValidationResult("If content is empty, post must contain some title.", new[] { nameof(PostDTO) });
+                yield return new ValidationResult("If content is empty, post must contain some title.", new[] { nameof(PostDTOOutput) });
         }
 
 

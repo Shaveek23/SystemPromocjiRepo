@@ -110,7 +110,7 @@ namespace WebApiTest.ServiceTest
         {
             int postID = 1;
             DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
-            var newPostDTO = new PostEditDTO
+            var newPostDTO = new PostDTOEdit
             {
                 title = "newtitle",
                 content = "newcontent",
