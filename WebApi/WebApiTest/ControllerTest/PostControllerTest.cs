@@ -22,6 +22,7 @@ using WebApi.Database.Mapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using WebApi.Models.DTO.PostDTOs;
+using WebApi.Services.Services_Implementations;
 
 namespace WebApiTest.ControllerTest
 {
@@ -75,7 +76,9 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = posts;
 
@@ -142,7 +145,9 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(new ServiceResult<IQueryable<PostDTO>>(posts.Where(p=>p.authorID == in_authorID).AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = new List<PostDTO> { posts[0], posts[2] };
             //Act
@@ -180,7 +185,9 @@ namespace WebApiTest.ControllerTest
             }));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = new PostDTO
             {
@@ -246,7 +253,9 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.GetAllComments(postID, UserId)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(commentsList.AsQueryable()));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = commentsList.AsQueryable();
 
@@ -268,7 +277,9 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.DeletePostAsync(postId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             var result = (bool)((ObjectResult)controller.Delete(userId, postId).Result).Value;
             Assert.True(result);
 
@@ -289,7 +300,9 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.GetLikes(id)).Returns(new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(idList.AsQueryable())));
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var result = ((IQueryable<LikerDTO>)((ObjectResult)controller.GetPostLikes(id).Result).Value).ToList<LikerDTO>(); ;
             var expected = idList;
@@ -307,7 +320,9 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.EditLikeStatusAsync(userId, id, like)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             var actual = controller.EditLikeStatus(userId, id, like);
             var val = (bool)((ObjectResult)actual.Result).Value;
             Assert.True(val);
@@ -325,7 +340,9 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.EditPostAsync(postId,body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             var result = (bool)((ObjectResult)controller.Edit(userId, postId,body).Result).Value;
             Assert.True(result);
 
@@ -342,7 +359,9 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.AddPostAsync(body,userId)).Returns(Task.FromResult(new ServiceResult<int?>(0)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-            var controller = new PostController(mockLogger.Object, mockService.Object);
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             var result = (int?)((ObjectResult)controller.Create( userId,body).Result).Value;
             Assert.True(result is int?);
 

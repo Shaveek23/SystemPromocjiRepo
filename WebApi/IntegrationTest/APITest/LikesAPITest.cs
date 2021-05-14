@@ -161,6 +161,7 @@ namespace IntegrationTest.APITest
             List<LikeAPI_get> likes;
             // LIKE:
             // PUT
+
             LikeAPI_put like = getLikeToPut(true);
             statusCode = await Put($"comment/{commentID}/likedusers", like, userID);
             Assert.True(statusCode.IsOK());
@@ -168,7 +169,7 @@ namespace IntegrationTest.APITest
             (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
             Assert.True(statusCode.IsOK());
             Assert.Contains(likes, like => like.id == userID);
-
+            
             //DISLIKE:
             //PUT
             LikeAPI_put dislike = getLikeToPut(false);
@@ -279,5 +280,6 @@ namespace IntegrationTest.APITest
             statusCode = await Put($"comment/{commentID}/likedUsers", dislike, userID);
             Assert.True(statusCode.IsOK());
         }
+
     }
 }
