@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using IntegrationTest.APITest.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -8,23 +9,50 @@ using System.Threading.Tasks;
 
 namespace IntegrationTest.APITest
 {
-    public class APItester<T1, T2>
+    public class APItester<GET, POST, PUT>
     {
+        #region client
         //słownik HttpClient wszystkich grup
-        static Dictionary<string, HttpClient> clients = new Dictionary<string, HttpClient>()
+        static readonly Dictionary<string, HttpClient> clients = new Dictionary<string, HttpClient>()
         {
-            ["I"] = new HttpClient { BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/") },
             ["D"] = new HttpClient { BaseAddress = new Uri("https://salesystemapi.azurewebsites.net/") },
+            ["I"] = new HttpClient { BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/") },
             ["K"] = new HttpClient { BaseAddress = new Uri("https://serverappats.azurewebsites.net/") }
         };
 
+        static readonly Dictionary<string, int> postIDs = new Dictionary<string, int>()
+        {
+            ["D"] = 90,
+            ["I"] = 1,
+            ["K"] = 1
+        };
+        static readonly Dictionary<string, int> commentIDs = new Dictionary<string, int>()
+        {
+            ["D"] = 90,
+            ["I"] = 1,
+            ["K"] = 2
+        };
+        static readonly Dictionary<string, (int, int, int)> userIDs = new Dictionary<string, (int, int, int)>()
+        {
+            ["K"] = (27, 28, 1000),
+            ["I"] = (1, 2, 1000),
+            ["D"] = (2, 3, 1000)
+        };
+        public static readonly string group = "I";
         //wybrany client
-        public readonly HttpClient client = clients["I"];
+        public readonly HttpClient client = clients[group];
+        public readonly int existingPostID = postIDs[group];
+        public readonly int existingCommentID = commentIDs[group];
+        public readonly int existingUserID = userIDs[group].Item1;
+        public readonly int NotOwnerUserID = userIDs[group].Item2;
+        public readonly int AdminUserID = userIDs[group].Item3;
+        #endregion
 
         //kreator requestów do API
-        public HttpRequestMessage CreateRequest(HttpMethod method, string requestUri, object expected = null, int? userID = 1)
+        public HttpRequestMessage CreateRequest(HttpMethod method, string requestUri, object expected = null, int? userID = 0)
         {
             HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestUri);
+            userID = (userID == 0)?existingUserID : userID;
             if (userID.HasValue) requestMessage.Headers.Add("userId", $"{userID}");
             if (expected != null)
             {
@@ -34,60 +62,50 @@ namespace IntegrationTest.APITest
             return requestMessage;
         }
 
-        public async Task<(bool, HttpStatusCode)> Delete(string requestUri, int? userID = 1)
-        {
-            var requestMessage = CreateRequest(HttpMethod.Delete, requestUri, null, userID);
-            var responseMessage = await client.SendAsync(requestMessage);
-            if (!responseMessage.IsSuccessStatusCode)
-                return (false, responseMessage.StatusCode);
-            var jsonString = await responseMessage.Content.ReadAsStringAsync();
-            bool isDeleted = JsonConvert.DeserializeObject<bool>(jsonString);
-            return (isDeleted, responseMessage.StatusCode);
-        }
-
-        public async Task<(T1, HttpStatusCode)> Get(string requestUri, int? userID = 1)
+        #region API calls
+        public async Task<(GET, HttpStatusCode)> Get(string requestUri, int? userID = 0)
         {
             var requestMessage = CreateRequest(HttpMethod.Get, requestUri, null, userID);
             var responseMessage = await client.SendAsync(requestMessage);
             if (!responseMessage.IsSuccessStatusCode)
-                return (default(T1), responseMessage.StatusCode);
+                return (default(GET), responseMessage.StatusCode);
             var jsonString = await responseMessage.Content.ReadAsStringAsync();
-            T1 post = JsonConvert.DeserializeObject<T1>(jsonString);
+            GET post = JsonConvert.DeserializeObject<GET>(jsonString);
             return (post, responseMessage.StatusCode);
         }
-
-        public async Task<(bool, HttpStatusCode)> Put(string requestUri, T2 obj, int? userID = 1)
+        public async Task<(List<GET>, HttpStatusCode)> GetAll(string requestUri, int? userID = 0)
         {
-            var requestMessage = CreateRequest(HttpMethod.Put, requestUri, obj, userID);
+            var requestMessage = CreateRequest(HttpMethod.Get, requestUri, null, userID);
             var responseMessage = await client.SendAsync(requestMessage);
             if (!responseMessage.IsSuccessStatusCode)
-                return (false, responseMessage.StatusCode);
+                return (default(List<GET>), responseMessage.StatusCode);
             var jsonString = await responseMessage.Content.ReadAsStringAsync();
-            bool isPuted = JsonConvert.DeserializeObject<bool>(jsonString);
-            return (isPuted, responseMessage.StatusCode);
+            List<GET> list = JsonConvert.DeserializeObject<List<GET>>(jsonString);
+            return (list, responseMessage.StatusCode);
         }
-
-        public async Task<(int, HttpStatusCode)> Post(string requestUri, T2 obj, int? userID = 1)
+        public async Task<(int, HttpStatusCode)> Post(string requestUri, POST obj, int? userID = 0)
         {
             var requestMessage = CreateRequest(HttpMethod.Post, requestUri, obj, userID);
             var responseMessage = await client.SendAsync(requestMessage);
             var jsonString = await responseMessage.Content.ReadAsStringAsync();
             if (!responseMessage.IsSuccessStatusCode)
                 return (default(int), responseMessage.StatusCode);
-            int postID = JsonConvert.DeserializeObject<int>(jsonString);
-            return (postID, responseMessage.StatusCode);
+            responseID response = JsonConvert.DeserializeObject<responseID>(jsonString);
+            return (response.id, responseMessage.StatusCode);
         }
-
-        public async Task<(List<T1>, HttpStatusCode)> GetAll(string requestUri, int? userID = 1)
+        public async Task<HttpStatusCode> Put(string requestUri, PUT obj, int? userID = 0)
         {
-            var requestMessage = CreateRequest(HttpMethod.Get, requestUri, null, userID);
+            var requestMessage = CreateRequest(HttpMethod.Put, requestUri, obj, userID);
             var responseMessage = await client.SendAsync(requestMessage);
-            if (!responseMessage.IsSuccessStatusCode)
-                return (default(List<T1>), responseMessage.StatusCode);
-            var jsonString = await responseMessage.Content.ReadAsStringAsync();
-            List<T1> list = JsonConvert.DeserializeObject<List<T1>>(jsonString);
-            return (list, responseMessage.StatusCode);
+            return responseMessage.StatusCode;
         }
+        public async Task<HttpStatusCode> Delete(string requestUri, int? userID = 0)
+        {
+            var requestMessage = CreateRequest(HttpMethod.Delete, requestUri, null, userID);
+            var responseMessage = await client.SendAsync(requestMessage);
+            return responseMessage.StatusCode;
+        }
+        #endregion
     }
 
 }

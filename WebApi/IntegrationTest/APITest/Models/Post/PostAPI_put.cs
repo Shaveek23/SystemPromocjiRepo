@@ -4,10 +4,11 @@ using System.Text;
 
 namespace IntegrationTest.APITest.Models.Post
 {
-    public class PostAPI_post
+    public class PostAPI_put
     {
         public string title;
         public string content;
         public int? category;
+        public bool? isPromoted;
     }
 }
