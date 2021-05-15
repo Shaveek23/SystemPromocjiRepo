@@ -13,7 +13,7 @@ namespace WebApi.Services.Services_Interfaces
         public ServiceResult<IQueryable<UserGetDTO>> GetAll();
 
         public ServiceResult<UserGetDTO> GetById(int id);
-        public Task<ServiceResult<int?>> AddUserAsync(int userId, UserPostDTO newUserDTO);
+        public Task<ServiceResult<idDTO>> AddUserAsync(int userId, UserPostDTO newUserDTO);
         public Task<ServiceResult<bool>> EditUserAsync(int userId, UserPutDTO userDTO, int userToBeEditedId);
         public Task<ServiceResult<bool>> DeleteUserAsync(int userId, int userToBeDeletedId);
 

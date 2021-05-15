@@ -214,7 +214,7 @@ namespace IntegrationTest.APITest
             HttpStatusCode statusCode;
 
             //POST Invalid
-            (userID, statusCode) = await Post("user", user);
+            (userID, statusCode) = await Post("users", user);
             Assert.True(statusCode.IsOK());
 
             //DELETE

@@ -16,7 +16,7 @@ namespace IntegrationTest.APITest
         static readonly Dictionary<string, HttpClient> clients = new Dictionary<string, HttpClient>()
         {
             ["D"] = new HttpClient { BaseAddress = new Uri("https://salesystemapi.azurewebsites.net/") },
-            ["I"] = new HttpClient { BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/") },
+            ["I"] = new HttpClient { BaseAddress = new Uri("https://systempromocji.azurewebsites.net/") },
             ["K"] = new HttpClient { BaseAddress = new Uri("https://serverappats.azurewebsites.net/") }
         };
 
