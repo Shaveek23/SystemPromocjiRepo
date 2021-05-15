@@ -22,12 +22,11 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("categories")]
-        public ActionResult<Categories> GetAll()
+        public ActionResult<IQueryable<CategoryDTO>> GetAll()
         {
             var result = _categoryService.GetAll();
-            return new ControllerResult<Categories>(result).GetResponse();
+            return new ControllerResult<IQueryable<CategoryDTO>>(result).GetResponse();
         }
-
         [HttpGet("categories/{categoryId}")]
         public ActionResult<IQueryable<CategoryDTO>> GetById(int categoryId)
         {

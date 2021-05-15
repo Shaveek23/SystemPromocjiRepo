@@ -9,7 +9,7 @@ namespace WebApi.Services.Services_Interfaces
 {
     public interface ICategoryService
     {
-        public ServiceResult<Categories> GetAll();
+        public ServiceResult<IQueryable<CategoryDTO>> GetAll();
         public ServiceResult<CategoryDTO> GetById(int categoryId);
     }
 }
