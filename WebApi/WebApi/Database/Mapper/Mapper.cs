@@ -348,6 +348,14 @@ namespace WebApi.Database.Mapper
 
             return result.AsQueryable();
         }
+
+        public static idDTO Map(int? id)
+        {
+            if (!id.HasValue)
+                return null;
+
+            return new idDTO { id = id.Value };
+        }
     }
 
 }

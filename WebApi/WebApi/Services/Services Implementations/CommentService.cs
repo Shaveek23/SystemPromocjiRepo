@@ -23,13 +23,13 @@ namespace WebApi.Services.Serives_Implementations
             _userRepository = userRepository;
         }
 
-        public async Task<ServiceResult<int?>> AddCommentAsync(int userId, CommentDTONew comment)
+        public async Task<ServiceResult<idDTO>> AddCommentAsync(int userId, CommentDTONew comment)
         {
             Comment newComment = Mapper.Map(comment);
             newComment.UserID = userId;
             newComment.DateTime = DateTime.Now;
             ServiceResult<Comment> result = await _commentRepository.AddAsync(newComment);
-            return new ServiceResult<int?>(result.Result?.CommentID, result.Code, result.Message);
+            return new ServiceResult<idDTO>(Mapper.Map(result.Result?.CommentID), result.Code, result.Message);
         }
 
         public ServiceResult<bool> DeleteComment(int commentId, int userId)
