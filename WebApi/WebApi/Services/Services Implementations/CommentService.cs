@@ -34,7 +34,7 @@ namespace WebApi.Services.Serives_Implementations
 
         public ServiceResult<bool> DeleteComment(int commentId, int userId)
         {
-            var result = _commentRepository.Delete(commentId, userId);
+            var result = _commentRepository.Delete(commentId);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
