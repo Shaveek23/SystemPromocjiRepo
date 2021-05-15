@@ -28,19 +28,30 @@ namespace WebApiTest.ServiceTest
                     new Post { PostID = 2, UserID = 5, CategoryID = 5, Title= "Title32321", Date = new DateTime(2015, 6, 5), IsPromoted = false },
                     new Post()
         };
+
         List<User> users = new List<User>
         {
             new User{UserID=1},
             new User{UserID=8},
             new User{UserID=5}
         };
+
         List<CommentDTOOutput> comments = new List<CommentDTOOutput>
         {
            new CommentDTOOutput() { id=1},
            new CommentDTOOutput() { id = 2, authorID = 2, postId = 2, date = DateTime.Today, content = "test2" },
            new CommentDTOOutput() { id = 3, authorID = 3, postId = 3, date = DateTime.Today, content = "test3"}
-
         };
+
+
+        List<CategoryDTO> categories = new List<CategoryDTO>
+        {
+           new CategoryDTO() { ID=1, Name="Kategoria1"},
+           new CategoryDTO() { ID = 2, Name = "Buciki"},
+           new CategoryDTO() { ID = 3, Name = "Jedzonko"}
+        };
+
+
 
         [Fact]
         public void GetAll_ValidCall()
@@ -61,7 +72,10 @@ namespace WebApiTest.ServiceTest
             var mockICommentService = new Mock<ICommentService>();
             mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
-            var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object);
+            var mockICategoryService = new Mock<ICategoryService>();
+            mockICategoryService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()));
+
+            var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object, mockICategoryService.Object);
 
             // act:
 
@@ -76,6 +90,7 @@ namespace WebApiTest.ServiceTest
         {
             var userID = 1;
             var expectedId = 1;
+            var expectedCategoryId = 1;
             var expected = new ServiceResult<Post>(posts.Where(x => x.PostID == expectedId).FirstOrDefault());
             var mockIPostRepository = new Mock<IPostRepository>();
             mockIPostRepository.Setup(x => x.GetById(expectedId))
@@ -87,13 +102,13 @@ namespace WebApiTest.ServiceTest
             mockIUserRepository.Setup(x => x.GetById(It.IsAny<int>()))
                 .Returns(new ServiceResult<User>(new User() { UserID=userID}));
 
-
-           
-
             var mockICommentService = new Mock<ICommentService>();
             mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
-            var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object);
+            var mockICategoryService = new Mock<ICategoryService>();
+            mockICategoryService.Setup(x => x.GetById()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()));
+
+            var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object, mockICategoryService.Object);
             var actual = postService.GetById(expectedId, 1).Result;
             var expected2 = expected.Result;
 
@@ -115,7 +130,6 @@ namespace WebApiTest.ServiceTest
                 title = "newtitle",
                 content = "newcontent",
                 category = 5,
-                dateTime = currentTime,
                 isPromoted = true
             };
             var expectedPost = new Post
@@ -127,7 +141,6 @@ namespace WebApiTest.ServiceTest
                 Content = "newcontent",
                 Date = currentTime,
                 IsPromoted = true,
-
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();
@@ -135,8 +148,9 @@ namespace WebApiTest.ServiceTest
 
             var mockIUserRespository = new Mock<IUserRepository>();
             var mockICommentService = new Mock<ICommentService>();
+            var mockICategoryService = new Mock<ICategoryService>();
 
-            var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object);
+            var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object, mockICategoryService.Object);
             var actual = postService.EditPostAsync(postID, newPostDTO).Result.Result;
             Assert.True(actual);
 
@@ -176,8 +190,11 @@ namespace WebApiTest.ServiceTest
             var mockIUserRespository = new Mock<IUserRepository>();
             var mockICommentService = new Mock<ICommentService>();
             mockICommentService.Setup(x => x.GetAll(It.IsAny<int>())).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(Mapper.MapOutput(commentsList.AsQueryable())));
+            var mockICategoryService = new Mock<ICategoryService>();
 
-            var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object);
+
+            var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object, mockICategoryService.Object);
+
             var actual = postService.GetAllComments(postID, userId).Result.ToList();
             var expected = commentsList;
             Assert.True(actual != null);

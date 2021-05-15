@@ -31,9 +31,9 @@ namespace WebApiTest.MapperTest.PostMappersTest
             {
                 new List<PostDTOOutput>
                 {
-                    new PostDTOOutput { title ="Title123", author = "Janek", authorID =5, category = 1, content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTOOutput { title ="Title123", author = "Janek", authorID =5, category=1, datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTOOutput { author = "Janek", authorID =5, category = 2, id=13, datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostDTOOutput { title ="Title123", authorName = "Janek", authorID =5, category = "kategoria1", content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostDTOOutput { title ="Title123", authorName = "Janek", authorID =5, category="kategoria421421", datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostDTOOutput { authorName = "Janek", authorID =5, category = "kategoria32", id=13, datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
                 }
 
              };
@@ -42,9 +42,9 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         public static IEnumerable<object[]> PostDTOData()
         {
-            yield return new object[] { new PostDTOOutput { title = "Title123", author = "Janek", authorID = 5, category = 1, content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
-            yield return new object[] { new PostDTOOutput { title = "Title123", author = "Janek", authorID = 5, category = 10, datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
-            yield return new object[] { new PostDTOOutput { author = "Janek", authorID = 5, category = 2,  id=12 , datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
+            yield return new object[] { new PostDTOOutput { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria1", content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
+            yield return new object[] { new PostDTOOutput { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria213321", datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
+            yield return new object[] { new PostDTOOutput { authorName = "Janek", authorID = 5, category = "kategoria34",  id=12 , datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
         }
 
         public static IEnumerable<object[]> PostPOCOData()
