@@ -14,6 +14,7 @@ using WebApi.Database.Mapper;
 using WebApi.Services;
 using WebApi.Models.DTO;
 using System.Threading.Tasks;
+using WebApi.Models.DTO.UserDTOs;
 
 namespace WebApiTest
 {
@@ -50,7 +51,7 @@ namespace WebApiTest
                 .Returns(new ServiceResult<User>(expected));
 
             var userService = new UserService(mockIUserRepository.Object);
-            var actual = Mapper.Map(userService.GetById(expectedId).Result);
+            var actual = UserMapper.Map(userService.GetById(expectedId).Result);
 
             Assert.True(actual != null);
             Assert.Equal(expected.UserID, actual.UserID);
@@ -82,7 +83,7 @@ namespace WebApiTest
 
         public void EditUser_ValidCall()
         {
-            var newUserDTO = new UserDTO { ID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEntrepreneur = false, IsAdmin = false, IsVerified = false, IsActive = false };
+            var newUserDTO = new UserPutDTO {  userEmail = "iojestsuper@mini.pw.edu.pl", userName = "student",  isEntrepreneur = false, isAdmin = false, isVerified = false, isActive = false };
             var newUser = new User { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, Active = false };
 
             var mockIUserRepository = new Mock<IUserRepository>();
