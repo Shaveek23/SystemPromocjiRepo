@@ -18,20 +18,28 @@ namespace WebApi.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var res = context.HttpContext.Request.Headers.TryGetValue("userID", out Microsoft.Extensions.Primitives.StringValues callerID);
-
-            var dbContext = context.HttpContext.RequestServices.GetRequiredService<DatabaseContext>();
-
-            var usersID = dbContext.Users.Select(u => u.UserID).AsEnumerable<int>();
-            int callerIDInt = int.Parse(callerID.ToString());
-            bool isValidUser = usersID.Contains(callerIDInt);
-
-            if(!isValidUser)
+            if(context.RouteData.Values.Values.Contains("GetAll") && context.RouteData.Values.Values.Contains("Category")) { }
+            else if(context.RouteData.Values.Values.Contains("GetAll") && context.RouteData.Values.Values.Contains("User")) { }
+            else if(context.RouteData.Values.Values.Contains("Get") && context.RouteData.Values.Values.Contains("User")) { }
+            else
             {
-                var response = new ObjectResult(new { message = "User Unauthorized" });
-                response.StatusCode = 400;
-                context.Result = response;
-                
+
+                var res = context.HttpContext.Request.Headers.TryGetValue("userID", out Microsoft.Extensions.Primitives.StringValues callerID);
+
+                var dbContext = context.HttpContext.RequestServices.GetRequiredService<DatabaseContext>();
+
+                var usersID = dbContext.Users.Select(u => u.UserID).AsEnumerable<int>();
+                int callerIDInt = int.Parse(callerID.ToString());
+                bool isValidUser = usersID.Contains(callerIDInt);
+
+                if (!isValidUser)
+                {
+                    var response = new ObjectResult(new { message = "User Unauthorized" });
+                    response.StatusCode = 400;
+                    context.Result = response;
+                }
+
+                var isAdmin = dbContext.Users.Where(u => u.UserID == callerIDInt).Select(u => u.IsAdmin);
             }
 
            

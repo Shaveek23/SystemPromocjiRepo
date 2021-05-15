@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class PostLike
+    public class PostLike : IUserable
     {
         [Key]
         public int PostLikeID { get; set; }
         public int PostID { get; set; }
         public int UserID { get; set; }
+
+        public int GetOwner() => UserID;
     }
 }

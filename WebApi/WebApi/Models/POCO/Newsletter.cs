@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Newsletter
+    public class Newsletter : IUserable
     {
         [Key]
         public int NewsletterID { get; set; }
@@ -15,6 +15,8 @@ namespace WebApi.Models.POCO
         public int UserID { get; set; }
         
         public int CategoryID { get; set; }
+
+        public int GetOwner() => UserID;
 
     }
 }

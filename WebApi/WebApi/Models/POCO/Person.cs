@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Person
+    public class Person : IUserable
     {
         [Key]
         public int PersonID { get; set; }
@@ -18,6 +18,8 @@ namespace WebApi.Models.POCO
         public string Address { get; set; }
 
         public string City { get; set; }
+
+        public int GetOwner() => PersonID;
 
     }
 }

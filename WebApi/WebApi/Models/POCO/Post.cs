@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Post
+    public class Post : IUserable
     {
         [Key]
         public int PostID { get; set; }
@@ -16,5 +16,7 @@ namespace WebApi.Models.POCO
         public string Title { get; set; }
         public string Content { get; set; }
         public bool IsPromoted { get; set; }
+
+        public int GetOwner() => UserID;
     }
 }

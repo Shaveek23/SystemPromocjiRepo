@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using WebApi.Exceptions;
+using WebApi.Models.POCO;
 using WebApi.Services;
 
 namespace WebApi.Database
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, new()
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IUserable, new()
     {
         protected readonly DatabaseContext dbContext;
 
@@ -27,6 +28,21 @@ namespace WebApi.Database
 
             return new ServiceResult<TEntity>(result);
 
+        }
+
+        private bool isAuthorized(int id, int userID)
+        {
+            var result = dbContext.Find<TEntity>(id);
+            if(result != null)
+            {
+                int owner = result.GetOwner();
+                var isAdmin = dbContext.Find<User>(userID).IsAdmin;
+                if (owner == userID || isAdmin)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
         }
 
         public ServiceResult<IQueryable<TEntity>> GetAll()
@@ -94,8 +110,9 @@ namespace WebApi.Database
             }
         }
 
-        public ServiceResult<bool> Delete(int entityID,int userId)
+        public ServiceResult<bool> Delete(int entityID)
         {
+
             try
             {
                 dbContext.Remove(dbContext.Find<TEntity>(entityID));

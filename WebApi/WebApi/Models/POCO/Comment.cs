@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Comment
+    public class Comment : IUserable
     {
         [Key]
         public int CommentID { get; set; }
@@ -15,5 +15,6 @@ namespace WebApi.Models.POCO
         public DateTime DateTime { get; set; }
         public string Content { get; set; }
 
+        public int GetOwner() => UserID;
     }
 }

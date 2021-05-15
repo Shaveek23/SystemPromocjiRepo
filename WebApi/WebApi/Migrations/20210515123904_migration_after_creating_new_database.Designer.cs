@@ -10,8 +10,8 @@ using WebApi.Database;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210423194509_AddLikesUp5")]
-    partial class AddLikesUp5
+    [Migration("20210515123904_migration_after_creating_new_database")]
+    partial class migration_after_creating_new_database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,6 +124,24 @@ namespace WebApi.Migrations
                     b.HasKey("CommentLikeID");
 
                     b.ToTable("CommentLike");
+                });
+
+            modelBuilder.Entity("WebApi.Models.POCO.Newsletter", b =>
+                {
+                    b.Property<int>("NewsletterID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("NewsletterID");
+
+                    b.ToTable("Newsletter");
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>
