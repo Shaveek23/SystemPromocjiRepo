@@ -35,7 +35,7 @@ namespace IntegrationTest.APITest
         static readonly Dictionary<string, (int, int, int)> userIDs = new Dictionary<string, (int, int, int)>()
         {
             ["K"] = (27, 28, 1000),
-            ["I"] = (1, 2, 1000),
+            ["I"] = (2, 3, 1),
             ["D"] = (2, 3, 1000)
         };
         public static readonly string group = "I";
