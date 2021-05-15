@@ -124,7 +124,7 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<IUserService>();
             mockService.Setup(x => x.AddUserAsync(id, It.IsAny<UserPostDTO>())).Returns(Task.Run(() =>
             {
-                return new ServiceResult<int?>(id);
+                return new ServiceResult<idDTO>( new idDTO { id = 1 });
             }));
 
             var mockLogger = new Mock<ILogger<UserController>>();
@@ -152,8 +152,8 @@ namespace WebApiTest.ControllerTest
                 isEntrepreneur = isEnterprenuer
             }).Result.Result;
 
-            var val = (int)((ObjectResult)actual).Value;
-            Assert.True(val > 0);
+            var val = (idDTO)((ObjectResult)actual).Value;
+            Assert.True(val.id > 0);
            
 
 
