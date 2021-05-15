@@ -32,12 +32,12 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<UserGetDTO>(UserMapper.MapGet(result.Result), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddUserAsync(int userId, UserPostDTO newUserDTO)
+        public async Task<ServiceResult<idDTO>> AddUserAsync(int userId, UserPostDTO newUserDTO)
         {
             User newUser = UserMapper.Map(newUserDTO);
-            
+            newUser.Timestamp = DateTime.Now;
             var result = await _userRepository.AddAsync(newUser);
-            return new ServiceResult<int?>(result.Result?.UserID, result.Code, result.Message);
+            return new ServiceResult<idDTO>(Mapper.Map(result.Result?.UserID), result.Code, result.Message);
         }
 
         public async Task<ServiceResult<bool>> EditUserAsync(int userId, UserPutDTO userDTO, int userToBeEditedId)

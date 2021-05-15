@@ -46,10 +46,10 @@ namespace WebApi.Database
                 modelBuilder.Entity<Person>().Property(p => p.Address).IsRequired().HasMaxLength(30);
 
                 // seeding example data to database:
-                modelBuilder.Entity<Person>().HasData
-                (
-                  new Person { PersonID = 1, FirstName = "Adam", LastName = "Nowak", Address = "ul. Koszykowa 57A/7", City = "Warszawa" }
-                );
+                //modelBuilder.Entity<Person>().HasData
+                //(
+                //  new Person { PersonID = 1, FirstName = "Adam", LastName = "Nowak", Address = "ul. Koszykowa 57A/7", City = "Warszawa" }
+                //);
 
             });
             modelBuilder.Entity<User>(entity =>
@@ -65,11 +65,11 @@ namespace WebApi.Database
                 modelBuilder.Entity<User>().Property(p => p.Active);
 
                 // seeding example data to database:
-                modelBuilder.Entity<User>().HasData
-                (
-                  new User { UserID = 1, Timestamp = new DateTime(2021, 4, 16, 22, 30, 20), UserEmail = "jaroslaw@kaczyslaw.pl", UserName = "jaroslawpolsezbaw", IsAdmin = false, IsEnterprenuer = true, IsVerified = true, Active = true },
-                  new User { UserID = 2, Timestamp = new DateTime(2021, 4, 13, 12, 30, 20), UserEmail = "antoni@kaczyslaw.pl", UserName = "tobrzozawybuchla", IsAdmin = false, IsEnterprenuer = false, IsVerified = false, Active = true }
-                );
+                //modelBuilder.Entity<User>().HasData
+                //(
+                //  new User { UserID = 1, Timestamp = new DateTime(2021, 4, 16, 22, 30, 20), UserEmail = "jaroslaw@kaczyslaw.pl", UserName = "jaroslawpolsezbaw", IsAdmin = false, IsEnterprenuer = true, IsVerified = true, Active = true },
+                //  new User { UserID = 2, Timestamp = new DateTime(2021, 4, 13, 12, 30, 20), UserEmail = "antoni@kaczyslaw.pl", UserName = "tobrzozawybuchla", IsAdmin = false, IsEnterprenuer = false, IsVerified = false, Active = true }
+                //);
 
             });
             modelBuilder.Entity<Comment>(entity =>
@@ -84,12 +84,12 @@ namespace WebApi.Database
                 modelBuilder.Entity<Comment>().Property(p => p.Content).IsRequired().HasMaxLength(255);
 
 
-                modelBuilder.Entity<Comment>().HasData
-                (
-                  new Comment { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala " },
-                    new Comment { CommentID = 2, UserID = 1, PostID = 2, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala pararara" },
-                      new Comment { CommentID = 3, UserID = 2, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tu ti tu rum tu tu" }
-                );
+                //modelBuilder.Entity<Comment>().HasData
+                //(
+                //  new Comment { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala " },
+                //    new Comment { CommentID = 2, UserID = 1, PostID = 2, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tralalala pararara" },
+                //      new Comment { CommentID = 3, UserID = 2, PostID = 1, DateTime = new DateTime(2021, 4, 13, 12, 30, 20), Content = "tu ti tu rum tu tu" }
+                //);
 
 
             });
@@ -106,12 +106,12 @@ namespace WebApi.Database
                 modelBuilder.Entity<Post>().Property(p => p.Content).IsRequired();
                 modelBuilder.Entity<Post>().Property(p => p.IsPromoted).IsRequired();
 
-                modelBuilder.Entity<Post>().HasData
-                (
-                  new Post { PostID = 1, UserID = 1, CategoryID = 1, Title = "tytuł 1", Content = "Oto mój pierwszy post!", Date = new DateTime(2021, 3, 11, 12, 23, 46), IsPromoted = false },
-                  new Post { PostID = 2, UserID = 2, CategoryID = 1, Title = "tytuł 2", Content = "Oto mój drugi post!", Date = new DateTime(2021, 6, 21, 11, 2, 44), IsPromoted = false },
-                  new Post { PostID = 3, UserID = 3, CategoryID = 1, Title = "tytuł 3", Content = "Oto mój trzeci post!", Date = new DateTime(2021, 4, 11, 1, 21, 4), IsPromoted = false }
-                );
+                //modelBuilder.Entity<Post>().HasData
+                //(
+                //  new Post { PostID = 1, UserID = 1, CategoryID = 1, Title = "tytuł 1", Content = "Oto mój pierwszy post!", Date = new DateTime(2021, 3, 11, 12, 23, 46), IsPromoted = false },
+                //  new Post { PostID = 2, UserID = 2, CategoryID = 1, Title = "tytuł 2", Content = "Oto mój drugi post!", Date = new DateTime(2021, 6, 21, 11, 2, 44), IsPromoted = false },
+                //  new Post { PostID = 3, UserID = 3, CategoryID = 1, Title = "tytuł 3", Content = "Oto mój trzeci post!", Date = new DateTime(2021, 4, 11, 1, 21, 4), IsPromoted = false }
+                //);
             });
 
             modelBuilder.Entity<Category>(entity =>

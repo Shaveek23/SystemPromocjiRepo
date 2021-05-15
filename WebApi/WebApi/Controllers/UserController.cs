@@ -51,7 +51,7 @@ namespace WebApi.Controllers
         {
 
             var result = await _userService.AddUserAsync(UserID,user);
-            return new ControllerResult<int?>(result).GetResponse();
+            return new ControllerResult<idDTO>(result).GetResponse();
         }
 
         [HttpPut("users/{UserToBeEdited}")]
