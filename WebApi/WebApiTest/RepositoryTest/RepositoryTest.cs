@@ -67,7 +67,7 @@ namespace WebApiTest
                 var actual = cls.GetById(0);
 
                 Assert.Null(actual.Result);
-                Assert.Equal(404, (int)(actual.Code));
+                Assert.Equal(400, (int)(actual.Code));
             }
         }
 
