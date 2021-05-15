@@ -12,7 +12,10 @@ using WebApi.Database.Repositories.Implementations;
 using WebApi.Models.DTO;
 using WebApi.Models.POCO;
 using WebApi.Services.Serives_Implementations;
+using WebApi.Services.Services_Implementations;
 using Xunit;
+using WebApi.Services.Hosted_Service;
+using WebApi.Models.DTO.UserDTOs;
 
 namespace IntegrationTest.IntegrationTest
 {
@@ -24,7 +27,8 @@ namespace IntegrationTest.IntegrationTest
             var databaseContext = new DatabaseContext(options);
             var UserRepository = new UserRepository(databaseContext);
             var UserService = new UserService(UserRepository);
-            var UserController = new UserController(logger.Object, UserService);
+            var newsletterService = new Mock<INewsletterService>(); 
+            var UserController = new UserController(logger.Object, UserService,newsletterService.Object);
             return UserController;
         }
 
@@ -45,17 +49,16 @@ namespace IntegrationTest.IntegrationTest
 
             var userController = GetUserController(options);
 
-            var actual = (UserDTO)((ObjectResult)userController.Get(expectedUser.UserID).Result).Value;
+            var actual = (UserGetDTO)((ObjectResult)userController.Get(expectedUser.UserID).Result).Value;
 
             Assert.NotNull(actual);
-            Assert.Equal(expectedUser.UserID, actual.ID);
-            Assert.Equal(expectedUser.UserName, actual.UserName);
-            Assert.Equal(expectedUser.UserEmail, actual.UserEmail);
-            Assert.Equal(expectedUser.Timestamp, actual.Timestamp);
-            Assert.Equal(expectedUser.IsAdmin, actual.IsAdmin);
-            Assert.Equal(expectedUser.Active, actual.IsActive);
-            Assert.Equal(expectedUser.IsEnterprenuer, actual.IsEntrepreneur);
-            Assert.Equal(expectedUser.IsVerified, actual.IsVerified);
+            Assert.Equal(expectedUser.UserID, actual.id);
+            Assert.Equal(expectedUser.UserName, actual.userName);
+            Assert.Equal(expectedUser.UserEmail, actual.userEmail);
+            Assert.Equal(expectedUser.IsAdmin, actual.isAdmin);
+            Assert.Equal(expectedUser.Active, actual.isActive);
+            Assert.Equal(expectedUser.IsEnterprenuer, actual.isEntrepreneur);
+            Assert.Equal(expectedUser.IsVerified, actual.isVerified);
         }
 
         [Fact]
@@ -78,7 +81,7 @@ namespace IntegrationTest.IntegrationTest
 
             var userController = GetUserController(options);
 
-            var actual = (IEnumerable<UserDTO>)((ObjectResult)userController.GetAll().Result).Value;
+            var actual = (IEnumerable<UserGetDTO>)((ObjectResult)userController.GetAll().Result).Value;
             var count = actual.Count();
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
@@ -87,9 +90,13 @@ namespace IntegrationTest.IntegrationTest
 
 
 
-        public UserDTO GetUserEditDTO()
+        public UserPutDTO GetUserEditDTO()
         {
-            return new UserDTO() { UserEmail = "email132@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEntrepreneur = false, IsAdmin = false, IsVerified = false, IsActive = true };
+            return new UserPutDTO() { userEmail = "email132@mini.pw.edu.pl", userName = "student",isEntrepreneur = false, isAdmin = false, isVerified = false, isActive = true };
+        }
+        public UserPostDTO GetUserAddDTO()
+        {
+            return new UserPostDTO() { userEmail = "email132@mini.pw.edu.pl", userName = "student", isEntrepreneur = false, isAdmin = false, isVerified = false, isActive = true };
         }
 
         [Fact]
@@ -100,7 +107,7 @@ namespace IntegrationTest.IntegrationTest
 
             var userController = GetUserController(options);
 
-            var userDTO = GetUserEditDTO();
+            var userDTO = GetUserAddDTO();
             int userCreatorID = 1;
             var result = userController.AddUser(userCreatorID, userDTO).Result.Value;
 
@@ -108,52 +115,49 @@ namespace IntegrationTest.IntegrationTest
             var actual = databaseContext.Users.FirstOrDefault();
 
             Assert.NotNull(actual);
-            Assert.Equal(userDTO.UserName, actual.UserName);
-            Assert.Equal(userDTO.UserEmail, actual.UserEmail);
-            Assert.Equal(userDTO.Timestamp, actual.Timestamp);
-            Assert.Equal(userDTO.IsAdmin, actual.IsAdmin);
-            Assert.Equal(userDTO.IsActive, actual.Active);
-            Assert.Equal(userDTO.IsEntrepreneur, actual.IsEnterprenuer);
-            Assert.Equal(userDTO.IsVerified, actual.IsVerified);
+            Assert.Equal(userDTO.userName, actual.UserName);
+            Assert.Equal(userDTO.userEmail, actual.UserEmail);
+            Assert.Equal(userDTO.isAdmin, actual.IsAdmin);
+            Assert.Equal(userDTO.isActive, actual.Active);
+            Assert.Equal(userDTO.isEntrepreneur, actual.IsEnterprenuer);
+            Assert.Equal(userDTO.isVerified, actual.IsVerified);
         }
 
         [Fact]
         public void EditUser_ValidCall()
         {
-            //var options = new DbContextOptionsBuilder<DatabaseContext>()
-            //   .UseInMemoryDatabase(databaseName: "EditUser_ValidCall").Options;
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+               .UseInMemoryDatabase(databaseName: "EditUser_ValidCall").Options;
 
-            //var users = new List<User>{
-            //    new User { UserID = 1, UserEmail = "email132@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), Active=true, IsEnterprenuer = false, IsAdmin = false, IsVerified = false },
-            //    new User { UserID = 2, UserEmail = "321321312@ck.pl", UserName = "student2", Timestamp = new DateTime(2021, 2, 6, 4, 2, 12), Active=true, IsEnterprenuer = false, IsAdmin = true, IsVerified = false },
-            //    new User { UserID = 3, UserEmail = "dsadas@adsa.pl", UserName = "student2223", Timestamp = new DateTime(2020, 1, 11, 5, 4, 12), Active=true, IsEnterprenuer = true, IsAdmin = false, IsVerified = false }
-            //    };
-            //using (var dbContext = new DatabaseContext(options))
-            //{
-            //    foreach (var newUser in users)
-            //        dbContext.Add(newUser);
-            //    dbContext.SaveChanges();
-            //}
+            var users = new List<User>{
+                new User { UserID = 1, UserEmail = "email132@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), Active=true, IsEnterprenuer = false, IsAdmin = false, IsVerified = false },
+                new User { UserID = 2, UserEmail = "321321312@ck.pl", UserName = "student2", Timestamp = new DateTime(2021, 2, 6, 4, 2, 12), Active=true, IsEnterprenuer = false, IsAdmin = true, IsVerified = false },
+                new User { UserID = 3, UserEmail = "dsadas@adsa.pl", UserName = "student2223", Timestamp = new DateTime(2020, 1, 11, 5, 4, 12), Active=true, IsEnterprenuer = true, IsAdmin = false, IsVerified = false }
+                };
+            using (var dbContext = new DatabaseContext(options))
+            {
+                foreach (var newUser in users)
+                    dbContext.Add(newUser);
+                dbContext.SaveChanges();
+            }
 
-            //var userController = GetUserController(options);
-            //int userEditorID = 1;
-            //int editedUserID = 2;
-            //var userDTO = GetUserEditDTO();
+            var userController = GetUserController(options);
+            int userEditorID = 1;
+            int editedUserID = 2;
+            var userDTO = GetUserEditDTO();
 
-            //var result =  userController.EditUser(userEditorID, userDTO, editedUserID).Result.Value;
+            var result = userController.EditUser(userEditorID, userDTO, editedUserID).Result;
 
-            //var databaseContext = new DatabaseContext(options);
+            var databaseContext = new DatabaseContext(options);
+            var user = databaseContext.Users.Where(x => x.UserID == editedUserID).FirstOrDefault();
 
-            //var user = users.Where(x => x.UserID == editedUserID).FirstOrDefault();
-
-            //Assert.True(result);
-            //Assert.Equal(userDTO.UserName, user.UserName);
-            //Assert.Equal(userDTO.UserEmail, user.UserEmail);
-            //Assert.Equal(userDTO.Timestamp, user.Timestamp);
-            //Assert.Equal(userDTO.IsAdmin, user.IsAdmin);
-            //Assert.Equal(userDTO.IsActive, user.Active);
-            //Assert.Equal(userDTO.IsEntrepreneur, user.IsEnterprenuer);
-            //Assert.Equal(userDTO.IsVerified, user.IsVerified);
+        
+            Assert.Equal(userDTO.userName, user.UserName);
+            Assert.Equal(userDTO.userEmail, user.UserEmail);
+            Assert.Equal(userDTO.isAdmin, user.IsAdmin);
+            Assert.Equal(userDTO.isActive, user.Active);
+            Assert.Equal(userDTO.isEntrepreneur, user.IsEnterprenuer);
+            Assert.Equal(userDTO.isVerified, user.IsVerified);
         }
 
         [Fact]

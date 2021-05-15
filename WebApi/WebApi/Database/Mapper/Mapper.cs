@@ -38,38 +38,8 @@ namespace WebApi.Database.Mapper
 
             return personDTO;
         }
-        public static User Map(UserDTO userDTO)
-        {
-            if (userDTO == null)
-                return null;
-            return new User
-            {
-                UserID = userDTO.ID ?? 0,
-                UserName = userDTO.UserName,
-                UserEmail = userDTO.UserEmail,
-                Timestamp = userDTO.Timestamp.Value,
-                IsVerified = userDTO.IsVerified.Value,
-                IsAdmin = userDTO.IsAdmin.Value,
-                IsEnterprenuer = userDTO.IsEntrepreneur.Value,
-                Active = userDTO.IsActive.Value
-            };
-        }
-        public static UserDTO Map(User user)
-        {
-            if (user == null)
-                return null;
-            return new UserDTO
-            {
-                ID = user.UserID,
-                UserName = user.UserName,
-                UserEmail = user.UserEmail,
-                Timestamp = user.Timestamp,
-                IsVerified = user.IsVerified,
-                IsAdmin = user.IsAdmin,
-                IsEntrepreneur = user.IsEnterprenuer,
-                IsActive = user.Active
-            };
-        }
+       
+      
         public static PostLike Map(PostLikeDTO postLikeDTO)
         {
             return new PostLike
@@ -143,33 +113,7 @@ namespace WebApi.Database.Mapper
 
             return Commentlikes.AsQueryable();
         }
-        public static IQueryable<UserDTO> Map(IQueryable<User> people)
-        {
-            if (people == null)
-                return null;
-            List<UserDTO> list = new List<UserDTO>();
-            foreach (var person in people)
-            {
-                list.Add(Map(person));
-            }
-
-            return list.AsQueryable();
-        }
-
-
-        public static IQueryable<User> Map(IQueryable<UserDTO> people)
-        {
-            if (people == null)
-                return null;
-            List<User> list = new List<User>();
-            foreach (var person in people)
-            {
-                list.Add(Map(person));
-            }
-
-            return list.AsQueryable();
-        }
-
+       
 
         public static IQueryable<PersonDTO> Map(IQueryable<Person> people)
         {

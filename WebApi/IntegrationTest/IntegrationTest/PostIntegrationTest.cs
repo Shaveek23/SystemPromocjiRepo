@@ -14,6 +14,7 @@ using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
 using WebApi.Services.Serives_Implementations;
+using WebApi.Services.Services_Implementations;
 using Xunit;
 
 namespace IntegrationTest
@@ -29,7 +30,8 @@ namespace IntegrationTest
             var commentRepository = new CommentRepository(databaseContext);
             var commentService = new CommentService(commentRepository, userRepository);
             var postSerive = new PostService(postRepository, userRepository, commentService);
-            var postController = new PostController(logger.Object, postSerive);
+            var newsletterService = new Mock<INewsletterService>();
+            var postController = new PostController(logger.Object, postSerive,newsletterService.Object);
 
             return postController;
         }
