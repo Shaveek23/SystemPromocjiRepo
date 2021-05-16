@@ -37,6 +37,8 @@ namespace WebApi.Filters
                     var response = new ObjectResult(new { message = "User Unauthorized" });
                     response.StatusCode = 400;
                     context.Result = response;
+                }
+            }
 
                 }
             }

@@ -33,7 +33,7 @@ namespace WebApiTest.ServiceTest
                 .Returns(new ServiceResult<IQueryable<Category>>(categories.AsQueryable()));
 
             var categoryService = new CategoryService(mockICategoryRepository.Object);
-            var actual = categoryService.GetAll().Result.categories.ToList();
+            var actual = categoryService.GetAll().Result.ToList();
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);

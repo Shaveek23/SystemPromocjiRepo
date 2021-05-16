@@ -48,11 +48,11 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("comment")]
-        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTONew comment, [Required][FromHeader] int userId) 
+        public async Task<ActionResult<idDTO>> AddComment([FromBody] CommentDTONew comment, [Required][FromHeader] int userId) 
         {
 
             var result = await _commentService.AddCommentAsync(userId, comment);
-            return new ControllerResult<int?>(result).GetResponse();
+            return new ControllerResult<idDTO>(result).GetResponse();
 
         }
 

@@ -69,7 +69,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"users/{userID}");
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             Assert.Equal(userID, userAfterPost.id);
             Assert.Equal(userToPost.userName, userAfterPost.userName);
@@ -144,7 +144,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"users/{userID}");
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
         [Fact]
         public async void GetUser_InvalidCall_NoUserIdHeader()
@@ -191,7 +191,7 @@ namespace IntegrationTest.APITest
             HttpStatusCode statusCode;
             UserAPI_get user;
             //GET
-            (user, statusCode) = await Get($"users/{existingUserID}", null);
+            (user, statusCode) = await Get($"users/{AdminUserID}", null);
             Assert.Equal(HttpStatusCode.OK, statusCode);
             Assert.True(user.isAdmin);
         }
@@ -200,7 +200,7 @@ namespace IntegrationTest.APITest
         {
             HttpStatusCode statusCode;
             //GET
-            (_, statusCode) = await Get($"users", null);
+            (_, statusCode) = await GetAll($"users", null);
             Assert.Equal(HttpStatusCode.OK, statusCode);
         }
         #endregion
@@ -214,7 +214,7 @@ namespace IntegrationTest.APITest
             HttpStatusCode statusCode;
 
             //POST Invalid
-            (userID, statusCode) = await Post("user", user);
+            (userID, statusCode) = await Post("users", user);
             Assert.True(statusCode.IsOK());
 
             //DELETE
@@ -334,7 +334,7 @@ namespace IntegrationTest.APITest
             HttpStatusCode statusCode;
 
             //POST Invalid
-            (userID, statusCode) = await Post("user", user);
+            (userID, statusCode) = await Post("users", user);
             Assert.True(statusCode.IsOK());
 
             //DELETE
@@ -393,10 +393,12 @@ namespace IntegrationTest.APITest
             //DELETE
             statusCode = await Delete($"users/{userID}", AdminUserID);
             Assert.True(statusCode.IsOK());
-
-            //DELETE
-            statusCode = await Delete($"users/{userID}", existingUserID);
-            Assert.Equal(HttpStatusCode.OK, statusCode);
+            if(!statusCode.IsOK())
+            {
+                //DELETE
+                statusCode = await Delete($"users/{userID}", existingUserID);
+                Assert.Equal(HttpStatusCode.OK, statusCode);
+            }
         }
         [Fact]
         public async void DeleteUser_ValidCall_NotAnOwner()
@@ -559,7 +561,7 @@ namespace IntegrationTest.APITest
             Assert.Equal(HttpStatusCode.OK, statusCode);
 
             //PUT Invalid
-            statusCode = await Put($"users/{userID}", userToPut);
+            statusCode = await Put($"users/{userID}", userToPut, null);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             //DELETE

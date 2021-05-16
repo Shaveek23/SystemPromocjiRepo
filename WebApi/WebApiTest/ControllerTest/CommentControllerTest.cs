@@ -127,7 +127,7 @@ namespace WebApiTest.ControllerTest
             var mockService = new Mock<ICommentService>();
             mockService.Setup(x => x.AddCommentAsync(UserId, It.IsAny<CommentDTONew>())).Returns(Task.Run(() =>
             {
-                return new ServiceResult<int?>(c_id);
+                return new ServiceResult<idDTO>(new idDTO { id = c_id });
             }));
 
 
@@ -141,12 +141,9 @@ namespace WebApiTest.ControllerTest
                 Content = content
 
             }, UserId).Result.Result;
-            var val = (int)((ObjectResult)actual).Value;
+            var val = (idDTO)((ObjectResult)actual).Value;
 
-            Assert.Equal(val, expected);
-
-
-
+            Assert.Equal(val.id, expected);
         }
 
 

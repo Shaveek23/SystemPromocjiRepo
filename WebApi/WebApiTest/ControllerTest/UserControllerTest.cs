@@ -24,6 +24,7 @@ using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations;
 using WebApi.Database.Repositories.Implementations;
 using WebApi.Services.Services_Implementations;
+using WebApi.Models.DTO.UserDTOs;
 
 namespace WebApiTest.ControllerTest
 {
@@ -42,37 +43,35 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IUserService>();
-            mockService.Setup(x => x.GetById(0)).Returns(new ServiceResult<UserDTO>(new UserDTO
+            mockService.Setup(x => x.GetById(0)).Returns(new ServiceResult<UserGetDTO>(new UserGetDTO
             {
-                ID = id,
-                UserEmail = email,
-                UserName=name,
-                Timestamp=date,
-                IsVerified=isVerified,
-                IsActive=active,
-                IsEntrepreneur=isEnterprenuer
-            })); 
+                id = id,
+                userEmail = email,
+                userName = name,
+                isVerified = isVerified,
+                isActive = active,
+                isEntrepreneur = isEnterprenuer
+            }));
             var mockLogger = new Mock<ILogger<UserController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
-            var expected = new UserDTO
+            var expected = new UserGetDTO
             {
-                ID = id,
-                UserEmail = email,
-                UserName = name,
-                Timestamp = date,
-                IsVerified = isVerified,
-                IsActive = active,
-                IsEntrepreneur = isEnterprenuer
+                id = id,
+                userEmail = email,
+                userName = name,
+                isVerified = isVerified,
+                isActive = active,
+                isEntrepreneur = isEnterprenuer
             };
 
             //Act
             var actual = (ObjectResult)controller.Get(0).Result;
-            int idActual = (int)((UserDTO)(actual.Value)).ID;
+            int idActual = (int)((UserGetDTO)(actual.Value)).id;
 
             //Assert
-            Assert.Equal(expected.ID, idActual);
+            Assert.Equal(expected.id, idActual);
 
         }
 
@@ -80,39 +79,37 @@ namespace WebApiTest.ControllerTest
         [MemberData(nameof(TestData))]
         public void GetAll_Test(int id, string email, string name, DateTime date, bool isVerified, bool isEnterprenuer, bool active)
         {
-            List<UserDTO> people = new List<UserDTO>();
-            people.Add(new UserDTO
+            List<UserGetDTO> people = new List<UserGetDTO>();
+            people.Add(new UserGetDTO
             {
-                ID = id,
-                UserEmail = email,
-                UserName = name,
-                Timestamp = date,
-                IsVerified = isVerified,
-                IsActive = active,
-                IsEntrepreneur = isEnterprenuer
+                id = id,
+                userEmail = email,
+                userName = name,
+                isVerified = isVerified,
+                isActive = active,
+                isEntrepreneur = isEnterprenuer
             });
 
-            people.Add(new UserDTO
+            people.Add(new UserGetDTO
             {
-                ID = id+1,
-                UserEmail = "cko"+email,
-                UserName = name+"XD",
-                Timestamp = date,
-                IsVerified = !isVerified,
-                IsActive = active,
-                IsEntrepreneur = !isEnterprenuer
+                id = id + 1,
+                userEmail = "cko" + email,
+                userName = name + "XD",
+                isVerified = !isVerified,
+                isActive = active,
+                isEntrepreneur = !isEnterprenuer
             });
 
             //Arrange
             var mockService = new Mock<IUserService>();
-            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<UserDTO>>(people.AsQueryable()));
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<UserGetDTO>>(people.AsQueryable()));
             var mockLogger = new Mock<ILogger<UserController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
             var expected = people;
             //Act
-            var actual = ((IQueryable<UserDTO>)((ObjectResult)controller.GetAll().Result).Value);
+            var actual = ((IQueryable<UserGetDTO>)((ObjectResult)controller.GetAll().Result).Value);
             var val = actual.ToList();
 
             //Asset
@@ -125,41 +122,39 @@ namespace WebApiTest.ControllerTest
         {
             //Arrange
             var mockService = new Mock<IUserService>();
-            mockService.Setup(x => x.AddUserAsync(id, It.IsAny<UserDTO>())).Returns(Task.Run(() =>
+            mockService.Setup(x => x.AddUserAsync(id, It.IsAny<UserPostDTO>())).Returns(Task.Run(() =>
             {
-                return new ServiceResult<int?>(id);
+                return new ServiceResult<idDTO>( new idDTO { id = 1 });
             }));
 
             var mockLogger = new Mock<ILogger<UserController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
 
-            var expected = new UserDTO
+            var expected = new UserPostDTO
             {
-                ID = id,
-                UserEmail = email,
-                UserName = name,
-                Timestamp = date,
-                IsVerified = isVerified,
-                IsActive = active,
-                IsEntrepreneur = isEnterprenuer
+              
+                userEmail = email,
+                userName = name,
+                isVerified = isVerified,
+                isActive = active,
+                isEntrepreneur = isEnterprenuer
             };
 
             //Act
-            var actual = controller.AddUser(1, new UserDTO
+            var actual = controller.AddUser(1, new UserPostDTO
             {
-                ID = id,
-                UserEmail = email,
-                UserName = name,
-                Timestamp = date,
-                IsVerified = isVerified,
-                IsActive = active,
-                IsEntrepreneur = isEnterprenuer
+               
+                userEmail = email,
+                userName = name,
+                isVerified = isVerified,
+                isActive = active,
+                isEntrepreneur = isEnterprenuer
             }).Result.Result;
 
-            var val = (int)((ObjectResult)actual).Value;
-            //Assert
-            Assert.Equal(expected.ID, val);
+            var val = (idDTO)((ObjectResult)actual).Value;
+            Assert.True(val.id > 0);
+           
 
 
         }
@@ -180,8 +175,8 @@ namespace WebApiTest.ControllerTest
             var mockLogger = new Mock<ILogger<UserController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
-            mockService.Setup(x => x.DeleteUserAsync(a_id,u_id)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
-            var actual =controller.DeleteUser(a_id,u_id).Result.Result;
+            mockService.Setup(x => x.DeleteUserAsync(a_id, u_id)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            var actual = controller.DeleteUser(a_id, u_id).Result.Result;
             var val = (bool)((ObjectResult)actual).Value;
 
             Assert.True(val);
@@ -199,12 +194,12 @@ namespace WebApiTest.ControllerTest
             DateTime date = new DateTime(2008, 3, 1, 7, 0, 0);
 
             var mockService = new Mock<IUserService>();
-            var expected = new UserDTO { ID = u_id, Timestamp = date, UserEmail = email, UserName = name };
-            mockService.Setup(x => x.EditUserAsync(a_id,expected, u_id)).Returns(Task.Run(() =>
-            {
-                return new ServiceResult<bool>(true);
+            var expected = new UserPutDTO {   userEmail = email, userName = name ,isActive=true,isEntrepreneur=false,isAdmin=false,isVerified=true};
+            mockService.Setup(x => x.EditUserAsync(a_id, expected, u_id)).Returns(Task.Run(() =>
+             {
+                 return new ServiceResult<bool>(true);
 
-            }));
+             }));
             var mockLogger = new Mock<ILogger<UserController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             var controller = new UserController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);

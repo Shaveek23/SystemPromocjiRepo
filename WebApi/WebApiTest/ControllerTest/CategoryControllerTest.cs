@@ -55,29 +55,28 @@ namespace WebApiTest.ControllerTest
         [InlineData(2, "Kategoria4")]
         public void GetAll_Test(int id, string name)
         {
-            List<CategoryDTO> category = new List<CategoryDTO>();
-            category.Add(new CategoryDTO
+            List<CategoryDTO> categories = new List<CategoryDTO>();
+            categories.Add(new CategoryDTO
             {
                 ID = id,
                 Name = name
             });
-            category.Add(new CategoryDTO
+            categories.Add(new CategoryDTO
             {
                 ID = id+1,
                 Name = name+"cokolwiek"
             });
-            var categories = new Categories { categories = category.AsQueryable() };
             var mockService = new Mock<ICategoryService>();
-            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<Categories>(categories));
+            mockService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()));
 
             var mockLogger = new Mock<ILogger<CategoryController>>();
             var controller = new CategoryController(mockLogger.Object, mockService.Object);
 
             var expected = categories;
 
-            var actual = ((Categories)((ObjectResult)controller.GetAll().Result).Value).categories.ToList();
+            var actual = ((IQueryable<CategoryDTO>)((ObjectResult)controller.GetAll().Result).Value).ToList();
 
-            Assert.True(expected.categories.All(shouldItem => actual.Any(isItem => isItem.ID == shouldItem.ID && isItem.Name==shouldItem.Name)));
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.ID == shouldItem.ID && isItem.Name==shouldItem.Name)));
 
 
         }

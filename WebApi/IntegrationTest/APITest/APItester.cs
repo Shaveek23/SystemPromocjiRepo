@@ -16,7 +16,7 @@ namespace IntegrationTest.APITest
         static readonly Dictionary<string, HttpClient> clients = new Dictionary<string, HttpClient>()
         {
             ["D"] = new HttpClient { BaseAddress = new Uri("https://salesystemapi.azurewebsites.net/") },
-            ["I"] = new HttpClient { BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/") },
+            ["I"] = new HttpClient { BaseAddress = new Uri("https://systempromocji.azurewebsites.net/") },
             ["K"] = new HttpClient { BaseAddress = new Uri("https://serverappats.azurewebsites.net/") }
         };
 
@@ -35,7 +35,7 @@ namespace IntegrationTest.APITest
         static readonly Dictionary<string, (int, int, int)> userIDs = new Dictionary<string, (int, int, int)>()
         {
             ["K"] = (27, 28, 1000),
-            ["I"] = (1, 2, 1000),
+            ["I"] = (2, 3, 1),
             ["D"] = (2, 3, 1000)
         };
         public static readonly string group = "I";

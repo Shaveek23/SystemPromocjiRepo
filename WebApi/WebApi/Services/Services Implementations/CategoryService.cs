@@ -16,11 +16,10 @@ namespace WebApi.Services.Serives_Implementations
         {
             _categoryRepository = categoryRepository;
         }
-        public ServiceResult<Categories> GetAll()
+        public ServiceResult<IQueryable<CategoryDTO>> GetAll()
         {
             var result = _categoryRepository.GetAll();
-            var categories = new Categories { categories = Mapper.Map(result.Result) };
-            return new ServiceResult<Categories>(categories, result.Code, result.Message);
+            return new ServiceResult<IQueryable<CategoryDTO>>(Mapper.Map(result.Result), result.Code, result.Message);
         }
 
         public ServiceResult<CategoryDTO> GetById(int categoryId)

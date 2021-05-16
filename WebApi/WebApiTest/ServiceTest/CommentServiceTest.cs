@@ -169,7 +169,7 @@ namespace WebApiTest.ServiceTest
             var commentService = new CommentService(mockICommentRepository.Object, mockIUserRepository.Object);
             var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result.Result;
 
-            Assert.Equal(newComment.postId, actual);
+            Assert.Equal(newComment.postId, actual.id);
 
         }
 
