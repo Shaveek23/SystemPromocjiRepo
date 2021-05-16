@@ -14,6 +14,7 @@ using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Models.POCO;
 using WebApi.Services.Serives_Implementations;
+using WebApi.Services.Services_Implementations;
 using Xunit;
 
 namespace IntegrationTest
@@ -28,8 +29,11 @@ namespace IntegrationTest
             var userRepository = new UserRepository(databaseContext);
             var commentRepository = new CommentRepository(databaseContext);
             var commentService = new CommentService(commentRepository, userRepository);
-            var postSerive = new PostService(postRepository, userRepository, commentService);
-            var postController = new PostController(logger.Object, postSerive);
+            var categoryRepository = new CategoryRepository(databaseContext);
+            var categoryService = new CategoryService(categoryRepository);
+            var postSerive = new PostService(postRepository, userRepository, commentService, categoryService);
+            var newsletterService = new Mock<INewsletterService>();
+            var postController = new PostController(logger.Object, postSerive, newsletterService.Object);
 
             return postController;
         }
@@ -50,17 +54,16 @@ namespace IntegrationTest
             
             var postController = GetPostController(options);
 
-            var actual = (PostDTOOutput)((ObjectResult)postController.Get(expectedPost.PostID, expectedUser.UserID).Result).Value;
+            var actual = (PostGetDTO)((ObjectResult)postController.Get(expectedPost.PostID, expectedUser.UserID).Result).Value;
 
             Assert.NotNull(actual);
             Assert.Equal(expectedPost.PostID, actual.id);
             Assert.Equal(expectedPost.Title, actual.title);
             Assert.Equal(expectedPost.Content, actual.content);
             Assert.Equal(expectedPost.Date, actual.datetime);
-            Assert.Equal(expectedPost.CategoryID, actual.category);
             Assert.Equal(expectedPost.IsPromoted, actual.isPromoted);
             Assert.Equal(expectedUser.UserID, actual.authorID);
-            Assert.Equal(expectedUser.UserName, actual.author);
+            Assert.Equal(expectedUser.UserName, actual.authorName);
             Assert.False(actual.isLikedByUser);
         }
 
@@ -109,7 +112,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostGetDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
             Assert.Equal(expected.Count, actual.Count);
@@ -131,7 +134,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostGetDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.Empty(actual);
         }
@@ -158,14 +161,14 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
+            var actual = ((IEnumerable<PostGetDTO>)((ObjectResult)postController.GetAll(1).Result).Value).ToList();
 
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
             Assert.Equal(expected.Count, actual.Count);
-            foreach (PostDTOOutput post in actual)
-                Assert.Equal("Nie ma takiego użytkownika", post.author);
-            foreach (PostDTOOutput post in actual)
+            foreach (PostGetDTO post in actual)
+                Assert.Equal("Nie ma takiego użytkownika", post.authorName);
+            foreach (PostGetDTO post in actual)
                 Assert.Equal(0, post.authorID);
         }
 
@@ -194,15 +197,20 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var actual = ((IEnumerable<PostDTOOutput>)((ObjectResult)postController.GetUserPosts(expectedUser.UserID).Result).Value).ToList();
+            var actual = ((IEnumerable<PostGetDTO>)((ObjectResult)postController.GetUserPosts(expectedUser.UserID).Result).Value).ToList();
             Assert.NotNull(actual);
             Assert.Equal(2, actual.Count);
-            foreach (PostDTOOutput post in actual)
+            foreach (PostGetDTO post in actual)
                 Assert.Equal(1, post.authorID);
         }
-        public PostDTOEdit GetPostablePost()
+        public PostPutDTO GetPostPutDTO()
         {
-           return new PostDTOEdit() { title = "title", content = "content", category = 1, dateTime = DateTime.Now, isPromoted = false };
+           return new PostPutDTO() { title = "title", content = "content", category = 1, isPromoted = false };
+        }
+
+        public PostPostDTO GetPostCreateDTO()
+        {
+            return new PostPostDTO() { title = "title", content = "content", category = 1 };
         }
 
         [Fact]
@@ -213,7 +221,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var expected = GetPostablePost();
+            var expected = GetPostCreateDTO();
             var expectedUserID = 2;
             var result = (ObjectResult)postController.Create(expectedUserID, expected).Result;
 
@@ -226,8 +234,6 @@ namespace IntegrationTest
             Assert.Equal(expected.title, actual.Title);
             Assert.Equal(expected.content, actual.Content);
             Assert.Equal(expected.category, actual.CategoryID);
-            Assert.Equal(expected.dateTime, actual.Date);
-            Assert.Equal(expected.isPromoted, actual.IsPromoted);
         }
 
         [Fact]
@@ -246,7 +252,7 @@ namespace IntegrationTest
 
             var postController = GetPostController(options);
 
-            var expected = GetPostablePost();
+            var expected = GetPostPutDTO();
                 expected.content = "edited_content";
                 expected.title = "edited_title";
             var result = (ObjectResult)postController.Edit(post.UserID, post.PostID, expected).Result;
@@ -260,7 +266,6 @@ namespace IntegrationTest
             Assert.Equal(expected.title, actual.Title);
             Assert.Equal(expected.content, actual.Content);
             Assert.Equal(expected.category, actual.CategoryID);
-            Assert.Equal(expected.dateTime, actual.Date);
             Assert.Equal(expected.isPromoted, actual.IsPromoted);
         }
 

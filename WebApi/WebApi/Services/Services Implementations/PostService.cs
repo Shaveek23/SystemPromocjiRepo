@@ -29,16 +29,16 @@ namespace WebApi.Services.Serives_Implementations
             _categoryService = categoryService;
         }
 
-        public ServiceResult<IQueryable<PostDTOOutput>> GetAll(int userID)
+        public ServiceResult<IQueryable<PostGetDTO>> GetAll(int userID)
         {
             var result = _postRepository.GetAll();
             if (result.Result == null)
             {
-                return new ServiceResult<IQueryable<PostDTOOutput>>(null, result.Code, result.Message);
+                return new ServiceResult<IQueryable<PostGetDTO>>(null, result.Code, result.Message);
             }
             var users = _userRepository.GetAll();
 
-            List<PostDTOOutput> postDTOs = new List<PostDTOOutput>();
+            List<PostGetDTO> postDTOs = new List<PostGetDTO>();
             foreach (var post in result.Result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
@@ -56,15 +56,15 @@ namespace WebApi.Services.Serives_Implementations
                 postDTOs.Add(postDTO);
             }
 
-            return new ServiceResult<IQueryable<PostDTOOutput>>(postDTOs.AsQueryable(), result.Code, result.Message);
+            return new ServiceResult<IQueryable<PostGetDTO>>(postDTOs.AsQueryable(), result.Code, result.Message);
         }
 
-        public ServiceResult<PostDTOOutput> GetById(int postID, int userID)
+        public ServiceResult<PostGetDTO> GetById(int postID, int userID)
         {
             var result = _postRepository.GetById(postID);
             if (result.Result == null)
             {
-                return new ServiceResult<PostDTOOutput>(null, result.Code, result.Message);
+                return new ServiceResult<PostGetDTO>(null, result.Code, result.Message);
             }
 
             var postLikes = GetLikes(postID);
@@ -79,10 +79,10 @@ namespace WebApi.Services.Serives_Implementations
             postDTO.likesCount = postLikes.Result?.Count() ?? 0;
             postDTO.isLikedByUser = postLikes.Result?.Any(x => x.id == userID) ?? false;
 
-            return new ServiceResult<PostDTOOutput>(postDTO, result.Code, result.Message);
+            return new ServiceResult<PostGetDTO>(postDTO, result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddPostAsync(PostDTOCreate newPostDTO, int userID)
+        public async Task<ServiceResult<int?>> AddPostAsync(PostPostDTO newPostDTO, int userID)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
             createdPost.UserID = userID;
@@ -92,18 +92,18 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<int?>(result.Result?.PostID, result.Code, result.Message);
         }
 
-        public ServiceResult<IQueryable<PostDTOOutput>> GetAllOfUser(int userID)
+        public ServiceResult<IQueryable<PostGetDTO>> GetAllOfUser(int userID)
         {
             var serviceResult = _postRepository.GetAll();
             if (serviceResult.Result == null)
             {
-                return new ServiceResult<IQueryable<PostDTOOutput>>(null, serviceResult.Code, serviceResult.Message);
+                return new ServiceResult<IQueryable<PostGetDTO>>(null, serviceResult.Code, serviceResult.Message);
             }
             var users = _userRepository.GetAll();
 
             var result = serviceResult.Result.Where(post => post.UserID == userID); // LINQ w repozytorium !!!
 
-            List<PostDTOOutput> postDTOs = new List<PostDTOOutput>();
+            List<PostGetDTO> postDTOs = new List<PostGetDTO>();
             foreach (var post in result.ToList())
             {
                 var postLikes = GetLikes(post.PostID);
@@ -123,7 +123,7 @@ namespace WebApi.Services.Serives_Implementations
                 postDTOs.Add(postDTO);
             }
 
-            return new ServiceResult<IQueryable<PostDTOOutput>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
+            return new ServiceResult<IQueryable<PostGetDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
         }
 
         public async Task<ServiceResult<bool>> DeletePostAsync(int id)
@@ -137,7 +137,7 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostDTOEdit body)
+        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body)
         {
             Post post = PostEditMapper.Map(body);
             post.PostID = id;
@@ -151,7 +151,7 @@ namespace WebApi.Services.Serives_Implementations
             var result = _postRepository.GetLikes(postID);
             return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
-
+        
         public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)
         {
             var result = await _postRepository.UpdateLikeStatusAsync(userID, postID, like.like);

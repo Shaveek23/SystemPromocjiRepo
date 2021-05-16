@@ -29,11 +29,11 @@ namespace WebApiTest.MapperTest.PostMappersTest
         {
             yield return new object[]
             {
-                new List<PostDTOOutput>
+                new List<PostGetDTO>
                 {
-                    new PostDTOOutput { title ="Title123", authorName = "Janek", authorID =5, category = "kategoria1", content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTOOutput { title ="Title123", authorName = "Janek", authorID =5, category="kategoria421421", datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
-                    new PostDTOOutput { authorName = "Janek", authorID =5, category = "kategoria32", id=13, datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostGetDTO { title ="Title123", authorName = "Janek", authorID =5, category = "kategoria1", content="Cześć 320", datetime=new DateTime(2020, 1, 1), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostGetDTO { title ="Title123", authorName = "Janek", authorID =5, category="kategoria421421", datetime=new DateTime(3213123), id=321, isLikedByUser=false, isPromoted=false, likesCount=15 },
+                    new PostGetDTO { authorName = "Janek", authorID =5, category = "kategoria32", id=13, datetime=new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser=false, isPromoted=false, likesCount=15 },
                 }
 
              };
@@ -42,9 +42,9 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         public static IEnumerable<object[]> PostDTOData()
         {
-            yield return new object[] { new PostDTOOutput { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria1", content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
-            yield return new object[] { new PostDTOOutput { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria213321", datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
-            yield return new object[] { new PostDTOOutput { authorName = "Janek", authorID = 5, category = "kategoria34",  id=12 , datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
+            yield return new object[] { new PostGetDTO { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria1", content = "Cześć 320", datetime = new DateTime(2020, 1, 1), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 } };
+            yield return new object[] { new PostGetDTO { title = "Title123", authorName = "Janek", authorID = 5, category = "kategoria213321", datetime = new DateTime(3213123), id = 321, isLikedByUser = false, isPromoted = false, likesCount = 15 }, };
+            yield return new object[] { new PostGetDTO { authorName = "Janek", authorID = 5, category = "kategoria34",  id=12 , datetime = new DateTime(2000, 10, 10, 11, 4, 41), isLikedByUser = false, isPromoted = false, likesCount = 15 } };
         }
 
         public static IEnumerable<object[]> PostPOCOData()
@@ -61,7 +61,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
         public void POCOToDTOMapping(Post input)
         {
 
-            PostDTOOutput result = PostMapper.Map(input);
+            PostGetDTO result = PostMapper.Map(input);
 
             //THere is lack of category
             Assert.Equal(input.PostID, result.id);
@@ -75,7 +75,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         [Theory]
         [MemberData(nameof(PostDTOData))]
-        public void DTOToPOCOMapping(PostDTOOutput input)
+        public void DTOToPOCOMapping(PostGetDTO input)
         {
             Post result = PostMapper.Map(input);
 
@@ -106,7 +106,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         [Theory]
         [MemberData(nameof(PostDTODataList))]
-        public void DTOToPOCOMapping_List(List<PostDTOOutput> input)
+        public void DTOToPOCOMapping_List(List<PostGetDTO> input)
         {
             var result = PostMapper.Map(input.AsQueryable());
 

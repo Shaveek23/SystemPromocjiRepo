@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.DTO
 {
-    public class PostDTOOutput : IValidatableObject
+    public class PostGetDTO : IValidatableObject
     {
         [Required]
         public int? id { get; set; }
@@ -33,7 +33,7 @@ namespace WebApi.Models.DTO
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (content == "" && title == "")
-                yield return new ValidationResult("If content is empty, post must contain some title.", new[] { nameof(PostDTOOutput) });
+                yield return new ValidationResult("If content is empty, post must contain some title.", new[] { nameof(PostGetDTO) });
         }
 
 

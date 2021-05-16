@@ -10,7 +10,7 @@ namespace WebApi.Database.Mapper.PostMappers
 {
     public class PostEditMapper
     {
-        public static Post Map(PostDTOEdit postDTOEdit)
+        public static Post Map(PostPutDTO postDTOEdit)
         {
             Post post = new Post();
             
@@ -22,7 +22,7 @@ namespace WebApi.Database.Mapper.PostMappers
             return post;
         }
 
-        public static Post Map(PostDTOCreate postDTOCreate)
+        public static Post Map(PostPostDTO postDTOCreate)
         {
             Post post = new Post();
 

@@ -12,6 +12,7 @@ using WebApi.Database.Repositories.Implementations;
 using WebApi.Models.DTO;
 using WebApi.Models.POCO;
 using WebApi.Services.Serives_Implementations;
+using WebApi.Services.Services_Implementations;
 using Xunit;
 
 namespace IntegrationTest.IntegrationTest
@@ -24,7 +25,8 @@ namespace IntegrationTest.IntegrationTest
             var databaseContext = new DatabaseContext(options);
             var UserRepository = new UserRepository(databaseContext);
             var UserService = new UserService(UserRepository);
-            var UserController = new UserController(logger.Object, UserService);
+            var newsletterService = new Mock<INewsletterService>();
+            var UserController = new UserController(logger.Object, UserService, newsletterService.Object);
             return UserController;
         }
 

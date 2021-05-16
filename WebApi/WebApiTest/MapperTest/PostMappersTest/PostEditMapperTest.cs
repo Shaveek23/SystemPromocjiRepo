@@ -12,22 +12,22 @@ namespace WebApiTest.MapperTest.PostMappersTest
     {
         public static IEnumerable<object[]> PostDTOEditData()
         {
-            yield return new object[] { new PostDTOEdit { title="Titleeee1", content="swietna oferta", category =3,  isPromoted=true } };
-            yield return new object[] { new PostDTOEdit { title = "Titleeee2", content = "Hi, I am new here....",category = 1, isPromoted = false } };
-            yield return new object[] { new PostDTOEdit {category=5, isPromoted =false } };
+            yield return new object[] { new PostPutDTO { title="Titleeee1", content="swietna oferta", category =3,  isPromoted=true } };
+            yield return new object[] { new PostPutDTO { title = "Titleeee2", content = "Hi, I am new here....",category = 1, isPromoted = false } };
+            yield return new object[] { new PostPutDTO {category=5, isPromoted =false } };
         }
 
 
         public static IEnumerable<object[]> PostDTOCreateData()
         {
-            yield return new object[] { new PostDTOCreate { title = "Titleeee1", content = "swietna oferta", category = 3} };
-            yield return new object[] { new PostDTOCreate { title = "Titleeee2", content = "Hi, I am new here....", category = 1} };
-            yield return new object[] { new PostDTOCreate { category = 5 } };
+            yield return new object[] { new PostPostDTO { title = "Titleeee1", content = "swietna oferta", category = 3} };
+            yield return new object[] { new PostPostDTO { title = "Titleeee2", content = "Hi, I am new here....", category = 1} };
+            yield return new object[] { new PostPostDTO { category = 5 } };
         }
 
         [Theory]
         [MemberData(nameof(PostDTOEditData))]
-        public void DTOToPOCOMapping_Edit(PostDTOEdit input)
+        public void DTOToPOCOMapping_Edit(PostPutDTO input)
         {
             Post result = PostEditMapper.Map(input);
 
@@ -39,7 +39,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
         [Theory]
         [MemberData(nameof(PostDTOCreateData))]
-        public void DTOToPOCOMapping_Create(PostDTOCreate input)
+        public void DTOToPOCOMapping_Create(PostPostDTO input)
         {
             Post result = PostEditMapper.Map(input);
 

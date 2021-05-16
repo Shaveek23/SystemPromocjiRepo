@@ -306,12 +306,12 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
-        public static PostDTOOutput Map(Post post)
+        public static PostGetDTO Map(Post post)
         {
             if (post == null)
                 return null;
 
-            return new PostDTOOutput
+            return new PostGetDTO
             {
                 authorID = post.UserID,
                 content = post.Content,
@@ -330,7 +330,7 @@ namespace WebApi.Database.Mapper
             {
                 likersDTO.Add(new LikerDTO { id = i });
             }
-            return likersDTO.AsQueryable<LikerDTO>();
+            return likersDTO.AsQueryable();
         }
 
         public static IQueryable<idDTO> MapNewslettersToUserIds(IQueryable<Newsletter> newsletters)
@@ -347,6 +347,8 @@ namespace WebApi.Database.Mapper
 
             return result.AsQueryable();
         }
+
+
     }
 
 }

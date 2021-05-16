@@ -24,9 +24,8 @@ namespace WebApiTest.ServiceTest
                     new Post { PostID = 1, UserID = 1, CategoryID = 1, Title= "Title1", Content = "Content1 ", Date = new DateTime(2020, 7, 1), IsPromoted = false},
                     new Post { PostID = 31, UserID = 1, CategoryID = 1, Title= "Title2221", Content = "Content32 ", Date = new DateTime(2000, 5, 2), IsPromoted = false },
                     new Post { PostID = 4, UserID = 1, CategoryID = 1, Title= "Title1321321312312", Content = "Content656565 "},
-                    new Post { PostID = 12, UserID = 8, CategoryID = 3, Date = new DateTime(2011, 12, 12), IsPromoted = true},
-                    new Post { PostID = 2, UserID = 5, CategoryID = 5, Title= "Title32321", Date = new DateTime(2015, 6, 5), IsPromoted = false },
-                    new Post()
+                    new Post { PostID = 12, UserID = 18, CategoryID = 1, Date = new DateTime(2011, 12, 12), IsPromoted = true},
+                    new Post { PostID = 2, UserID = 5, CategoryID = 1, Title= "Title32321", Date = new DateTime(2015, 6, 5), IsPromoted = false }
         };
 
         List<User> users = new List<User>
@@ -57,6 +56,8 @@ namespace WebApiTest.ServiceTest
         public void GetAll_ValidCall()
         {
             int userID = 1;
+            var CategoryId = 1;
+            var expectedReturnedCategory = "RTV";
             // arrange:
             var expected = posts;
             var mockIPostRepository = new Mock<IPostRepository>();
@@ -73,7 +74,8 @@ namespace WebApiTest.ServiceTest
             mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
             var mockICategoryService = new Mock<ICategoryService>();
-            mockICategoryService.Setup(x => x.GetAll()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()));
+            mockICategoryService.Setup(x => x.GetById(CategoryId)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO { ID = CategoryId, Name = expectedReturnedCategory }));
+
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object, mockICategoryService.Object);
 
@@ -90,7 +92,8 @@ namespace WebApiTest.ServiceTest
         {
             var userID = 1;
             var expectedId = 1;
-            var expectedCategoryId = 1;
+            var CategoryId = 1;
+            var expectedReturnedCategory = "RTV";
             var expected = new ServiceResult<Post>(posts.Where(x => x.PostID == expectedId).FirstOrDefault());
             var mockIPostRepository = new Mock<IPostRepository>();
             mockIPostRepository.Setup(x => x.GetById(expectedId))
@@ -106,7 +109,7 @@ namespace WebApiTest.ServiceTest
             mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
             var mockICategoryService = new Mock<ICategoryService>();
-            mockICategoryService.Setup(x => x.GetById()).Returns(new ServiceResult<IQueryable<CategoryDTO>>(categories.AsQueryable()));
+            mockICategoryService.Setup(x => x.GetById(CategoryId)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO{ ID=CategoryId, Name=expectedReturnedCategory }));
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object, mockICategoryService.Object);
             var actual = postService.GetById(expectedId, 1).Result;
@@ -118,6 +121,7 @@ namespace WebApiTest.ServiceTest
             Assert.Equal(expected2.Content, actual.content);
             Assert.Equal(expected2.IsPromoted, actual.isPromoted);
             Assert.Equal(expected2.Date, actual.datetime);
+            Assert.Equal(expectedReturnedCategory, actual.category);
         }
 
         [Fact]
@@ -125,7 +129,7 @@ namespace WebApiTest.ServiceTest
         {
             int postID = 1;
             DateTime currentTime = new DateTime(2000, 10, 10, 10, 10, 42);
-            var newPostDTO = new PostDTOEdit
+            var newPostDTO = new PostPutDTO
             {
                 title = "newtitle",
                 content = "newcontent",

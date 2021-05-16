@@ -9,7 +9,7 @@ namespace WebApi.Database.Mapper
 {
     public class PostMapper
     {
-        public static Post Map(PostDTOOutput postDTO)
+        public static Post Map(PostGetDTO postDTO)
         {
             Post post = new Post();
 
@@ -23,10 +23,10 @@ namespace WebApi.Database.Mapper
             return post;
         }
 
-        public static PostDTOOutput Map(Post post)
+        public static PostGetDTO Map(Post post)
         {
             if (post == null) return null;
-            PostDTOOutput postDTO = new PostDTOOutput();
+            PostGetDTO postDTO = new PostGetDTO();
 
             postDTO.id = post.PostID;
             postDTO.authorID = post.UserID;
@@ -38,12 +38,12 @@ namespace WebApi.Database.Mapper
             return postDTO;
         }
 
-        public static IQueryable<PostDTOOutput> Map(IQueryable<Post> posts)
+        public static IQueryable<PostGetDTO> Map(IQueryable<Post> posts)
         {
             if (posts == null)
                 return null;
 
-            List<PostDTOOutput> list = new List<PostDTOOutput>();
+            List<PostGetDTO> list = new List<PostGetDTO>();
             foreach (var post in posts)
             {
                 list.Add(Map(post));
@@ -53,7 +53,7 @@ namespace WebApi.Database.Mapper
         }
 
 
-        public static IQueryable<Post> Map(IQueryable<PostDTOOutput> posts)
+        public static IQueryable<Post> Map(IQueryable<PostGetDTO> posts)
         {
             List<Post> list = new List<Post>();
             foreach (var post in posts)
