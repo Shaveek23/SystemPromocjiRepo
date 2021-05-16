@@ -39,9 +39,6 @@ namespace WebApi.Filters
                     context.Result = response;
                 }
             }
-
-                }
-            }
         }
 
         public void OnActionExecuted(ActionExecutedContext context)

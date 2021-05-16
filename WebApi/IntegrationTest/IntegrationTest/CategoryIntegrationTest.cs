@@ -15,7 +15,7 @@ using WebApi.Models.POCO;
 using WebApi.Services.Serives_Implementations;
 using Xunit;
 
-namespace IntegrationTest
+namespace IntegrationTest.IntegrationTest
 {
     public class CategoryIntegrationTest
     {
@@ -51,12 +51,12 @@ namespace IntegrationTest
 
             var categoryController = GetCategoryController(options);
             
-            var actual = (Categories)((ObjectResult)categoryController.GetAll().Result).Value;
-            var count = actual.categories.Count();
+            var actual = (IQueryable<CategoryDTO>)((ObjectResult)categoryController.GetAll().Result).Value;
+            var count = actual.Count();
             Assert.NotNull(actual);
-            Assert.NotEmpty(actual.categories);
+            Assert.NotEmpty(actual);
             Assert.Equal(4, count);
-            foreach(var category in actual.categories)
+            foreach(var category in actual)
             {
                 Assert.NotNull(category.Name);
                 Assert.NotEqual("", category.Name);
@@ -71,10 +71,10 @@ namespace IntegrationTest
 
             var categoryController = GetCategoryController(options);
 
-            var actual = (Categories)((ObjectResult)categoryController.GetAll().Result).Value;
+            var actual = (IQueryable<CategoryDTO>)((ObjectResult)categoryController.GetAll().Result).Value;
 
             Assert.NotNull(actual);
-            Assert.Empty(actual.categories);
+            Assert.Empty(actual);
         }
 
     }
