@@ -82,14 +82,14 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<PostGetDTO>(postDTO, result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddPostAsync(PostPostDTO newPostDTO, int userID)
+        public async Task<ServiceResult<idDTO>> AddPostAsync(int userID, PostPostDTO newPostDTO)
         {
             Post createdPost = PostEditMapper.Map(newPostDTO);
             createdPost.UserID = userID;
             createdPost.Date = DateTime.Now;
             createdPost.IsPromoted = false;
             var result = await _postRepository.AddAsync(createdPost);
-            return new ServiceResult<int?>(result.Result?.PostID, result.Code, result.Message);
+            return new ServiceResult<idDTO>(new idDTO { id = result.Result?.PostID }, result.Code, result.Message);
         }
 
         public ServiceResult<IQueryable<PostGetDTO>> GetAllOfUser(int userID)
@@ -156,7 +156,6 @@ namespace WebApi.Services.Serives_Implementations
         {
             var result = await _postRepository.UpdateLikeStatusAsync(userID, postID, like.like);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
-
         }
 
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAllComments(int postID, int userID)

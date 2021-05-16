@@ -14,7 +14,7 @@ namespace WebApi.Database.Mapper.PostMappers
         {
             Post post = new Post();
             
-            if (postDTOEdit.category.HasValue) post.CategoryID = postDTOEdit.category.Value;
+            if (postDTOEdit.categoryID.HasValue) post.CategoryID = postDTOEdit.categoryID.Value;
             if (postDTOEdit.isPromoted.HasValue) post.IsPromoted = postDTOEdit.isPromoted.Value;
             post.Title = postDTOEdit.title;
             post.Content = postDTOEdit.content;
@@ -26,7 +26,7 @@ namespace WebApi.Database.Mapper.PostMappers
         {
             Post post = new Post();
 
-            if (postDTOCreate.category.HasValue) post.CategoryID = postDTOCreate.category.Value;
+            if (postDTOCreate.categoryID.HasValue) post.CategoryID = postDTOCreate.categoryID.Value;
             post.Title = postDTOCreate.title;
             post.Content = postDTOCreate.content;
 

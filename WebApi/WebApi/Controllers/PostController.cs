@@ -63,28 +63,26 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("post/{postID}")]
-        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostPutDTO body)
+        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostPutDTO post)
         {
-            var result = await _postService.EditPostAsync(postID, body);
+            var result = await _postService.EditPostAsync(postID, post);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
 
         [HttpPost("post")]
-        public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostPostDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<ActionResult<idDTO>> Create( [Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
-            var result = await _postService.AddPostAsync(body, userID);
-            _newsletterService.SendNewsletterNotifications(result.IsOk(), body.title, body.category.Value);
-            return new ControllerResult<int?>(result).GetResponse();
+            var result = await _postService.AddPostAsync(userID, post);
+            //_newsletterService.SendNewsletterNotifications(result.IsOk(), post.Title, post.CategoryID.Value);
+            return new ControllerResult<idDTO>(result).GetResponse();
         }
 
 
         [HttpGet("post/{postID}/comments")]
         public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID, [Required][FromRoute] int postID)
         {
-
             var result = _postService.GetAllComments(postID, userID);
-
             return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
@@ -101,8 +99,6 @@ namespace WebApi.Controllers
         {
             var result = await _postService.EditLikeStatusAsync(userID, postID, like);
             return new ControllerResult<bool>(result).GetResponse();
-
-
         }
 
     }

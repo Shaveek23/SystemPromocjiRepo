@@ -17,7 +17,7 @@ using WebApi.Services.Serives_Implementations;
 using WebApi.Services.Services_Implementations;
 using Xunit;
 
-namespace IntegrationTest
+namespace IntegrationTest.IntegrationTest
 {
     public class PostIntegrationTest
     {
@@ -44,14 +44,14 @@ namespace IntegrationTest
                .UseInMemoryDatabase(databaseName: "GetPost_ValidCall").Options;
             var expectedPost = new Post() { PostID = 1, UserID = 1, CategoryID = 1, Title = "title", Content = "content", Date = DateTime.Now, IsPromoted = false };
             var expectedUser = new User() { UserID = 1, UserName = "userName", UserEmail = "test@eamil.com", Active = true, IsAdmin = false, IsEnterprenuer = false, IsVerified = false, Timestamp = DateTime.Now };
-            
+
             using (var dbContext = new DatabaseContext(options))
             {
                 dbContext.Add(expectedPost);
                 dbContext.Add(expectedUser);
                 dbContext.SaveChanges();
             }
-            
+
             var postController = GetPostController(options);
 
             var actual = (PostGetDTO)((ObjectResult)postController.Get(expectedPost.PostID, expectedUser.UserID).Result).Value;
@@ -84,7 +84,7 @@ namespace IntegrationTest
 
             var result = (ObjectResult)postController.Get(1, expectedUser.UserID).Result;
 
-            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(400, result.StatusCode);
         }
 
         [Fact]
@@ -205,12 +205,12 @@ namespace IntegrationTest
         }
         public PostPutDTO GetPostPutDTO()
         {
-           return new PostPutDTO() { title = "title", content = "content", category = 1, isPromoted = false };
+            return new PostPutDTO() { title = "title", content = "content", categoryID = 1, isPromoted = false };
         }
 
         public PostPostDTO GetPostCreateDTO()
         {
-            return new PostPostDTO() { title = "title", content = "content", category = 1 };
+            return new PostPostDTO() { title = "title", content = "content", categoryID = 1 };
         }
 
         [Fact]
@@ -223,7 +223,7 @@ namespace IntegrationTest
 
             var expected = GetPostCreateDTO();
             var expectedUserID = 2;
-            var result = (ObjectResult)postController.Create(expectedUserID, expected).Result;
+            var result = ((ObjectResult)postController.Create(expectedUserID, expected).Result.Result);
 
             var databaseContext = new DatabaseContext(options);
             var actual = databaseContext.Posts.FirstOrDefault();
@@ -233,7 +233,7 @@ namespace IntegrationTest
             Assert.Equal(expectedUserID, actual.UserID);
             Assert.Equal(expected.title, actual.Title);
             Assert.Equal(expected.content, actual.Content);
-            Assert.Equal(expected.category, actual.CategoryID);
+            Assert.Equal(expected.categoryID, actual.CategoryID);
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace IntegrationTest
                .UseInMemoryDatabase(databaseName: "PutPost_ValidCall").Options;
 
             var post = new Post() { PostID = 1, UserID = 1, CategoryID = 1, Title = "title", Content = "content", Date = DateTime.Now, IsPromoted = false };
-            
+
             using (var dbContext = new DatabaseContext(options))
             {
                 dbContext.Add(post);
@@ -253,8 +253,8 @@ namespace IntegrationTest
             var postController = GetPostController(options);
 
             var expected = GetPostPutDTO();
-                expected.content = "edited_content";
-                expected.title = "edited_title";
+            expected.content = "edited_content";
+            expected.title = "edited_title";
             var result = (ObjectResult)postController.Edit(post.UserID, post.PostID, expected).Result;
 
             var databaseContext = new DatabaseContext(options);
@@ -265,7 +265,7 @@ namespace IntegrationTest
             //Assert.Equal(post.UserID, actual.UserID); //dlaczego zmieniany jest UserID?
             Assert.Equal(expected.title, actual.Title);
             Assert.Equal(expected.content, actual.Content);
-            Assert.Equal(expected.category, actual.CategoryID);
+            Assert.Equal(expected.categoryID, actual.CategoryID);
             Assert.Equal(expected.isPromoted, actual.IsPromoted);
         }
 
@@ -306,7 +306,7 @@ namespace IntegrationTest
             var databaseContext = new DatabaseContext(options);
             var actual = databaseContext.Posts.FirstOrDefault();
 
-            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(400, result.StatusCode);
             Assert.Null(actual);
         }
 

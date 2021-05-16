@@ -11,10 +11,10 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         [MaxLength(50)]
         [MinLength(1)]
-        public string title;
+        public string title { get; set; }
         [Required]
-        public string content;
+        public string content { get; set; }
         [Required]
-        public int? category;
+        public int? categoryID { get; set; }
     }
 }

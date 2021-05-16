@@ -16,7 +16,7 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         public string content { get; set; }
         [Required]
-        public int? category { get; set; }
+        public int? categoryID { get; set; }
         [Required]
         public bool? isPromoted { get; set; }
 
