@@ -8,7 +8,7 @@ namespace IntegrationTest.APITest.Models.Post
     {
         public string title;
         public string content;
-        public int? category;
+        public int? categoryID;
         public bool? isPromoted;
     }
 }

@@ -20,7 +20,7 @@ namespace IntegrationTest.APITest
             {
                 title = "API title",
                 content = content,
-                category = 1
+                categoryID = 1
             };
         }
         public PostAPI_put GetPostToPut(string content = "content")
@@ -29,7 +29,7 @@ namespace IntegrationTest.APITest
             {
                 title = "API title",
                 content = content,
-                category = 1,
+                categoryID = 1,
                 isPromoted = false
             };
         }
@@ -66,7 +66,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"post/{postID}");
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
 
             Assert.Equal(postID, postAfterPost.id);
             Assert.Equal(postToPost.content, postAfterPost.content);
@@ -148,7 +148,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"post/{postID}");
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
 
         [Fact]
@@ -179,7 +179,7 @@ namespace IntegrationTest.APITest
             int postID;
             HttpStatusCode statusCode;
             PostAPI_post post = GetPostToPost();
-            //POST Invalid
+            //POST Valid
             (postID, statusCode) = await Post("post", post);
             Assert.Equal(HttpStatusCode.OK, statusCode);
             //DELETE
@@ -226,7 +226,7 @@ namespace IntegrationTest.APITest
             int postID;
             HttpStatusCode statusCode;
             PostAPI_post post = GetPostToPost();
-            post.category = null;
+            post.categoryID = null;
             //POST Invalid
             (postID, statusCode) = await Post("post", post);
             Assert.Equal(HttpStatusCode.BadRequest, statusCode);
@@ -305,7 +305,7 @@ namespace IntegrationTest.APITest
 
             //DELETE Invalid
             statusCode = await Delete($"post/{postID}");
-            Assert.Equal(HttpStatusCode.NotFound, statusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
         }
         [Fact]
         public async void DeletePost_InvalidCall_NotAnOwner()
@@ -421,7 +421,7 @@ namespace IntegrationTest.APITest
             int postID;
             PostAPI_post postToPost = GetPostToPost();
             PostAPI_put postToPut = GetPostToPut();
-            postToPut.category = null;
+            postToPut.categoryID = null;
 
             //POST
             (postID, statusCode) = await Post("post", postToPost);
@@ -511,7 +511,7 @@ namespace IntegrationTest.APITest
 
             //PUT Valid
             statusCode = await Put($"post/{postID}", postToPut, AdminUserID);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.Equal(HttpStatusCode.OK, statusCode);
             if (!statusCode.IsOK())
             {
                 //DELETE Valid
