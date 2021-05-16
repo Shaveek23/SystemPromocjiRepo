@@ -32,26 +32,26 @@ namespace WebApi.Controllers
 
 
         [HttpGet("posts")]
-        public ActionResult<IQueryable<PostDTO>> GetAll([Required][FromHeader] int userID)
+        public ActionResult<IQueryable<PostGetDTO>> GetAll([Required][FromHeader] int userID)
         {
             var result = _postService.GetAll(userID);
-            return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
+            return new ControllerResult<IQueryable<PostGetDTO>>(result).GetResponse();
         }
 
 
         [HttpGet("posts/{UserID}")]
-        public ActionResult<IQueryable<PostDTO>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
+        public ActionResult<IQueryable<PostGetDTO>> GetUserPosts([Required][FromRoute] int UserID)  // [Required][FromHeader] int userID ??
         {
             var result = _postService.GetAllOfUser(UserID);
-            return new ControllerResult<IQueryable<PostDTO>>(result).GetResponse();
+            return new ControllerResult<IQueryable<PostGetDTO>>(result).GetResponse();
         }
 
 
         [HttpGet("post/{postID}")]
-        public ActionResult<PostDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
+        public ActionResult<PostGetDTO> Get([Required][FromHeader] int userID, [FromRoute] int postID)
         {
             var result = _postService.GetById(postID, userID);
-            return new ControllerResult<PostDTO>(result).GetResponse();
+            return new ControllerResult<PostGetDTO>(result).GetResponse();
         }
 
 
@@ -63,28 +63,26 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("post/{postID}")]
-        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostEditDTO body)
+        public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostPutDTO post)
         {
-            var result = await _postService.EditPostAsync(postID, body);
+            var result = await _postService.EditPostAsync(postID, post);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
 
         [HttpPost("post")]
-        public async Task<IActionResult> Create([Required][FromHeader] int userID, [FromBody] PostEditDTO body) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<ActionResult<idDTO>> Create( [Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
-            var result = await _postService.AddPostAsync(body, userID);
-            _newsletterService.SendNewsletterNotifications(result.IsOk(), body.title, body.category.Value);
-            return new ControllerResult<int?>(result).GetResponse();
+            var result = await _postService.AddPostAsync(userID, post);
+            //_newsletterService.SendNewsletterNotifications(result.IsOk(), post.Title, post.CategoryID.Value);
+            return new ControllerResult<idDTO>(result).GetResponse();
         }
 
 
         [HttpGet("post/{postID}/comments")]
         public ActionResult<IQueryable<CommentDTOOutput>> GetPostComments([Required][FromHeader] int userID, [Required][FromRoute] int postID)
         {
-
             var result = _postService.GetAllComments(postID, userID);
-
             return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
@@ -101,8 +99,6 @@ namespace WebApi.Controllers
         {
             var result = await _postService.EditLikeStatusAsync(userID, postID, like);
             return new ControllerResult<bool>(result).GetResponse();
-
-
         }
 
     }
