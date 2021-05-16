@@ -128,7 +128,7 @@ namespace IntegrationTest.IntegrationTest
             }
             var commentController = GetCommentController(options);
             var actual = (ObjectResult)commentController.GetById(1, expectedUser.UserID).Result;
-            Assert.Equal(404, actual.StatusCode);
+            Assert.Equal(400, actual.StatusCode);
 
 
 
