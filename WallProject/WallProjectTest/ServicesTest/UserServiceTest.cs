@@ -32,7 +32,7 @@ namespace WallProjectTest.ServicesTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true,}")
+                    Content = new StringContent("{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true,}")
                 });
 
             var client = new HttpClient(mockHttpMessageHandler.Object);
@@ -56,8 +56,8 @@ namespace WallProjectTest.ServicesTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("[{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true},"+
-                    "{\"userId\":2,\"userName\":\"golik\",\"userEmail\":\"cokolwiek@golik.pl\",\"timestamp\":\"2021-03-30T22:21:46.5885085\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true}]")
+                    Content = new StringContent("[{\"userId\":1,\"userName\":\"gawezi\",\"userEmail\":\"cokolwiek@cokolwiek.pl\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true},"+
+                    "{\"userId\":2,\"userName\":\"golik\",\"userEmail\":\"cokolwiek@golik.pl\",\"isAdmin\":true,\"isEnterprenuer\":true,\"isVerified\":true,\"isActive\":true}]")
                 });
 
             var client = new HttpClient(mockHttpMessageHandler.Object);

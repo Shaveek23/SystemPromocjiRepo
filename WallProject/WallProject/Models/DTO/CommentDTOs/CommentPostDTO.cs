@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace WallProject.Models.DTO
 {
-    public class CategoriesDTO
+    public class CommentDTONew
     {
-        public List<CategoryDTO> categories;
+        public int PostID;
+        public string Content;
     }
 }

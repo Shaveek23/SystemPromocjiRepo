@@ -54,7 +54,7 @@ namespace WallProjectTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("{\"id\":1,\"title\":\"tytu³ 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"category\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}")
+                    Content = new StringContent("{\"id\":1,\"title\":\"tytu³ 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"CategoryID\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}")
                 });
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();

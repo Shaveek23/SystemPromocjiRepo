@@ -95,9 +95,9 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
-        public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryId)
+        public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryID)
         {
-            _service.ChangeCategoryFilterStatus(categoryId);
+            _service.ChangeCategoryFilterStatus(categoryID);
             ServiceResult<WallViewModel> wall = await _service.getWall(1);
             if (wall.IsOk())
             {

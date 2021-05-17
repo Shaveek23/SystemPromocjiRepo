@@ -36,17 +36,20 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var postsDTO = JsonConvert.DeserializeObject<List<PostDTO>>(jsonString);
+                var postsDTO = JsonConvert.DeserializeObject<List<PostGetDTO>>(jsonString);
                 var usersResult = await _userService.getAll();
                 if(!usersResult.IsOk())
                 {
                     //Some information about it.  :TODO
                 }
+                var allComments = await _commentService.getAll(userID);
+
                 List<PostViewModel> postVMs = new List<PostViewModel>();
-                foreach (PostDTO postDTO in postsDTO)
+                foreach (PostGetDTO postDTO in postsDTO)
                 {
                     var postVM = Mapper.Map(postDTO);
-                    postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.authorID).FirstOrDefault();
+                    postVM.Comments = allComments.Result.Where(x => x.PostID == postDTO.ID).ToList();
+                    postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.AuthorID).FirstOrDefault();
                     postVMs.Add(postVM);
                 }
                 return new ServiceResult<List<PostViewModel>>(postVMs, result.StatusCode, null);
@@ -66,8 +69,17 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var postDTO = JsonConvert.DeserializeObject<PostDTO>(jsonString);
-                return new ServiceResult<PostViewModel>(Mapper.Map(postDTO));
+                var postDTO = JsonConvert.DeserializeObject<PostGetDTO>(jsonString);
+                var postVM = Mapper.Map(postDTO);
+
+                var comments = _commentService.getByPostId(postID, userID);
+                if(comments.Result != null)
+                {
+                    postVM.Comments = comments.Result.Result;
+                }
+
+
+                return new ServiceResult<PostViewModel>(postVM);
             }
             else
             {
@@ -77,20 +89,19 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<bool>> AddNewPost(string postText, int userId,int categoryId,string title)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
-            PostDTONoID post = new PostDTONoID();
+            PostPutDTO post = new PostPutDTO();
 
-            post.content = postText;
-            post.datetime = DateTime.Now;
+            post.Content = postText;
             //DO ZMIANY !!!
 
-            post.category = categoryId;
+            post.CategoryID = categoryId;
          // zeby sie nie wywaloalo dodawanie 1 kategorii
-            if (post.category == 0)
-                post.category = 1;
-            post.isPromoted = false;
-            post.title = title;
+            if (post.CategoryID == 0)
+                post.CategoryID = 1;
+            post.IsPromoted = false;
+            post.Title = title;
             if (title is null)
-                post.title = " No Title";
+                post.Title = " No Title";
 
 
             //serializacja do JSONa
@@ -112,7 +123,7 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<bool>> EditLikeStatus(int postID, int userID, bool like)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera          
-            PostChangeLikeStatusDTO postDTO = new PostChangeLikeStatusDTO { like = like };
+            PostChangeLikeStatusDTO postDTO = new PostChangeLikeStatusDTO { Like = like };
 
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(postDTO);

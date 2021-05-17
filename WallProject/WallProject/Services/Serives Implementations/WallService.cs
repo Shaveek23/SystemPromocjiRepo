@@ -41,11 +41,20 @@ namespace WallProject.Services.Serives_Implementations
             SessionData.WallModel.Posts = sortedPosts;
             SessionData.WallModel.Owner = Owner.Result;
             SessionData.WallModel.Categories = Categories.Result;
+            if (SessionData.FirstLoad)
+            {
+                SessionData.WallModel.SelectedCategories = Categories.Result.Select(x => x.CategoryName).ToList();
+                SessionData.FirstLoad = false;
+            }
+
+
             return new ServiceResult<WallViewModel>(SessionData.WallModel, System.Net.HttpStatusCode.OK, null);
         }
-        public void ChangeCategoryFilterStatus(int categoryId)
+        public void ChangeCategoryFilterStatus(int categoryID)
         {
-            SessionData.WallModel.SelectedCategories[categoryId] = !SessionData.WallModel.SelectedCategories[categoryId];
+            string categoryName = _categoryService.getAll().Result.Result.Where(x => x.CategoryID == categoryID).FirstOrDefault().CategoryName;
+            if (!SessionData.WallModel.SelectedCategories.Contains(categoryName)) SessionData.WallModel.SelectedCategories.Add(categoryName);
+            else SessionData.WallModel.SelectedCategories.Remove(categoryName);
         }
     }
 }

@@ -7,12 +7,13 @@ namespace WallProject
 {
     public static class SessionData
     {
+        public static bool FirstLoad = true;
         public static WallViewModel WallModel = new WallViewModel
         {
             Owner = null,
             Posts = new List<PostViewModel>(),
             Categories = new List<CategoryViewModel>(),
-            SelectedCategories = Enumerable.Repeat(true, 100).ToArray()
+            SelectedCategories = new List<string>()
         };
     }
 }

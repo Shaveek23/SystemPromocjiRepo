@@ -28,7 +28,7 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var userDTO = JsonConvert.DeserializeObject<UserDTO>(jsonString);
+                var userDTO = JsonConvert.DeserializeObject<UserGetDTO>(jsonString);
 
                 return new ServiceResult<UserViewModel>(Mapper.Map(userDTO), result.StatusCode);
             }
@@ -47,7 +47,7 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var userDTOs = JsonConvert.DeserializeObject<List<UserDTO>>(jsonString);
+                var userDTOs = JsonConvert.DeserializeObject<List<UserGetDTO>>(jsonString);
                 return new ServiceResult<List<UserViewModel>>(Mapper.Map(userDTOs), result.StatusCode);
             }
             else

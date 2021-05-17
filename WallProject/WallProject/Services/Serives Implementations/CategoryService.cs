@@ -29,8 +29,8 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var categoriesDTO = JsonConvert.DeserializeObject<CategoriesDTO>(jsonString);
-                return new ServiceResult<List<CategoryViewModel>>(Mapper.Map(categoriesDTO), result.StatusCode);
+                var categoryDTOs = JsonConvert.DeserializeObject<List<CategoryDTO>>(jsonString);
+                return new ServiceResult<List<CategoryViewModel>>(Mapper.Map(categoryDTOs), result.StatusCode);
             }
             else
             {

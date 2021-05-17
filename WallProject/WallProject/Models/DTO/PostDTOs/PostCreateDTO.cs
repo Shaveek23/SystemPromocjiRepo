@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace WallProject.Models.DTO.PostDTOs
 {
-    public class PostChangeLikeStatusDTO
+    public class PostCreateDTO
     {
-        public bool Like;
+        public string Title;
+        public string Content;
+        public int CategoryID;
     }
 }
