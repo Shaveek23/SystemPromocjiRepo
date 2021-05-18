@@ -40,12 +40,9 @@ namespace WebApi.Services.Serives_Implementations
 
         public async Task<ServiceResult<bool>> EditCommentAsync(int commentId, int userId, CommentDTOEdit comment)
         {
-            var res = _commentRepository.GetById(commentId);
-            if (!res.IsOk())
-                return ServiceResult<bool>.GetResourceNotFoundResult();
-            Comment currentComment = res.Result;
+            Comment currentComment = _commentRepository.GetById(commentId).Result;
             currentComment.Content = comment.Content;
-            var result = await _commentRepository.UpdateAsync(currentComment, userId);
+            var result = await _commentRepository.UpdateAsync(currentComment);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
