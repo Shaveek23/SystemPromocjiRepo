@@ -79,7 +79,7 @@ namespace UIAutomatedTests
             //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
+                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -131,7 +131,7 @@ namespace UIAutomatedTests
             //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
+                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"comment/{id}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -254,7 +254,7 @@ namespace UIAutomatedTests
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
+                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -329,7 +329,7 @@ namespace UIAutomatedTests
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://webapi20210317153051.azurewebsites.net/");
+                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
