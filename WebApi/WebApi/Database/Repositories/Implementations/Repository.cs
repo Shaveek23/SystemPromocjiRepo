@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using WebApi.Exceptions;
+using WebApi.Models.POCO;
 using WebApi.Services;
 
 namespace WebApi.Database
@@ -53,8 +55,11 @@ namespace WebApi.Database
             }
         }
 
-        public async Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity, int userID)
         {
+            if (!isAuthorized(entity, userID))
+                return ServiceResult<TEntity>.GetUserNotAuthorized();
+
             if (entity == null)
             {
                 return ServiceResult<TEntity>.GetEntityNullResult();
@@ -67,15 +72,22 @@ namespace WebApi.Database
 
                 return new ServiceResult<TEntity>(entity);
             }
-            catch
+            catch (DbUpdateException e)
+            {
+                return ServiceResult<TEntity>.GetResourceNotFoundResult();
+            }
+            catch (Exception e)
             {
                 return ServiceResult<TEntity>.GetInternalErrorResult();
             }
         }
 
 
-        public async Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity, int userID)
         {
+            if (!isAuthorized(entity, userID))
+                return ServiceResult<TEntity>.GetUserNotAuthorized();
+
             if (entity == null)
             {
                 return ServiceResult<TEntity>.GetEntityNullResult();
@@ -94,8 +106,11 @@ namespace WebApi.Database
             }
         }
 
-        public ServiceResult<bool> Delete(int entityID,int userId)
+        public ServiceResult<bool> Delete(int entityID, int userId)
         {
+            if (!isAuthorized(dbContext.Find<TEntity>(entityID), userId))
+                return ServiceResult<bool>.GetUserNotAuthorized();
+
             try
             {
                 dbContext.Remove(dbContext.Find<TEntity>(entityID));
@@ -104,9 +119,22 @@ namespace WebApi.Database
             }
             catch
             {
-                return ServiceResult<bool>.GetEntityNullResult();
+                return ServiceResult<bool>.GetResourceNotFoundResult();
             }
         }
-      
+
+        private bool isAuthorized(dynamic entity, int userID)
+        {
+            if (entity != null)
+            {
+                int owner = entity.UserID;
+                var isAdmin = dbContext.Find<User>(userID)?.IsAdmin ?? false;
+              
+                if (owner == userID || isAdmin)
+                    return true;
+            }
+            return false;
+        }
+
     }
 }
