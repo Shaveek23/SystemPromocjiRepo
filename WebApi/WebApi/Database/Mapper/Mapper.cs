@@ -38,38 +38,8 @@ namespace WebApi.Database.Mapper
 
             return personDTO;
         }
-        public static User Map(UserDTO userDTO)
-        {
-            if (userDTO == null)
-                return null;
-            return new User
-            {
-                UserID = userDTO.UserID ?? 0,
-                UserName = userDTO.UserName,
-                UserEmail = userDTO.UserEmail,
-                Timestamp = userDTO.Timestamp.Value,
-                IsVerified = userDTO.IsVerified.Value,
-                IsAdmin = userDTO.IsAdmin.Value,
-                IsEnterprenuer = userDTO.IsEnterprenuer.Value,
-                Active = userDTO.IsActive.Value
-            };
-        }
-        public static UserDTO Map(User user)
-        {
-            if (user == null)
-                return null;
-            return new UserDTO
-            {
-                UserID = user.UserID,
-                UserName = user.UserName,
-                UserEmail = user.UserEmail,
-                Timestamp = user.Timestamp,
-                IsVerified = user.IsVerified,
-                IsAdmin = user.IsAdmin,
-                IsEnterprenuer = user.IsEnterprenuer,
-                IsActive = user.Active
-            };
-        }
+       
+      
         public static PostLike Map(PostLikeDTO postLikeDTO)
         {
             return new PostLike
@@ -143,33 +113,7 @@ namespace WebApi.Database.Mapper
 
             return Commentlikes.AsQueryable();
         }
-        public static IQueryable<UserDTO> Map(IQueryable<User> people)
-        {
-            if (people == null)
-                return null;
-            List<UserDTO> list = new List<UserDTO>();
-            foreach (var person in people)
-            {
-                list.Add(Map(person));
-            }
-
-            return list.AsQueryable();
-        }
-
-
-        public static IQueryable<User> Map(IQueryable<UserDTO> people)
-        {
-            if (people == null)
-                return null;
-            List<User> list = new List<User>();
-            foreach (var person in people)
-            {
-                list.Add(Map(person));
-            }
-
-            return list.AsQueryable();
-        }
-
+       
 
         public static IQueryable<PersonDTO> Map(IQueryable<Person> people)
         {
@@ -198,29 +142,27 @@ namespace WebApi.Database.Mapper
             return list.AsQueryable();
         }
         //Mapowanie dla komentarzy
-        public static CommentDTO Map(Comment comment)
+        public static Comment Map(CommentDTONew commentDTO)
         {
-            CommentDTO commentDTO = new CommentDTO();
-
-
-            commentDTO.UserID = comment.UserID;
-            commentDTO.PostID = comment.PostID;
-            commentDTO.DateTime = comment.DateTime;
-            commentDTO.Content = comment.Content;
-            return commentDTO;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                PostID = commentDTO.PostID.Value,
+                Content = commentDTO.Content
+            };
         }
-        public static Comment Map(CommentDTO commentDTO)
+
+        public static Comment Map(CommentDTOEdit commentDTO)
         {
-            Comment comment = new Comment();
-
-            comment.UserID = commentDTO.UserID.Value;
-            comment.PostID = commentDTO.PostID.Value;
-            comment.DateTime = commentDTO.DateTime.Value;
-            comment.Content = commentDTO.Content;
-            return comment;
-
+            if (commentDTO == null)
+                return null;
+            return new Comment()
+            {
+                Content = commentDTO.Content
+            };
         }
+
         public static CommentDTOOutput MapOutput(Comment comment)
         {
             if (comment == null)
@@ -229,35 +171,25 @@ namespace WebApi.Database.Mapper
             CommentDTOOutput commentDTO = new CommentDTOOutput();
 
             commentDTO.id = comment.CommentID;
-            commentDTO.postId = comment.PostID;
             commentDTO.authorID = comment.UserID;
+            commentDTO.postId = comment.PostID;
             commentDTO.date = comment.DateTime;
             commentDTO.content = comment.Content;
             return commentDTO;
 
         }
 
-        public static IQueryable<CommentDTO> Map(IQueryable<Comment> comments)
+        public static Comment Map(CommentDTOOutput commentDTO)
+
         {
-            List<CommentDTO> list = new List<CommentDTO>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
+            Comment comment = new Comment();
+            comment.CommentID = commentDTO.id.Value;
+            comment.UserID = commentDTO.authorID.Value;
+            comment.PostID = commentDTO.postId.Value;
+            comment.DateTime = commentDTO.date.Value;
+            comment.Content = commentDTO.content;
+            return comment;
 
-            return list.AsQueryable();
-        }
-
-
-        public static IQueryable<Comment> Map(IQueryable<CommentDTO> comments)
-        {
-            List<Comment> list = new List<Comment>();
-            foreach (var comment in comments)
-            {
-                list.Add(Map(comment));
-            }
-
-            return list.AsQueryable();
         }
 
         public static IQueryable<CommentDTOOutput> MapOutput(IQueryable<Comment> comments)
@@ -275,15 +207,26 @@ namespace WebApi.Database.Mapper
         }
 
 
+        public static IQueryable<Comment> Map(IQueryable<CommentDTOOutput> comments)
+        {
+            List<Comment> list = new List<Comment>();
+            foreach (var comment in comments)
+            {
+                list.Add(Map(comment));
+            }
+
+            return list.AsQueryable();
+        }
+
         public static Category Map(CategoryDTO categoryDTO)
         {
             if (categoryDTO == null) return null;
-            return new Category { CategoryID = categoryDTO.CategoryID.Value, Name = categoryDTO.Name };
+            return new Category { CategoryID = categoryDTO.ID.Value, Name = categoryDTO.Name };
         }
         public static CategoryDTO Map(Category category)
         {
             if (category == null) return null;
-            return new CategoryDTO { CategoryID = category.CategoryID, Name = category.Name };
+            return new CategoryDTO { ID = category.CategoryID, Name = category.Name };
         }
         public static IQueryable<CategoryDTO> Map(IQueryable<Category> categories)
         {
@@ -307,15 +250,14 @@ namespace WebApi.Database.Mapper
 
             return list.AsQueryable();
         }
-        public static PostDTO Map(Post post)
+        public static PostGetDTO Map(Post post)
         {
             if (post == null)
                 return null;
 
-            return new PostDTO
+            return new PostGetDTO
             {
                 authorID = post.UserID,
-                category = post.CategoryID,
                 content = post.Content,
                 datetime = post.Date,
                 id = post.PostID,
@@ -323,6 +265,38 @@ namespace WebApi.Database.Mapper
                 title = post.Title
 
             };
+        }
+
+        public static IQueryable<LikerDTO> Map(IQueryable<int> likers)
+        {
+            var likersDTO = new List<LikerDTO>();
+            foreach (int i in likers)
+            {
+                likersDTO.Add(new LikerDTO { id = i });
+            }
+            return likersDTO.AsQueryable();
+        }
+
+        public static IQueryable<idDTO> MapNewslettersToUserIds(IQueryable<Newsletter> newsletters)
+        {
+            if (newsletters == null)
+                return new List<idDTO>().AsQueryable<idDTO>();
+
+            List<int> ids = newsletters.Select(p => p.CategoryID).ToList();
+            List<idDTO> result = new List<idDTO>();
+            foreach (int id in ids)
+            {
+                result.Add(new idDTO { id = id });
+            }
+
+            return result.AsQueryable();
+        }
+        public static idDTO Map(int? id)
+        {
+            if (!id.HasValue)
+                return null;
+
+            return new idDTO { id = id.Value };
         }
     }
 

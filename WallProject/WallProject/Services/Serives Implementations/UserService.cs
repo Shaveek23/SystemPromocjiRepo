@@ -22,13 +22,13 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<UserViewModel>> getById(int userID)
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync($"user/{userID}");
+            var result = await client.GetAsync($"users/{userID}");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 
             if (result.IsSuccessStatusCode)
             {
-                var userDTO = JsonConvert.DeserializeObject<UserDTO>(jsonString);
+                var userDTO = JsonConvert.DeserializeObject<UserGetDTO>(jsonString);
 
                 return new ServiceResult<UserViewModel>(Mapper.Map(userDTO), result.StatusCode);
             }
@@ -41,13 +41,13 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<List<UserViewModel>>> getAll()
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync($"user");
+            var result = await client.GetAsync($"users");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 
             if (result.IsSuccessStatusCode)
             {
-                var userDTOs = JsonConvert.DeserializeObject<List<UserDTO>>(jsonString);
+                var userDTOs = JsonConvert.DeserializeObject<List<UserGetDTO>>(jsonString);
                 return new ServiceResult<List<UserViewModel>>(Mapper.Map(userDTOs), result.StatusCode);
             }
             else

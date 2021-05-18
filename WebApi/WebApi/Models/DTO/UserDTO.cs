@@ -5,7 +5,7 @@ namespace WebApi.Models.DTO
 {
     public class UserDTO
     {
-        public int? UserID { get; set; }
+        public int? ID { get; set; }
         
         [Required]
         [MaxLength(30)]
@@ -25,7 +25,7 @@ namespace WebApi.Models.DTO
         public bool? IsAdmin { get; set; }
         
         [Required]
-        public bool? IsEnterprenuer { get; set; }
+        public bool? IsEntrepreneur { get; set; }
         
         [Required]
         public bool? IsVerified { get; set; }

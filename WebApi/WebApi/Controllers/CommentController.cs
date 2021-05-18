@@ -14,7 +14,6 @@ using WebApi.Services.Services_Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/comment")]
 
     public class CommentController : ControllerBase
 
@@ -27,30 +26,37 @@ namespace WebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("comments")]
         public ActionResult<IQueryable<CommentDTOOutput>> GetAll([Required][FromHeader] int userId)
         {
             var result = _commentService.GetAll(userId);
-            return Ok(result);
+            return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("comments/{id}")]
+        public ActionResult<IQueryable<CommentDTOOutput>> GetAllUsersComments([Required][FromHeader] int userId, [Required][FromRoute] int id)
+        {
+            var result = _commentService.GetAllOfUser(id);
+            return new ControllerResult<IQueryable<CommentDTOOutput>>(result).GetResponse();
+        }
+
+        [HttpGet("comment/{id}")]
         public ActionResult<CommentDTOOutput> GetById([FromRoute] int id, [Required][FromHeader] int userId)
         {
             var result = _commentService.GetById(id, userId);
             return new ControllerResult<CommentDTOOutput>(result).GetResponse();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>> AddComment([FromBody] CommentDTO comment, [Required][FromHeader] int userId) 
+        [HttpPost("comment")]
+        public async Task<ActionResult<idDTO>> AddComment([FromBody] CommentDTONew comment, [Required][FromHeader] int userId) 
         {
 
             var result = await _commentService.AddCommentAsync(userId, comment);
-            return new ControllerResult<int?>(result).GetResponse();
+            return new ControllerResult<idDTO>(result).GetResponse();
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("comment/{id}")]
         public ActionResult<bool> DeleteComment([FromRoute] int id, [Required][FromHeader] int userId)
         {
             var result = _commentService.DeleteComment(id, userId);
@@ -58,28 +64,26 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<bool>> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTO comment)
+        [HttpPut("comment/{id}")]
+        public async Task<ActionResult<bool>> EditComment([FromRoute] int id, [Required][FromHeader] int userId, [FromBody] CommentDTOEdit comment)
         {
             var result = await _commentService.EditCommentAsync(id, userId, comment);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
 
-        [HttpGet("{id}/likeUsers")]
-        public ActionResult<IQueryable<int>> GetCommentLikes([Required][FromRoute] int id)
+        [HttpGet("comment/{id}/likedUsers")]
+        public ActionResult<IQueryable<LikerDTO>> GetCommentLikes([Required][FromRoute] int id)
         {
             var result = _commentService.GetLikedUsers(id);
-            return new ControllerResult<IQueryable<int>>(result).GetResponse();
+            return new ControllerResult<IQueryable<LikerDTO>>(result).GetResponse();
         }
 
-        [HttpPut("{id}/likeUsers")]
+        [HttpPut("comment/{id}/likedUsers")]
         public async Task<IActionResult> EditLikeStatus([Required][FromHeader] int userID, [FromRoute] int id, [FromBody] LikeDTO like)
         {
             var result = await _commentService.EditLikeOnCommentAsync(userID, id, like);
             return new ControllerResult<bool>(result).GetResponse();
-
-
         }
 
     }

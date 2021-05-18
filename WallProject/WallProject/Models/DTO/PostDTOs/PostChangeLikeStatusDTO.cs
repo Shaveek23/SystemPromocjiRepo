@@ -7,6 +7,6 @@ namespace WallProject.Models.DTO.PostDTOs
 {
     public class PostChangeLikeStatusDTO
     {
-        public bool like;
+        public bool Like;
     }
 }

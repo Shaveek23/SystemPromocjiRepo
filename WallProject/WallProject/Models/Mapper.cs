@@ -12,59 +12,69 @@ namespace WallProject.Models.Mapper
     public class Mapper
     {
       
-        public static PostViewModel Map(PostDTO postDTO, List<CommentViewModel> comments = null)
+        public static PostViewModel Map(PostGetDTO postDTO)
         {
             PostViewModel postVM = new PostViewModel
             {
                 
-                Id = postDTO.id,
-                Title = postDTO.title,
-                Content = postDTO.content,
-                Category = postDTO.category,
-                Datetime = postDTO.datetime,
-                IsPromoted = postDTO.isPromoted,
-                IsLikedByUser = postDTO.isLikedByUser,
-                Likes = postDTO.likesCount,
-                OwnerName = postDTO.author, //TO DO: po implementacji User usunąć;
-                Comments = comments
+                Id = postDTO.ID,
+                Title = postDTO.Title,
+                Content = postDTO.Content,
+                Category = postDTO.Category,
+                Datetime = postDTO.Datetime,
+                IsPromoted = postDTO.IsPromoted,
+                IsLikedByUser = postDTO.IsLikedByUser,
+                Likes = postDTO.LikesCount,
+                OwnerName = postDTO.AuthorName, 
             };
             return postVM;
         }
 
-        public static CommentViewModel Map(CommentDTO commentDTO)
+        public static List<CommentViewModel> Map(List<CommentGetDTO> commentDTOs)
+        {
+            if (commentDTOs == null) return new List<CommentViewModel>();
+            List<CommentViewModel> VMlist = new List<CommentViewModel>();
+            foreach (var item in commentDTOs)
+            {
+                VMlist.Add(Map(item));
+            }
+            return VMlist;
+        }
+
+        public static CommentViewModel Map(CommentGetDTO commentDTO)
         {
             return new CommentViewModel
             {
-                Id= commentDTO.id,
-                IsLikedByUser = commentDTO.isLikedByUser,
-                Content = commentDTO.content,
-                Time = commentDTO.date,
-                OwnerName = commentDTO.authorName.ToString(),
-                Likes = commentDTO.likesCount,
-                OwnerMode = commentDTO.ownerMode
+                Id= commentDTO.ID,
+                IsLikedByUser = commentDTO.IsLikedByUser,
+                Content = commentDTO.Content,
+                Time = commentDTO.Date,
+                OwnerName = commentDTO.AuthorName.ToString(),
+                Likes = commentDTO.LikesCount,
+                OwnerMode = commentDTO.OwnerMode,
+                PostID = commentDTO.PostID
             };
         }
 
 
-        public static UserViewModel Map(UserDTO userDTO)
+        public static UserViewModel Map(UserGetDTO userDTO)
         {
             return new UserViewModel
             {
-                UserID = userDTO.userId,
-                IsActive= userDTO.isActive,
-                IsAdmin= userDTO.isAdmin,
-                IsEnterprenuer= userDTO.isEnterprenuer,
-                IsVerified=userDTO.isVerified,
-                Timestamp=userDTO.timestamp,
-                UserEmail=userDTO.userEmail,
-                UserName=userDTO.userName
+                UserID = userDTO.ID,
+                IsActive= userDTO.IsActive,
+                IsAdmin= userDTO.IsAdmin,
+                IsEnterprenuer= userDTO.IsEnterprenuer,
+                IsVerified=userDTO.IsVerified,
+                UserEmail=userDTO.UserEmail,
+                UserName=userDTO.UserName
             };
         }
 
-        public static List<UserViewModel> Map(IEnumerable<UserDTO> categoryDTOs)
+        public static List<UserViewModel> Map(IEnumerable<UserGetDTO> userDTOs)
         {
             List<UserViewModel> VMlist = new List<UserViewModel>();
-            foreach (var item in categoryDTOs)
+            foreach (var item in userDTOs)
             {
                 VMlist.Add(Map(item));
             }
@@ -76,35 +86,19 @@ namespace WallProject.Models.Mapper
         {
             return new CategoryViewModel
             {
-                CategoryID = categoryDTO.id,
-                CategoryName = categoryDTO.name
+                CategoryID = categoryDTO.ID,
+                CategoryName = categoryDTO.Name
             };
         }
 
-
-        public static List<CategoryViewModel> Map(IEnumerable<CategoryDTO> categoryDTOs)
+        public static List<CategoryViewModel> Map(List<CategoryDTO> categoryDTOs)
         {
             List<CategoryViewModel> VMlist = new List<CategoryViewModel>();
-            foreach(var item in categoryDTOs)
+            foreach (var item in categoryDTOs)
             {
                 VMlist.Add(Map(item));
             }
             return VMlist;
         }
-
-
-
-
-        //public static UserViewModel Map(UserDTO userDTO, int? likes = null)
-        //{
-        //    return new CommentViewModel
-        //    {
-        //        Content = commentDTO.content,
-        //        Time = commentDTO.dateTime,
-        //        OwnerName = commentDTO.userID.ToString(),
-        //        Likes = likes ?? 0
-        //    };
-        //}
-
     }
 }

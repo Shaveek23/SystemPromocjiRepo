@@ -19,5 +19,7 @@ namespace WallProject.Models
 
         public DateTime Time;
         public string Content;
+
+        public int PostID;
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WebApi.Database.Mapper;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.DTO;
+using WebApi.Models.DTO.UserDTOs;
 using WebApi.Models.POCO;
 using WebApi.Services.Services_Interfaces;
 
@@ -19,29 +20,29 @@ namespace WebApi.Services.Serives_Implementations
             _userRepository = userRepository;
         }
 
-        public ServiceResult<IQueryable<UserDTO>> GetAll()
+        public ServiceResult<IQueryable<UserGetDTO>> GetAll()
         {
             var result = _userRepository.GetAll();
-            return new ServiceResult<IQueryable<UserDTO>>(Mapper.Map(result.Result), result.Code, result.Message);
+            return new ServiceResult<IQueryable<UserGetDTO>>(UserMapper.MapGet(result.Result), result.Code, result.Message);
         }
 
-        public ServiceResult<UserDTO> GetById(int id)
+        public ServiceResult<UserGetDTO> GetById(int id)
         {
             var result = _userRepository.GetById(id);
-            return new ServiceResult<UserDTO>(Mapper.Map(result.Result), result.Code, result.Message);
+            return new ServiceResult<UserGetDTO>(UserMapper.MapGet(result.Result), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<int?>> AddUserAsync(int userId,UserDTO newUserDTO)
+        public async Task<ServiceResult<idDTO>> AddUserAsync(int userId, UserPostDTO newUserDTO)
         {
-            User newUser = Mapper.Map(newUserDTO);
-            
+            User newUser = UserMapper.Map(newUserDTO);
+            newUser.Timestamp = DateTime.Now;
             var result = await _userRepository.AddAsync(newUser);
-            return new ServiceResult<int?>(result.Result?.UserID, result.Code, result.Message);
+            return new ServiceResult<idDTO>(Mapper.Map(result.Result?.UserID), result.Code, result.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditUserAsync(int userId, UserDTO userDTO, int userToBeEditedId)
+        public async Task<ServiceResult<bool>> EditUserAsync(int userId, UserPutDTO userDTO, int userToBeEditedId)
         {
-            User user = Mapper.Map(userDTO);
+            User user = UserMapper.Map(userDTO);
             user.UserID = userToBeEditedId;
             var result = await _userRepository.UpdateAsync(user);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);

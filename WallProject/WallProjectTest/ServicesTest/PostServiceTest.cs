@@ -18,7 +18,7 @@ using WallProject.Models.MainView;
 
 namespace WallProjectTest.ServicesTest
 {
-    public class PosttServiceTest
+    public class PostServiceTest
     {
 
         [Fact]
@@ -32,7 +32,7 @@ namespace WallProjectTest.ServicesTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("{\"id\":1,\"title\":\"tytuł 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"category\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}")
+                    Content = new StringContent("{\"id\":1,\"title\":\"tytuł 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"CategoryID\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}")
                 });
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();
@@ -62,17 +62,15 @@ namespace WallProjectTest.ServicesTest
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent("[{\"id\":1,\"title\":\"tytuł 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"category\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}," +
-                    "{\"id\":2,\"title\":\"tytuł 2\",\"content\":\"Oto mój drugi post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"category\":2,\"isPromoted\":false,\"author\":\"Jan2\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}]")
+                    Content = new StringContent("[{\"id\":1,\"title\":\"tytuł 1\",\"content\":\"Oto mój pierwszy post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"CategoryID\":1,\"isPromoted\":false,\"author\":\"Jan\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}," +
+                    "{\"id\":2,\"title\":\"tytuł 2\",\"content\":\"Oto mój drugi post!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"CategoryID\":2,\"isPromoted\":false,\"author\":\"Jan2\",\"authorID\":1,\"likesCount\":5,\"isLikedByUser\":false}]")
                 });
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
             var mockResult = new ServiceResult<List<CommentViewModel>>(new List<CommentViewModel>());
             var mockCommentService = new Mock<ICommentService>();
-            mockCommentService.Setup(_ => _.getByPostId(1, 1))
-                .Returns(Task.FromResult(mockResult)); mockCommentService.Setup(_ => _.getByPostId(2, 1))
-     .Returns(Task.FromResult(mockResult));
+            mockCommentService.Setup(_ => _.getAll(1)).Returns(Task.FromResult(mockResult));
             var mockPersonService = new Mock<IUserService>();
             mockPersonService.Setup(x => x.getAll()).Returns(Task.FromResult(new ServiceResult<List<UserViewModel>>(new List<UserViewModel>(), HttpStatusCode.OK)));
 
@@ -87,11 +85,13 @@ namespace WallProjectTest.ServicesTest
         }
 
         [Theory]
-        [InlineData("text", 1)]
-        [InlineData("lol", 3)]
-        [InlineData("cokolwiek do testu", 420)]
-        [InlineData("jakis test", 6)]
-        public async void Test_AddNewPost(string postText, int userId)
+
+        [InlineData("text", 1,1, "text")]
+        [InlineData("lol", 3, 1, "text")]
+        [InlineData("cokolwiek do testu", 420, 2, "text")]
+        [InlineData("jakis test", 6, 1, "text")]
+        public async void Test_AddNewPost(string postText, int userId,int categoryId,string title)
+
         {
 
 
@@ -117,7 +117,7 @@ namespace WallProjectTest.ServicesTest
             PostService postService = new PostService(mockFactory.Object, commentService, mockUserService.Object);
 
 
-            var result = await postService.AddNewPost(postText, userId);
+            var result = await postService.AddNewPost(postText, userId,categoryId,title);
             Assert.True(result.Result);
 
 

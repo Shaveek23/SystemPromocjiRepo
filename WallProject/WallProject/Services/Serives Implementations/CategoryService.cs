@@ -23,7 +23,7 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<List<CategoryViewModel>>> getAll()
         {
             var client = _clientFactory.CreateClient("webapi");
-            var result = await client.GetAsync("category");
+            var result = await client.GetAsync("categories");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 

@@ -30,7 +30,7 @@ namespace WallProject.Services.Serives_Implementations
             var Posts = await _postService.getAll(userID);
             if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
             var Categories = await _categoryService.getAll();
-            if (!Posts.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
+            if (!Categories.IsOk()) return new ServiceResult<WallViewModel>(null, Posts.Code, Posts.Message);
 
 
             var sortedPosts = Posts.Result
@@ -38,14 +38,23 @@ namespace WallProject.Services.Serives_Implementations
                           .ToList();
 
 
-            WallViewModel wallVM = new WallViewModel
+            SessionData.WallModel.Posts = sortedPosts;
+            SessionData.WallModel.Owner = Owner.Result;
+            SessionData.WallModel.Categories = Categories.Result;
+            if (SessionData.FirstLoad)
             {
-                Posts = sortedPosts,
-                Owner = Owner.Result,
-                Categories = Categories.Result,
-                SelectedCategories = new bool[Categories.Result.Count()]          
-            };
-            return new ServiceResult<WallViewModel>(wallVM, System.Net.HttpStatusCode.OK, null);
+                SessionData.WallModel.SelectedCategories = Categories.Result.Select(x => x.CategoryName).ToList();
+                SessionData.FirstLoad = false;
+            }
+
+
+            return new ServiceResult<WallViewModel>(SessionData.WallModel, System.Net.HttpStatusCode.OK, null);
+        }
+        public void ChangeCategoryFilterStatus(int categoryID)
+        {
+            string categoryName = _categoryService.getAll().Result.Result.Where(x => x.CategoryID == categoryID).FirstOrDefault().CategoryName;
+            if (!SessionData.WallModel.SelectedCategories.Contains(categoryName)) SessionData.WallModel.SelectedCategories.Add(categoryName);
+            else SessionData.WallModel.SelectedCategories.Remove(categoryName);
         }
     }
 }

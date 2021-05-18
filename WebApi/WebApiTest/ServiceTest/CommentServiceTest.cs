@@ -155,7 +155,7 @@ namespace WebApiTest.ServiceTest
             int initLength = comments.Count();
             var expected = comments;
 
-            var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newCommentDTO = new CommentDTONew() {  PostID = 1, Content = "testNowy" };
             var newComment = new CommentDTOOutput() { id = 4, authorID = 1, postId = 1, date = new DateTime(2008, 3, 1, 7, 0, 0), content = "testNowy" };
             expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" });
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -169,7 +169,7 @@ namespace WebApiTest.ServiceTest
             var commentService = new CommentService(mockICommentRepository.Object, mockIUserRepository.Object);
             var actual = commentService.AddCommentAsync(UserId, newCommentDTO).Result.Result;
 
-            Assert.Equal(newComment.postId, actual);
+            Assert.Equal(newComment.postId, actual.id);
 
         }
 
@@ -178,7 +178,7 @@ namespace WebApiTest.ServiceTest
 
         public void AddComment_InValidCall()
         {
-            var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newCommentDTO = new CommentDTONew() {  PostID = 1,  Content = "testNowy" };
             var newComment = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -233,12 +233,12 @@ namespace WebApiTest.ServiceTest
 
         public void EditComment_ValidCall()
         {
-            var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newCommentDTO = new CommentDTOEdit() {Content = "testNowy" };
             var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
             mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(newComment)));
-
+            mockICommentRepository.Setup(x => x.GetById(newComment.CommentID)).Returns(new ServiceResult<Comment>(newComment));
 
             var mockIUserRepository = new Mock<IUserRepository>();
 
@@ -250,15 +250,15 @@ namespace WebApiTest.ServiceTest
         }
 
         [Fact]
-        #region TODO: Nw czy to moze byc w ten sposob, ale nw jak zwrocic null z taska
+        
         public void EditComment_InValidCall()
         {
-            var newCommentDTO = new CommentDTO() { UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
+            var newCommentDTO = new CommentDTOEdit() {  Content = "testNowy" };
             var newComment = new Comment() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
             mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(null, System.Net.HttpStatusCode.BadRequest, "Bad request")));
-
+            mockICommentRepository.Setup(x => x.GetById(newComment.CommentID)).Returns(new ServiceResult<Comment>(newComment));
 
             var mockIUserRepository = new Mock<IUserRepository>();
 
@@ -267,7 +267,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.NotNull(actual.Message);
         }
-        #endregion
+     
         [Fact]
         #region TODO
         public void EditLikeOnComment_ValidCall()

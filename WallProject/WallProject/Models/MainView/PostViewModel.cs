@@ -13,7 +13,7 @@ namespace WallProject.Models
         public string Title;
         public string Content;
         public DateTime Datetime;
-        public int Category;
+        public string Category;
         public bool IsPromoted;
         public UserViewModel Owner;
         public string OwnerName; //TO DO: po implementacji User usunąć;

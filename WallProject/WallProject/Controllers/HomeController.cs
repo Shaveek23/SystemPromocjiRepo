@@ -59,9 +59,9 @@ namespace WallProject.Controllers
                 return View("Privacy", wall.Message);
         }
 
-        public async Task<IActionResult> AddNewPost(string postText, int userId)
+        public async Task<IActionResult> AddNewPost(string postText, int userId, int categoryId, string title)
         {
-            var result = await _postService.AddNewPost(postText, userId);
+            var result = await _postService.AddNewPost(postText, userId,categoryId,title);
             if (result.Result)
                 return View();
             else
@@ -95,5 +95,17 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
+        public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryID)
+        {
+            _service.ChangeCategoryFilterStatus(categoryID);
+            ServiceResult<WallViewModel> wall = await _service.getWall(1);
+            if (wall.IsOk())
+            {
+                return View(wall.Result);
+            }
+            else
+                return View("Privacy", wall.Message);
+        }
     }
+
 }

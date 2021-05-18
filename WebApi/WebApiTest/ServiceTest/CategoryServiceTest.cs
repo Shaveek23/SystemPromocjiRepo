@@ -37,7 +37,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.True(actual != null);
             Assert.Equal(expected.Count, actual.Count);
-            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.CategoryID == shouldItem.CategoryID && isItem.Name == shouldItem.Name)));
+            Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem.ID == shouldItem.CategoryID && isItem.Name == shouldItem.Name)));
 
         }
 
@@ -57,7 +57,7 @@ namespace WebApiTest.ServiceTest
             var expected2 = expected.Result;
 
             Assert.True(actual != null);
-            Assert.Equal(expected2.CategoryID, actual.CategoryID);
+            Assert.Equal(expected2.CategoryID, actual.ID);
             Assert.Equal(expected2.Name, actual.Name);
 
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApi.Models.DTO.PostDTOs
 {
     //DTO for creating and editing post
-    public class PostEditDTO
+    public class PostPutDTO
     {
         [Required]
         [MaxLength(50)]
@@ -16,11 +16,9 @@ namespace WebApi.Models.DTO.PostDTOs
         [Required]
         public string content { get; set; }
         [Required]
-        public int? category { get; set; }
+        public int? categoryID { get; set; }
         [Required]
         public bool? isPromoted { get; set; }
-        [Required]
-        public DateTime? dateTime { get; set; }
 
     }
 }

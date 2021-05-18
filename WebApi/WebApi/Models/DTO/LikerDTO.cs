@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WallProject.Models.DTO
+namespace WebApi.Models.DTO
 {
-    public class CategoryDTO
+    public class LikerDTO
     {
         public int id { get; set; }
-        public string name { get; set; }
     }
 }

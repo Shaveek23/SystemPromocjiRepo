@@ -124,6 +124,24 @@ namespace WebApi.Migrations
                     b.ToTable("CommentLike");
                 });
 
+            modelBuilder.Entity("WebApi.Models.POCO.Newsletter", b =>
+                {
+                    b.Property<int>("NewsletterID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("NewsletterID");
+
+                    b.ToTable("Newsletter");
+                });
+
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>
                 {
                     b.Property<int>("PersonID")

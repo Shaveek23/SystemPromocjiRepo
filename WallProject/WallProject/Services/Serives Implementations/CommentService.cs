@@ -38,9 +38,9 @@ namespace WallProject.Services.Serives_Implementations
 
             if (result.IsSuccessStatusCode)
             {
-                var commentDTO = JsonConvert.DeserializeObject<CommentDTO>(jsonString);
+                var commentDTO = JsonConvert.DeserializeObject<CommentGetDTO>(jsonString);
                 var commentVM = Mapper.Map(commentDTO);
-                commentVM.Owner = _userService.getById(commentDTO.authorID).Result.Result;
+                commentVM.Owner = _userService.getById(commentDTO.AuthorID).Result.Result;
 
                 return new ServiceResult<CommentViewModel>(commentVM);
             }
@@ -60,14 +60,14 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 List<CommentViewModel> commentVMs = new List<CommentViewModel>();
-                List<CommentDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                List<CommentGetDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentGetDTO>>(jsonString);
 
                 var users = await _userService.getAll();
 
                 foreach (var commentDTO in commentDTOs)
                 {
                     var commentVM = Mapper.Map(commentDTO);
-                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.authorID).FirstOrDefault();
+                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.AuthorID).FirstOrDefault();
                     commentVMs.Add(commentVM);
                 }
                 return new ServiceResult<List<CommentViewModel>>(commentVMs);
@@ -88,14 +88,14 @@ namespace WallProject.Services.Serives_Implementations
             if (result.IsSuccessStatusCode)
             {
                 List<CommentViewModel> commentVMs = new List<CommentViewModel>();
-                List<CommentDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentDTO>>(jsonString);
+                List<CommentGetDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentGetDTO>>(jsonString);
 
                 var users = await _userService.getAll();
 
                 foreach (var commentDTO in commentDTOs)
                 {
                     var commentVM = Mapper.Map(commentDTO);
-                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.authorID).FirstOrDefault();
+                    commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.AuthorID).FirstOrDefault();
                     commentVMs.Add(commentVM);
                 }
                 return new ServiceResult<List<CommentViewModel>>(commentVMs);
@@ -127,11 +127,9 @@ namespace WallProject.Services.Serives_Implementations
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera
           
-            CommentDTONoID comment = new CommentDTONoID();
-            comment.content = commentText;
-            comment.postID = postId;
-            comment.userID = userId;
-            comment.dateTime = DateTime.Now;
+            CommentDTONew comment = new CommentDTONew();
+            comment.Content = commentText;
+            comment.PostID = postId;
           
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(comment);
@@ -151,12 +149,12 @@ namespace WallProject.Services.Serives_Implementations
         async public Task<ServiceResult<bool>> EditLikeStatus(int commentID, int userID, bool like)
         {
             //tworzenie komentarza na podstawie danych przekazanych z kontrolera          
-            CommentChangeLikeStatusDTO postDTO = new CommentChangeLikeStatusDTO { like = like };
+            CommentChangeLikeStatusDTO postDTO = new CommentChangeLikeStatusDTO { Like = like };
 
             //serializacja do JSONa
             var jsonComment = JsonConvert.SerializeObject(postDTO);
             //przygotowanie HttpRequest
-            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likeUsers");
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likedUsers");
             HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             requestMessage.Headers.Add("userId", userID.ToString());
             requestMessage.Content = httpContent;
