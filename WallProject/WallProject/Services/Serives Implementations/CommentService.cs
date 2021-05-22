@@ -41,6 +41,7 @@ namespace WallProject.Services.Serives_Implementations
                 var commentDTO = JsonConvert.DeserializeObject<CommentGetDTO>(jsonString);
                 var commentVM = Mapper.Map(commentDTO);
                 commentVM.Owner = _userService.getById(commentDTO.AuthorID).Result.Result;
+                commentVM.CurrentUser = _userService.getById(userID).Result.Result;
 
                 return new ServiceResult<CommentViewModel>(commentVM);
             }
@@ -68,6 +69,7 @@ namespace WallProject.Services.Serives_Implementations
                 {
                     var commentVM = Mapper.Map(commentDTO);
                     commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.AuthorID).FirstOrDefault();
+                    commentVM.CurrentUser = users.Result?.Where(x => x.UserID == userID).FirstOrDefault();
                     commentVMs.Add(commentVM);
                 }
                 return new ServiceResult<List<CommentViewModel>>(commentVMs);
@@ -96,6 +98,7 @@ namespace WallProject.Services.Serives_Implementations
                 {
                     var commentVM = Mapper.Map(commentDTO);
                     commentVM.Owner = users.Result?.Where(x => x.UserID == commentDTO.AuthorID).FirstOrDefault();
+                    commentVM.CurrentUser = users.Result?.Where(x => x.UserID == userID).FirstOrDefault();
                     commentVMs.Add(commentVM);
                 }
                 return new ServiceResult<List<CommentViewModel>>(commentVMs);

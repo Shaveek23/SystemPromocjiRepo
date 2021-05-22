@@ -43,7 +43,16 @@ namespace WallProjectTest.ServicesTest
                 .Returns(Task.FromResult(mockResult));
             var mockPersonService = new Mock<IUserService>();
 
-            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockPersonService.Object);
+            var mockUserResult = new ServiceResult<List<UserViewModel>>(new List<UserViewModel>() { new UserViewModel()
+            {
+                UserID = 1, IsActive = true, IsAdmin = false, IsEnterprenuer = false, IsVerified = true, Timestamp = DateTime.MinValue, UserEmail="DSADASDAS", UserName="name"
+            }
+            });
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(_ => _.getAll())
+            .Returns(Task.FromResult(mockUserResult));
+
+            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockUserService.Object);
             var result = await postService.getById(1, 1);
             Assert.NotNull(result);
             Assert.Null(result.Message);

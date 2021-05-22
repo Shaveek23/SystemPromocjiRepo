@@ -1,0 +1,52 @@
+﻿@model WallProject.Models.CommentViewModel
+
+<li>
+    <a href="#" class="cmt-thumb">
+        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+    </a>
+    <div class="cmt-details">
+        <a href="#"><h5>@Model.OwnerName</h5></a>
+        <br />
+
+        <p id="@Model.Id" class="fb-user-status-comment">
+
+            @Model.Content
+        </p>
+        <div style="overflow: hidden;">
+            <p style="float: left; color:Highlight">
+                @Model.Likes people like this.
+                <a href="#" class="btn-block" onclick="LikeComment( @Model.Id, @Model.CurrentUser.UserID, @(Model.IsLikedByUser ? "false" : "true") )">
+                    @(Model.IsLikedByUser ? "You like it! Click to unlike." : "Like this comment!" )
+                </a>
+            </p>
+            <p style="float: right;">@Model.Time</p>
+        </div>
+    </div>
+</li>
+
+
+<script type="text/javascript">
+    async function LikeComment(commentId, userId, like) {
+
+    $.ajax({
+        url: '@Url.Action("EditCommentLikeStatus", "Home")',
+        data: { "commentID": commentId, "userID": userId, "like": like },
+
+
+        type: 'POST',
+        dateType: "json",
+        cache:false,
+        success: function (data)
+        {
+        },
+        error: function (data)
+        {
+            console.log("ERROR " + data)
+        }
+     });
+
+        location.reload(true);
+    }
+
+
+</script>

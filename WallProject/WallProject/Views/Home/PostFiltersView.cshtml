@@ -1,0 +1,31 @@
+﻿@model WallProject.Models.WallViewModel
+
+
+<h4>Filter by category:</h4>
+@foreach (var category in Model.Categories)
+{
+    <div class="checkbox">
+        @if (Model.SelectedCategories.Contains(category.CategoryName))
+        {
+            <label><input type="checkbox" class="icheck" checked onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+        }
+        else
+        {
+            <label><input type="checkbox" class="icheck" onclick="ChooseCategory(@category.CategoryID)"> @category.CategoryName </label>
+        }
+    </div>
+}
+
+
+<script type="text/javascript">
+           function ChooseCategory(categoryId) {
+
+            $.ajax({
+                url: '@Url.Action("ChangeCategoryFilterStatus", "Home")',
+                data: { "categoryId": categoryId }
+            });
+               location.reload(true);
+
+        }
+</script>
+

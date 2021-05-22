@@ -50,6 +50,7 @@ namespace WallProject.Services.Serives_Implementations
                     var postVM = Mapper.Map(postDTO);
                     postVM.Comments = allComments.Result.Where(x => x.PostID == postDTO.ID).ToList();
                     postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.AuthorID).FirstOrDefault();
+                    postVM.CurrentUser = usersResult.Result?.Where(x => x.UserID == userID).FirstOrDefault();
                     postVMs.Add(postVM);
                 }
                 return new ServiceResult<List<PostViewModel>>(postVMs, result.StatusCode, null);
@@ -67,15 +68,25 @@ namespace WallProject.Services.Serives_Implementations
             var result = await client.GetAsync($"post/{postID}");
             var jsonString = await result.Content.ReadAsStringAsync();
 
+            
+
             if (result.IsSuccessStatusCode)
             {
                 var postDTO = JsonConvert.DeserializeObject<PostGetDTO>(jsonString);
                 var postVM = Mapper.Map(postDTO);
 
+                var usersResult = await _userService.getAll();
+
+                if (usersResult.Result != null)
+                {
+                    postVM.CurrentUser = usersResult.Result?.Where(x => x.UserID == userID).FirstOrDefault();
+                    postVM.Owner = usersResult.Result?.Where(x => x.UserID == postDTO.AuthorID).FirstOrDefault();
+                }
+
                 var comments = _commentService.getByPostId(postID, userID);
                 if(comments.Result != null)
                 {
-                    postVM.Comments = comments.Result.Result;
+                     postVM.Comments = comments.Result.Result;
                 }
 
 
