@@ -8,13 +8,13 @@ namespace WallProject.Models
 {
     public class PostViewModel
     {
-        //Nw na ten moement jak inaczej to przesłac
         public int Id;
         public string Title;
         public string Content;
         public DateTime Datetime;
         public string Category;
         public bool IsPromoted;
+        public UserViewModel CurrentUser;
         public UserViewModel Owner;
         public string OwnerName; //TO DO: po implementacji User usunąć;
         public int Likes;
