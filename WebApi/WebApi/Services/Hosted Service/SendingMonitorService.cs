@@ -8,13 +8,13 @@ namespace WebApi.Services.Hosted_Service
 {
     public class SendingMonitorService : ISendingMonitorService
     {
-        public IBackgroundTaskQueueService<(string[], string, string)> TaskQueue { get; }
-        public SendingMonitorService(IBackgroundTaskQueueService<(string[], string, string)> taskQueue)
+        public IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> TaskQueue { get; }
+        public SendingMonitorService(IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> taskQueue)
         {
             TaskQueue = taskQueue;
         }
 
-        public void Send(string[] receivers, string postTitle, string category)
+        public void Send(List<ReceiverDTO> receivers, string postTitle, string category)
         {
             TaskQueue.QueueBackgroundWorkItem((receivers, postTitle, category));
         }
