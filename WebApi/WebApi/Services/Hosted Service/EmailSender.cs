@@ -15,16 +15,16 @@ namespace WebApi.Services.Hosted_Service
 
     public class EmailSender: BackgroundService
     {
-        public IBackgroundTaskQueueService<(string[], string, string)> TaskQueue { get; }
+        public IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> TaskQueue { get; }
 
         private readonly string websiteURL = "SystemPromocjiGrupaI.com";
-        private readonly string serviceEmail = "systempromocji.grupai@gmail.com";
+        private readonly string serviceEmail = "https://systempromocji.azurewebsites.net/";
         private readonly string emailPassword = "1715grupaI";
         private readonly string serviceName = "System Promocji Grupa I";
 
         private readonly string sendGridApiKey = "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";
 
-        public EmailSender([NotNull] IBackgroundTaskQueueService<(string[], string, string)> taskQueue)
+        public EmailSender([NotNull] IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> taskQueue)
         {
             TaskQueue = taskQueue;
         }
@@ -34,26 +34,23 @@ namespace WebApi.Services.Hosted_Service
             while (!stoppingToken.IsCancellationRequested)
             {
                 // in work item we want to have recipients data and information about a new post and its category
-                (string[] recipients, string postTitle, string category) workItem =
+                (List<ReceiverDTO> recipients, string postTitle, string category) workItem =
                 await TaskQueue.DequeueAsync(stoppingToken);
 
-
-                // TO DO:
                 SendEmailNotifications(workItem);
             }
 
         }
 
-        private void SendEmailNotifications((string[] recipients, string postTitle, string category) workItem)
+        private void SendEmailNotifications((List<ReceiverDTO> recipients, string postTitle, string category) workItem)
         {
             foreach (var recipient in workItem.recipients)
             {
                 var client = new SendGridClient(sendGridApiKey);
-
                 EmailAddress from = new EmailAddress(serviceEmail, serviceName);
-                EmailAddress to = new EmailAddress("spotifijak5@gmail.com"); //, $"{notification.Recipient.Name} {notification.Recipient.LastName}");
-                var subject = "Zobacz nową promocję!"; // $"You have { notification.Count } new mails at miniGGJ Email Manager";
-                var plaintextContent = BuildNotificationContent(workItem);
+                EmailAddress to = new EmailAddress(recipient.Email); 
+                var subject = "Zobacz nową promocję!";
+                var plaintextContent = BuildNotificationContent(recipient, workItem.postTitle, workItem.category);
 
                 var htmlContent = $"{plaintextContent}";
 
@@ -62,12 +59,13 @@ namespace WebApi.Services.Hosted_Service
             }
         }
 
-        private string BuildNotificationContent((string[] recipients, string postTitle, string category) workItem)
+        private string BuildNotificationContent(ReceiverDTO recipient, string postTitle, string category)
         {
 
             StringBuilder builder = new StringBuilder();
-
-            builder.Append($"Check out a new post: {workItem.postTitle} in {workItem.category} category!");
+            builder.Append($"Hi {recipient.Name}!,");
+            builder.Append("<br>");
+            builder.Append($"Check out a new post: {postTitle} in {category} category!");
             builder.Append("<br>");
             builder.Append($"Don't forget to visit our website: { websiteURL }");
             builder.Append("<br>");

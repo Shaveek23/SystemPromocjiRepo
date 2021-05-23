@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Models.POCO;
 using WebApi.Models.DTO;
+using WebApi.Controllers;
+using WebApi.Services.Hosted_Service;
 
 namespace WebApi.Database.Mapper
 {
@@ -70,6 +72,24 @@ namespace WebApi.Database.Mapper
             };
 
         }
+
+        internal static List<ReceiverDTO> Map(IQueryable<User> subscribers)
+        {
+            if (subscribers == null)
+                return new List<ReceiverDTO>();
+
+            List<ReceiverDTO> receivers = new List<ReceiverDTO>();
+
+            foreach (var user in subscribers)
+            {
+                receivers.Add(new ReceiverDTO { Name = user.UserName, Email = user.UserEmail });
+            }
+
+            return receivers;
+
+
+        }
+
         public static CommentLikeDTO Map(CommentLike CommentLike)
         {
             return new CommentLikeDTO
@@ -89,6 +109,15 @@ namespace WebApi.Database.Mapper
 
             return postlikes.AsQueryable();
         }
+
+        internal static Newsletter Map(NewsletterDTO dto, int userID)
+        {
+            if (dto == null)
+                return null;
+
+            return new Newsletter { CategoryID = dto.CategoryID.Value, UserID = userID };
+        }
+
         public static IQueryable<PostLikeDTO> Map(IQueryable<PostLike> likes)
         {
             List<PostLikeDTO> postlikes = new List<PostLikeDTO>();

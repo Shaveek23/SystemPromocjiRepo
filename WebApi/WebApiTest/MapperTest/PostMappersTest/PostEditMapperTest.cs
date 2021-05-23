@@ -12,17 +12,17 @@ namespace WebApiTest.MapperTest.PostMappersTest
     {
         public static IEnumerable<object[]> PostDTOEditData()
         {
-            yield return new object[] { new PostPutDTO { title="Titleeee1", content="swietna oferta", categoryID =3,  isPromoted=true } };
-            yield return new object[] { new PostPutDTO { title = "Titleeee2", content = "Hi, I am new here....",categoryID = 1, isPromoted = false } };
-            yield return new object[] { new PostPutDTO {categoryID = 5, isPromoted =false } };
+            yield return new object[] { new PostPutDTO { title="Titleeee1", content="swietna oferta", category =3,  isPromoted=true } };
+            yield return new object[] { new PostPutDTO { title = "Titleeee2", content = "Hi, I am new here....",category = 1, isPromoted = false } };
+            yield return new object[] { new PostPutDTO {category=5, isPromoted =false } };
         }
 
 
         public static IEnumerable<object[]> PostDTOCreateData()
         {
-            yield return new object[] { new PostPostDTO { title = "Titleeee1", content = "swietna oferta", categoryID = 3} };
-            yield return new object[] { new PostPostDTO { title = "Titleeee2", content = "Hi, I am new here....", categoryID = 1} };
-            yield return new object[] { new PostPostDTO { categoryID = 5 } };
+            yield return new object[] { new PostPostDTO { title = "Titleeee1", content = "swietna oferta", category = 3} };
+            yield return new object[] { new PostPostDTO { title = "Titleeee2", content = "Hi, I am new here....", category = 1} };
+            yield return new object[] { new PostPostDTO { category = 5 } };
         }
 
         [Theory]
@@ -33,7 +33,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
             Assert.Equal(input.title, result.Title);
             Assert.Equal(input.content, result.Content);
-            Assert.Equal(input.categoryID.Value, result.CategoryID);
+            Assert.Equal(input.category.Value, result.CategoryID);
             Assert.Equal(input.isPromoted.Value, result.IsPromoted);
         }
 
@@ -45,7 +45,7 @@ namespace WebApiTest.MapperTest.PostMappersTest
 
             Assert.Equal(input.title, result.Title);
             Assert.Equal(input.content, result.Content);
-            Assert.Equal(input.categoryID.Value, result.CategoryID);
+            Assert.Equal(input.category.Value, result.CategoryID);
         }
 
     }

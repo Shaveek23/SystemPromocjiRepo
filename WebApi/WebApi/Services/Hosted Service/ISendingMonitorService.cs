@@ -1,7 +1,9 @@
-﻿namespace WebApi.Services.Hosted_Service
+﻿using System.Collections.Generic;
+
+namespace WebApi.Services.Hosted_Service
 {
     public interface ISendingMonitorService
     {
-        public void Send(string[] receivers, string postTitle, string category);
+        public void Send(List<ReceiverDTO> receivers, string postTitle, string category);
     }
 }

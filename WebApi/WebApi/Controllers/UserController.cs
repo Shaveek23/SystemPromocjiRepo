@@ -72,7 +72,7 @@ namespace WebApi.Controllers
         [HttpGet("users/{id}/subscribedCategories")]
         public ActionResult<IQueryable<idDTO>> getSubscribedCategories([Required][FromHeader] int UserID, [FromRoute] int id)
         {
-            var result = _newsletterService.getSubscribedCategories(id);
+            var result = _newsletterService.GetSubscribedCategories(id);
             return new ControllerResult<IQueryable<idDTO>>(result).GetResponse();
         }
        

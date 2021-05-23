@@ -57,7 +57,7 @@ namespace WebApi
             services.AddScoped<INewsletterService, NewsletterService>();
 
             // adding newsletter services
-            services.AddSingleton<IBackgroundTaskQueueService<(string[], string, string)>, BackgroundTaskQueueService<(string[], string, string)>>();
+            services.AddSingleton<IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)>, BackgroundTaskQueueService<(List<ReceiverDTO>, string, string)>>();
             services.AddHostedService<EmailSender>();
             services.AddSingleton<ISendingMonitorService, SendingMonitorService>();
 

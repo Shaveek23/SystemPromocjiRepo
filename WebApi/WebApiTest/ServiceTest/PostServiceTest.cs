@@ -133,7 +133,7 @@ namespace WebApiTest.ServiceTest
             {
                 title = "newtitle",
                 content = "newcontent",
-                categoryID = 5,
+                category = 5,
                 isPromoted = true
             };
             var expectedPost = new Post
@@ -148,14 +148,14 @@ namespace WebApiTest.ServiceTest
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();
-            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>(), It.IsAny<int>())).Returns(Task.Run(() => new ServiceResult<Post>(expectedPost)));
+            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>())).Returns(Task.Run(() => new ServiceResult<Post>(expectedPost)));
 
             var mockIUserRespository = new Mock<IUserRepository>();
             var mockICommentService = new Mock<ICommentService>();
             var mockICategoryService = new Mock<ICategoryService>();
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object, mockICategoryService.Object);
-            var actual = postService.EditPostAsync(postID, newPostDTO, 1).Result.Result;
+            var actual = postService.EditPostAsync(postID, newPostDTO).Result.Result;
             Assert.True(actual);
 
         }
