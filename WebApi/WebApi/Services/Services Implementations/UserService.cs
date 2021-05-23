@@ -44,7 +44,7 @@ namespace WebApi.Services.Serives_Implementations
         {
             User user = UserMapper.Map(userDTO);
             user.UserID = userToBeEditedId;
-            var result = await _userRepository.UpdateAsync(user);
+            var result = await _userRepository.UpdateAsync(user, userId);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
@@ -55,7 +55,7 @@ namespace WebApi.Services.Serives_Implementations
             if (!GetResult.IsOk())
                 return new ServiceResult<bool>(false, GetResult.Code, GetResult.Message);
 
-            var RemoveResult = await _userRepository.RemoveAsync(GetResult.Result);
+            var RemoveResult = await _userRepository.RemoveAsync(GetResult.Result, userId);
             return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
     }

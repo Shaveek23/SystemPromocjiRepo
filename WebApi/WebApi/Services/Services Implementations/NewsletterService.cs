@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Controllers;
 using WebApi.Database.Mapper;
 using WebApi.Database.Repositories.Implementations;
 using WebApi.Database.Repositories.Interfaces;
 using WebApi.Models.DTO;
 using WebApi.Models.DTO.PostDTOs;
-using WebApi.Models.POCO;
 using WebApi.Services.Hosted_Service;
 using WebApi.Services.Services_Interfaces;
 
@@ -34,91 +32,25 @@ namespace WebApi.Services.Services_Implementations
             if (!isPostAddedSuccessfuly)
                 return;
 
-
-            var res = GetSubscribers(categoryId);
-            if (!res.IsOk())
-                return;
-
-            List<int> subscribersIds = res.Result;
-
-            var res2 = _userRepository.GetAll();
-            if (!res2.IsOk())
-                return;
-
-            IQueryable<User> subscribers = res2.Result.Where(u => subscribersIds.Contains(u.UserID));
-
-            List<ReceiverDTO> receivers = Mapper.Map(subscribers);
-
+            // TO DO:
+            // tutaj należy wydobyć informacje o subskrybentach danej kategorii
+            string[] mockedReceivers = new string[] { "abc@abc.pl", "anotherReceiver@gmail.com", "email@email.eu" }; // tutaj trzeba pozyskać subskrybentów z bazy -> endpoint w Newsletter ?
             string postTitle = title;
-            var categoryRes = _categoryRepository.GetById(categoryId);
+            string category = categoryId.ToString(); // tutaj trzeba wyszukać nazwę kategorii serwisem kategorii
 
-            if (!categoryRes.IsOk())
-                return;
+            //
 
-            string catName = categoryRes.Result.Name;
-
-            _sendingMonitorService.Send(receivers, postTitle, catName);
+            _sendingMonitorService.Send(mockedReceivers, postTitle, category);
         }
 
 
-        public ServiceResult<List<int>> GetSubscribers(int categoryID)
-        {
-            var res = _newsletterRepository.GetAll();
+        // TO DO:
+        //tutaj dodać funckje do pobierania subskrybentów danej kategorii
 
-            if (!res.IsOk())
-                return new ServiceResult<List<int>>(null, res.Code, res.Message);
-
-            var newsletters = res.Result.Where(n => n.CategoryID == categoryID);
-
-            List<int> result = new List<int>();
-
-            foreach (var n in newsletters)
-            {
-                result.Add(n.UserID);
-            }
-
-            return new ServiceResult<List<int>>(result);
-
-        }
-
-        public ServiceResult<IQueryable<idDTO>> GetSubscribedCategories(int userID)
+        public ServiceResult<IQueryable<idDTO>> getSubscribedCategories(int userID)
         {
             var res = _newsletterRepository.GetAllSubscribedCategories(userID);
             return new ServiceResult<IQueryable<idDTO>>(Mapper.MapNewslettersToUserIds(res.Result));
-        }
-
-        public async Task<ServiceResult<bool>> SetSubscriptionAsync(NewsletterDTO dto, int userID, bool subscribe)
-        {
-
-            var res = _newsletterRepository.GetAllSubscribedCategories(userID);
-            if (!res.IsOk())
-                return new ServiceResult<bool>(false, res.Code, res.Message);
-
-            IQueryable<Newsletter> newsletters = res.Result;
-
-            bool isAlreadySubscribed = newsletters?.Any(n => n.CategoryID == dto.CategoryID.Value) ?? false;
-
-            if (!(isAlreadySubscribed ^ subscribe)) // if true & true or false & false then return ok because no action need to be performed
-                return new ServiceResult<bool>(true);
-
-           
-            if (subscribe == true)
-            {
-                var addRes = await _newsletterRepository.AddAsync(Mapper.Map(dto, userID));
-                if (!addRes.IsOk())
-                    return new ServiceResult<bool>(false, res.Code, res.Message);
-            }
-            else
-            { 
-                Newsletter toBeRemoved = newsletters.Where(n => n.CategoryID == dto.CategoryID.Value).FirstOrDefault();
-                var removeRes = await _newsletterRepository.RemoveAsync(toBeRemoved);
-                
-                if (!removeRes.IsOk())
-                    return new ServiceResult<bool>(false, res.Code, res.Message);
-
-            }
-
-            return new ServiceResult<bool>(true);
         }
     }
 }
