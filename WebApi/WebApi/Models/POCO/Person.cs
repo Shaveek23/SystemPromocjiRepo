@@ -19,7 +19,5 @@ namespace WebApi.Models.POCO
 
         public string City { get; set; }
 
-        public int UserID { get; set; }
-
     }
 }
