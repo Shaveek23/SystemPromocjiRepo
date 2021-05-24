@@ -340,6 +340,7 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.EditPostAsync(postId,body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
+
             var mockNewsletterService = new Mock<INewsletterService>();
             mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
             var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
