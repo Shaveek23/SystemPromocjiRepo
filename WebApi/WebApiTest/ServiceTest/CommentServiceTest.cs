@@ -25,10 +25,19 @@ namespace WebApiTest.ServiceTest
             new Comment() { CommentID = 3, UserID = 3, PostID = 3, DateTime =  new DateTime(2008, 3, 1, 7, 0, 0), Content = "test3" }
         };
 
-        User mockUser = new User { UserID = UserId, UserName = "Testowy User", UserEmail = "user@test.com",
-            Timestamp = DateTime.Now, Active = true, IsAdmin = false, IsEnterprenuer = false, IsVerified = true };
+        User mockUser = new User
+        {
+            UserID = UserId,
+            UserName = "Testowy User",
+            UserEmail = "user@test.com",
+            Timestamp = DateTime.Now,
+            Active = true,
+            IsAdmin = false,
+            IsEnterprenuer = false,
+            IsVerified = true
+        };
 
-        
+
 
 
         [Fact]
@@ -40,7 +49,7 @@ namespace WebApiTest.ServiceTest
             var expected = comments.Where(x => x.CommentID == expectedID).FirstOrDefault();
             List<CommentLike> likes = new List<CommentLike>();
             likes.Add(new CommentLike { CommentID = expected.CommentID, UserID = mockUser.UserID, CommentLikeID = 1 });
-            
+
             var mockICommentRepository = new Mock<ICommentRepository>();
             mockICommentRepository.Setup(x => x.GetById(expectedID)).Returns(new ServiceResult<Comment>(expected));
             mockICommentRepository.Setup(x => x.GetLikes(expectedID)).Returns(new ServiceResult<IQueryable<CommentLike>>(likes.AsQueryable<CommentLike>()));
@@ -155,7 +164,7 @@ namespace WebApiTest.ServiceTest
             int initLength = comments.Count();
             var expected = comments;
 
-            var newCommentDTO = new CommentDTONew() {  PostID = 1, Content = "testNowy" };
+            var newCommentDTO = new CommentDTONew() { PostID = 1, Content = "testNowy" };
             var newComment = new CommentDTOOutput() { id = 4, authorID = 1, postId = 1, date = new DateTime(2008, 3, 1, 7, 0, 0), content = "testNowy" };
             expected.Add(new Comment { CommentID = 4, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" });
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -178,7 +187,7 @@ namespace WebApiTest.ServiceTest
 
         public void AddComment_InValidCall()
         {
-            var newCommentDTO = new CommentDTONew() {  PostID = 1,  Content = "testNowy" };
+            var newCommentDTO = new CommentDTONew() { PostID = 1, Content = "testNowy" };
             var newComment = new Comment() { CommentID = 1, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -233,7 +242,7 @@ namespace WebApiTest.ServiceTest
 
         public void EditComment_ValidCall()
         {
-            var newCommentDTO = new CommentDTOEdit() {Content = "testNowy" };
+            var newCommentDTO = new CommentDTOEdit() { Content = "testNowy" };
             var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -250,10 +259,10 @@ namespace WebApiTest.ServiceTest
         }
 
         [Fact]
-        
+
         public void EditComment_InValidCall()
         {
-            var newCommentDTO = new CommentDTOEdit() {  Content = "testNowy" };
+            var newCommentDTO = new CommentDTOEdit() { Content = "testNowy" };
             var newComment = new Comment() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
@@ -267,7 +276,7 @@ namespace WebApiTest.ServiceTest
 
             Assert.NotNull(actual.Message);
         }
-     
+
         [Fact]
         #region TODO
         public void EditLikeOnComment_ValidCall()
