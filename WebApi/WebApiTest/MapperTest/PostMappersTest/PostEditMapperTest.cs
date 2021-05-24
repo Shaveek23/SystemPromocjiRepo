@@ -12,16 +12,19 @@ namespace WebApiTest.MapperTest.PostMappersTest
     {
         public static IEnumerable<object[]> PostDTOEditData()
         {
-            yield return new object[] { new PostPutDTO { title = "Titleeee1", content = "swietna oferta", categoryID = 3, isPromoted = true } };
-            yield return new object[] { new PostPutDTO { title = "Titleeee2", content = "Hi, I am new here....", categoryID = 1, isPromoted = false } };
-            yield return new object[] { new PostPutDTO { categoryID = 5, isPromoted = false } };
+
+            yield return new object[] { new PostPutDTO { title="Titleeee1", content="swietna oferta", categoryID =3,  isPromoted=true } };
+            yield return new object[] { new PostPutDTO { title = "Titleeee2", content = "Hi, I am new here....",categoryID = 1, isPromoted = false } };
+            yield return new object[] { new PostPutDTO {categoryID = 5, isPromoted =false } };
+
         }
 
 
         public static IEnumerable<object[]> PostDTOCreateData()
         {
-            yield return new object[] { new PostPostDTO { title = "Titleeee1", content = "swietna oferta", categoryID = 3 } };
-            yield return new object[] { new PostPostDTO { title = "Titleeee2", content = "Hi, I am new here....", categoryID = 1 } };
+
+            yield return new object[] { new PostPostDTO { title = "Titleeee1", content = "swietna oferta", categoryID = 3} };
+            yield return new object[] { new PostPostDTO { title = "Titleeee2", content = "Hi, I am new here....", categoryID = 1} };
             yield return new object[] { new PostPostDTO { categoryID = 5 } };
         }
 

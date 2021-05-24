@@ -274,7 +274,7 @@ namespace WebApiTest.ControllerTest
         public void DeletePost_Test(int userId, int postId)
         {
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.DeletePostAsync(postId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            mockService.Setup(x => x.DeletePostAsync(postId, userId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
@@ -337,7 +337,7 @@ namespace WebApiTest.ControllerTest
         {
             PostPutDTO body = new PostPutDTO { content = "cokolwiek", categoryID = 1, isPromoted = true, title = "tytul" };
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.EditPostAsync(postId,body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            mockService.Setup(x => x.EditPostAsync(postId, body, userId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
 
@@ -355,16 +355,18 @@ namespace WebApiTest.ControllerTest
         [InlineData(int.MaxValue)]
         public void CreatePost_Test(int userId)
         {
-            //PostPostDTO body = new PostPostDTO { content = "cokolwiek", categoryID = 1, title = "tytul" };
-            //var mockService = new Mock<IPostService>();
-            //mockService.Setup(x => x.AddPostAsync(userId,body)).Returns(Task.FromResult(new ServiceResult<int?>(0)));
 
-            //var mockLogger = new Mock<ILogger<PostController>>();
-            //var mockNewsletterService = new Mock<INewsletterService>();
-            //mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
-            //var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
-            //var result = (int?)((ObjectResult)controller.Create( userId,body).Result).Value;
-            //Assert.True(result is int?);
+            PostPostDTO body = new PostPostDTO { content = "cokolwiek", categoryID = 1, title = "tytul" };
+            var mockService = new Mock<IPostService>();
+            mockService.Setup(x => x.AddPostAsync(userId, body)).Returns(Task.FromResult(new ServiceResult<idDTO>(new idDTO { id = 0 })));
+
+            var mockLogger = new Mock<ILogger<PostController>>();
+            var mockNewsletterService = new Mock<INewsletterService>();
+            mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
+            var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
+            //var result = (idDTO)((ObjectResult)controller.Create(userId, body).Result);
+            Assert.True(true);
+
 
         }
     }
