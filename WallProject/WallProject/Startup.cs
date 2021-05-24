@@ -28,7 +28,7 @@ namespace WallProject
         {
             //Dependency MOJE
             services.AddHttpClient("webapi",c =>
-                { c.BaseAddress = new Uri("https://salesystemapi.azurewebsites.net/"); });
+                { c.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/"); });
             services.AddControllersWithViews();
             services.AddScoped<IWallService, WallService>();
             services.AddScoped<ICommentService, CommentService>();
