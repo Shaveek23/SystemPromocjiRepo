@@ -187,7 +187,7 @@ namespace WebApiTest
 
 
                 var cls = new Repository<Person>(dbContext);
-                _ = await cls.UpdateAsync(expected, 1);
+                _ = await cls.UpdateAsync(expected);
                 var actual = dbContext.Persons.Where(x => x.PersonID == expected.PersonID).FirstOrDefault();
 
                 Assert.True(dbContext.Persons.ToList().Count == 1);
@@ -216,7 +216,7 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 var cls = new Repository<Person>(dbContext);
-                _ = cls.UpdateAsync(null, 1);
+                _ = cls.UpdateAsync(null);
                 var actual = dbContext.Persons.Where(x => x.PersonID == first.PersonID).FirstOrDefault();
 
                 Assert.True(dbContext.Persons.ToList().Count == 1);

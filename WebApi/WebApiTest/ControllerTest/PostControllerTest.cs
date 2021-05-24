@@ -274,7 +274,7 @@ namespace WebApiTest.ControllerTest
         public void DeletePost_Test(int userId, int postId)
         {
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.DeletePostAsync(postId, userId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            mockService.Setup(x => x.DeletePostAsync(postId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
@@ -337,7 +337,7 @@ namespace WebApiTest.ControllerTest
         {
             PostPutDTO body = new PostPutDTO { content = "cokolwiek", categoryID = 1, isPromoted = true, title = "tytul" };
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.EditPostAsync(postId, body, userId)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
+            mockService.Setup(x => x.EditPostAsync(postId, body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
 
