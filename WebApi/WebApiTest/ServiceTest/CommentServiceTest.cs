@@ -237,7 +237,7 @@ namespace WebApiTest.ServiceTest
             var newComment = new Comment() { CommentID = 2, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>(), It.IsAny<int>())).Returns(Task.Run(() => new ServiceResult<Comment>(newComment)));
+            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(newComment)));
             mockICommentRepository.Setup(x => x.GetById(newComment.CommentID)).Returns(new ServiceResult<Comment>(newComment));
 
             var mockIUserRepository = new Mock<IUserRepository>();
@@ -257,7 +257,7 @@ namespace WebApiTest.ServiceTest
             var newComment = new Comment() { CommentID = 200, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = "testNowy" };
 
             var mockICommentRepository = new Mock<ICommentRepository>();
-            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>(), It.IsAny<int>())).Returns(Task.Run(() => new ServiceResult<Comment>(null, System.Net.HttpStatusCode.BadRequest, "Bad request")));
+            mockICommentRepository.Setup(x => x.UpdateAsync(It.IsAny<Comment>())).Returns(Task.Run(() => new ServiceResult<Comment>(null, System.Net.HttpStatusCode.BadRequest, "Bad request")));
             mockICommentRepository.Setup(x => x.GetById(newComment.CommentID)).Returns(new ServiceResult<Comment>(newComment));
 
             var mockIUserRepository = new Mock<IUserRepository>();
