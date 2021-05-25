@@ -20,7 +20,7 @@ namespace WebApi.Services.Services_Implementations
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserRepository _userRepository;
         private readonly INewsletterRepository _newsletterRepository;
-        
+
         public NewsletterService(ISendingMonitorService sendingMonitorService, ICategoryRepository categoryRepository, IUserRepository userRepository, INewsletterRepository newsletterRepository)
         {
             _sendingMonitorService = sendingMonitorService;
@@ -101,7 +101,7 @@ namespace WebApi.Services.Services_Implementations
             if (!(isAlreadySubscribed ^ subscribe)) // if true & true or false & false then return ok because no action need to be performed
                 return new ServiceResult<bool>(true);
 
-           
+
             if (subscribe == true)
             {
                 var addRes = await _newsletterRepository.AddAsync(Mapper.Map(dto, userID));
@@ -109,10 +109,10 @@ namespace WebApi.Services.Services_Implementations
                     return new ServiceResult<bool>(false, res.Code, res.Message);
             }
             else
-            { 
+            {
                 Newsletter toBeRemoved = newsletters.Where(n => n.CategoryID == dto.CategoryID.Value).FirstOrDefault();
                 var removeRes = await _newsletterRepository.RemoveAsync(toBeRemoved);
-                
+
                 if (!removeRes.IsOk())
                     return new ServiceResult<bool>(false, res.Code, res.Message);
 

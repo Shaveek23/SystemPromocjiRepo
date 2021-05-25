@@ -173,14 +173,14 @@ namespace WebApiTest
             using (var dbContext = new DatabaseContext(options))
             {
                 var input = new Person { PersonID = 1, FirstName = "Ida", LastName = "Mazur", Address = "Kwiatowa 6", City = "Warszawa"};
+
                 dbContext.Add(input);
                 dbContext.SaveChanges();
             }
 
             using (var dbContext = new DatabaseContext(options))
             {
-                
-                var expected = new Person { PersonID = 1, FirstName = "Ola", LastName = "Nowak", Address = "Kwiatowa 6", City = "Warszawa" };
+                var expected = new Person { PersonID = 1, FirstName = "Ola", LastName = "Nowak", Address = "Kwiatowa 6", City = "Warszawa"};
 
                 var cls = new Repository<Person>(dbContext);
                 _ = await cls.UpdateAsync(expected);
@@ -200,9 +200,10 @@ namespace WebApiTest
             var options = new DbContextOptionsBuilder<DatabaseContext>()
                 .UseInMemoryDatabase(databaseName: "UpdateAsync_InvalidCall_Null").Options;
             var first = new Person { PersonID = 1, FirstName = "Ida", LastName = "Mazur", Address = "Kwiatowa 6", City = "Warszawa"};
+
             using (var dbContext = new DatabaseContext(options))
             {
-                
+
                 dbContext.Add(first);
                 dbContext.SaveChanges();
             }

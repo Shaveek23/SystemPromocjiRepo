@@ -18,7 +18,7 @@ namespace WebApi.Services.Serives_Implementations
         private readonly IUserRepository _userRepository;
         private readonly ICommentService _commentService;
         private readonly ICategoryService _categoryService;
-     
+
 
 
         public PostService(IPostRepository postRepository, IUserRepository userRepository, ICommentService commentService, ICategoryService categoryService)
@@ -151,7 +151,7 @@ namespace WebApi.Services.Serives_Implementations
             var result = _postRepository.GetLikes(postID);
             return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
-        
+
         public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)
         {
             var result = await _postRepository.UpdateLikeStatusAsync(userID, postID, like.like);

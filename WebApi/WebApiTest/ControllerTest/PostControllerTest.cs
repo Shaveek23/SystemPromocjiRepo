@@ -340,6 +340,7 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.EditPostAsync(postId, body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
+
             var mockNewsletterService = new Mock<INewsletterService>();
             mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
             var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
@@ -354,6 +355,7 @@ namespace WebApiTest.ControllerTest
         [InlineData(int.MaxValue)]
         public void CreatePost_Test(int userId)
         {
+
             PostPostDTO body = new PostPostDTO { content = "cokolwiek", categoryID = 1, title = "tytul" };
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.AddPostAsync(userId, body)).Returns(Task.FromResult(new ServiceResult<idDTO>(new idDTO { id = 0 })));
@@ -364,6 +366,7 @@ namespace WebApiTest.ControllerTest
             var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             //var result = (idDTO)((ObjectResult)controller.Create(userId, body).Result);
             Assert.True(true);
+
 
         }
     }

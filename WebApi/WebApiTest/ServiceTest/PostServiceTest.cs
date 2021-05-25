@@ -103,13 +103,13 @@ namespace WebApiTest.ServiceTest
 
             var mockIUserRepository = new Mock<IUserRepository>();
             mockIUserRepository.Setup(x => x.GetById(It.IsAny<int>()))
-                .Returns(new ServiceResult<User>(new User() { UserID=userID}));
+                .Returns(new ServiceResult<User>(new User() { UserID = userID }));
 
             var mockICommentService = new Mock<ICommentService>();
             mockICommentService.Setup(x => x.GetAll(userID)).Returns(new ServiceResult<IQueryable<CommentDTOOutput>>(comments.AsQueryable()));
 
             var mockICategoryService = new Mock<ICategoryService>();
-            mockICategoryService.Setup(x => x.GetById(CategoryId)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO{ ID=CategoryId, Name=expectedReturnedCategory }));
+            mockICategoryService.Setup(x => x.GetById(CategoryId)).Returns(new ServiceResult<CategoryDTO>(new CategoryDTO { ID = CategoryId, Name = expectedReturnedCategory }));
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRepository.Object, mockICommentService.Object, mockICategoryService.Object);
             var actual = postService.GetById(expectedId, 1).Result;

@@ -71,7 +71,7 @@ namespace WebApi.Controllers
 
 
         [HttpPost("post")]
-        public async Task<ActionResult<idDTO>> Create( [Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<ActionResult<idDTO>> Create([Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = await _postService.AddPostAsync(userID, post);
             _newsletterService.SendNewsletterNotifications(result.IsOk(), post.title, post.categoryID.Value);
