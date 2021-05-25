@@ -55,17 +55,17 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<IQueryable<CommentDTOOutput>> GetAll(int userId)
         {
             var result = _commentRepository.GetAll();
-            if(result.Result == null)
+            if (result.Result == null)
             {
                 return new ServiceResult<IQueryable<CommentDTOOutput>>(null, result.Code, result.Message);
             }
 
 
             List<CommentDTOOutput> outputDTOlist = new List<CommentDTOOutput>();
-            foreach(var comment in result.Result.ToList())
+            foreach (var comment in result.Result.ToList())
             {
                 var author = _userRepository.GetById(comment.UserID);
-      
+
                 var commentLikes = GetLikedUsers(comment.CommentID);
 
 
@@ -73,9 +73,9 @@ namespace WebApi.Services.Serives_Implementations
 
                 outputDTO.authorName = author.Result?.UserName ?? "";
                 outputDTO.ownerMode = userId == (author.Result?.UserID ?? -1);
-                
+
                 outputDTO.likesCount = commentLikes.Result?.Count() ?? 0;
-                outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x.id == userId) ?? false; 
+                outputDTO.isLikedByUser = commentLikes.Result?.Any(x => x.id == userId) ?? false;
 
                 outputDTOlist.Add(outputDTO);
             }
@@ -110,7 +110,7 @@ namespace WebApi.Services.Serives_Implementations
         public ServiceResult<IQueryable<LikerDTO>> GetLikedUsers(int commentId)
         {
             var result = _commentRepository.GetLikes(commentId);
-            
+
             return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
 

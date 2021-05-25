@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+  
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -24,7 +26,7 @@ using System.Linq.Expressions;
 using WebApi.Models.DTO.PostDTOs;
 using WebApi.Services.Services_Implementations;
 
-namespace WebApiTest.ControllerTest
+namespace WebApiTest
 {
     public class PostControllerTest
     {
@@ -39,8 +41,8 @@ namespace WebApiTest.ControllerTest
         [InlineData(0, "Konrad Gaweda", 1, "kategoria1", "MyTitle", "Content", 41, false, false)]
         [InlineData(1, "Jan Kowalski", 11, "kategoria2", "MyTitle1", "Conte nt1 ", 11, false, true)]
         [InlineData(4, "Jan Gawęda", 1, "kategoria4", "MyTitle2", " Co ntent2 ", 33, true, false)]
-        [InlineData(7, "Konrad Kowalski", 32, "kategoria6",  "MyTitle3", "Conten t3", 441, true, true)]
-        public void GetAll_Test(int in_id, string in_author, int in_authorID, string in_category, 
+        [InlineData(7, "Konrad Kowalski", 32, "kategoria6", "MyTitle3", "Conten t3", 441, true, true)]
+        public void GetAll_Test(int in_id, string in_author, int in_authorID, string in_category,
             string in_title, string in_content, int in_likesCount, bool in_isLiked, bool in_isPromoted)
         {
             List<PostGetDTO> posts = new List<PostGetDTO>();
@@ -64,12 +66,12 @@ namespace WebApiTest.ControllerTest
                 authorName = in_author + " Second",
                 authorID = in_authorID + 1,
                 category = in_category + "32",
-                title = in_title+ " One",
+                title = in_title + " One",
                 content = in_content + " Three",
                 likesCount = in_likesCount + 14,
                 datetime = datetime2,
                 isLikedByUser = in_isLiked = !in_isLiked,
-                isPromoted = in_isPromoted = ! in_isPromoted
+                isPromoted = in_isPromoted = !in_isPromoted
             });
 
             //Arrange
@@ -143,7 +145,7 @@ namespace WebApiTest.ControllerTest
 
             //Arrange
             var mockService = new Mock<IPostService>();
-            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(new ServiceResult<IQueryable<PostGetDTO>>(posts.Where(p=>p.authorID == in_authorID).AsQueryable()));
+            mockService.Setup(x => x.GetAllOfUser(in_authorID)).Returns(new ServiceResult<IQueryable<PostGetDTO>>(posts.Where(p => p.authorID == in_authorID).AsQueryable()));
             var mockLogger = new Mock<ILogger<PostController>>();
             var mockNewsletterService = new Mock<INewsletterService>();
             mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
@@ -151,8 +153,8 @@ namespace WebApiTest.ControllerTest
 
             var expected = new List<PostGetDTO> { posts[0], posts[2] };
             //Act
-            var actual=((IQueryable<PostGetDTO>)((ObjectResult)controller.GetUserPosts(in_authorID).Result).Value).ToList();
-           
+            var actual = ((IQueryable<PostGetDTO>)((ObjectResult)controller.GetUserPosts(in_authorID).Result).Value).ToList();
+
 
             //Asset
             Assert.True(expected.All(shouldItem => actual.Any(isItem => isItem == shouldItem)));
@@ -267,10 +269,10 @@ namespace WebApiTest.ControllerTest
 
         }
         [Theory]
-        [InlineData(1,1)]
-        [InlineData(3,2)]
-        [InlineData(5,0)]
-        [InlineData(int.MaxValue,1)]
+        [InlineData(1, 1)]
+        [InlineData(3, 2)]
+        [InlineData(5, 0)]
+        [InlineData(int.MaxValue, 1)]
         public void DeletePost_Test(int userId, int postId)
         {
             var mockService = new Mock<IPostService>();
@@ -340,11 +342,10 @@ namespace WebApiTest.ControllerTest
             mockService.Setup(x => x.EditPostAsync(postId, body)).Returns(Task.FromResult(new ServiceResult<bool>(true)));
 
             var mockLogger = new Mock<ILogger<PostController>>();
-
             var mockNewsletterService = new Mock<INewsletterService>();
             mockNewsletterService.Setup(x => x.SendNewsletterNotifications(It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()));
             var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
-            var result = (bool)((ObjectResult)controller.Edit(userId, postId,body).Result).Value;
+            var result = (bool)((ObjectResult)controller.Edit(userId, postId, body).Result).Value;
             Assert.True(result);
 
         }
@@ -355,7 +356,6 @@ namespace WebApiTest.ControllerTest
         [InlineData(int.MaxValue)]
         public void CreatePost_Test(int userId)
         {
-
             PostPostDTO body = new PostPostDTO { content = "cokolwiek", categoryID = 1, title = "tytul" };
             var mockService = new Mock<IPostService>();
             mockService.Setup(x => x.AddPostAsync(userId, body)).Returns(Task.FromResult(new ServiceResult<idDTO>(new idDTO { id = 0 })));
@@ -366,7 +366,6 @@ namespace WebApiTest.ControllerTest
             var controller = new PostController(mockLogger.Object, mockService.Object, mockNewsletterService.Object);
             //var result = (idDTO)((ObjectResult)controller.Create(userId, body).Result);
             Assert.True(true);
-
 
         }
     }

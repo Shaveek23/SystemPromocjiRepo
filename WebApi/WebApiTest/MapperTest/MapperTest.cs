@@ -9,6 +9,7 @@ using Microsoft.VisualStudio;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Identity;
+using WebApi.Controllers;
 
 namespace WebApiTest.MapperTest
 {
@@ -56,6 +57,20 @@ namespace WebApiTest.MapperTest
             yield return new object[] { new Person { PersonID = 3, Address = "Skaryszewska 12" } };
             yield return new object[] { new Person { PersonID = 4, Address = "Koszykowa   343", City = "Kraków", FirstName = "Daniel", LastName = "Cis " } };
         }
+        public static IEnumerable<object[]> NewsletterPOCOData()
+        {
+            yield return new object[]
+           {
+                new List<Newsletter>
+                {
+                 new Newsletter { CategoryID = 1, NewsletterID = 1, UserID = 1 } ,
+                 new Newsletter { CategoryID = 2, NewsletterID = 2, UserID = 2 } ,
+                 new Newsletter { CategoryID = 3, NewsletterID = 3, UserID = 3 }
+                }
+           };
+        }
+
+
 
 
         [Theory]
@@ -120,8 +135,8 @@ namespace WebApiTest.MapperTest
             isItem.LastName == result.LastName)));
         }
 
-      
-       
+
+
 
         public static IEnumerable<object[]> CategoryDTOData()
         {
@@ -296,7 +311,7 @@ namespace WebApiTest.MapperTest
 
 
 
-      
+
         [Theory]
         [MemberData(nameof(CommentPOCOData))]
         public void CommentPOCOToDTOOutputMapping(Comment input)
@@ -336,7 +351,7 @@ namespace WebApiTest.MapperTest
 
         }
 
-      
+
 
         [Theory]
         [MemberData(nameof(CommentPOCODataList))]
@@ -356,7 +371,7 @@ namespace WebApiTest.MapperTest
             )));
         }
 
-   
+
 
         public static IEnumerable<object[]> CommentLikePOCODataList()
         {
@@ -525,6 +540,23 @@ namespace WebApiTest.MapperTest
             PostLike commentLike = new PostLike { PostID = id1, PostLikeID = id2, UserID = id3 };
             PostLikeDTO commentLikeDTO = Mapper.Map(commentLike);
             Assert.True(commentLikeDTO.PostID == commentLike.PostID && commentLikeDTO.PostLikeID == commentLike.PostLikeID && commentLikeDTO.UserID == commentLike.UserID);
+        }
+        [Theory]
+        [MemberData(nameof(NewsletterPOCOData))]
+        public void MapNewslettersToUserIdsMapping(List<Newsletter> newsletters)
+        {
+            var result = Mapper.MapNewslettersToUserIds(newsletters.AsQueryable());
+
+
+
+            Assert.True(result.All(result => newsletters.Any(isItem =>
+
+                isItem.NewsletterID == result.id
+
+
+            )));
+
+
         }
 
 

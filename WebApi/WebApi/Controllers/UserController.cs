@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("users/{UserID}")]
-        public ActionResult<UserGetDTO> Get([Required][FromRoute] int  UserID)
+        public ActionResult<UserGetDTO> Get([Required][FromRoute] int UserID)
         {
             var result = _userService.GetById(UserID);
             return new ControllerResult<UserGetDTO>(result).GetResponse();
@@ -50,12 +50,12 @@ namespace WebApi.Controllers
         public async Task<ActionResult<int>> AddUser([Required][FromHeader] int UserID, [FromBody] UserPostDTO user)
         {
 
-            var result = await _userService.AddUserAsync(UserID,user);
+            var result = await _userService.AddUserAsync(UserID, user);
             return new ControllerResult<idDTO>(result).GetResponse();
         }
 
         [HttpPut("users/{UserToBeEdited}")]
-        public async  Task<ActionResult<bool>> EditUser([Required][FromHeader] int UserID, [FromBody] UserPutDTO userDTO, [FromRoute] int UserToBeEdited)
+        public async Task<ActionResult<bool>> EditUser([Required][FromHeader] int UserID, [FromBody] UserPutDTO userDTO, [FromRoute] int UserToBeEdited)
         {
             var result = await _userService.EditUserAsync(UserID, userDTO, UserToBeEdited);
             return new ControllerResult<bool>(result).GetResponse();
@@ -75,6 +75,6 @@ namespace WebApi.Controllers
             var result = _newsletterService.GetSubscribedCategories(id);
             return new ControllerResult<IQueryable<idDTO>>(result).GetResponse();
         }
-       
+
     }
 }
