@@ -38,7 +38,7 @@
 
             //postText = $("#NewPost").value;
             $.ajax({
-            url: '@Url.Action("AddNewPost", "Home")',
+            url: '@Url.Action("AddNewPost", "Post")',
                 data: { "postText": postText, "userId": userId, "categoryId": categoryId, "title": title },
 
             type: 'POST',
