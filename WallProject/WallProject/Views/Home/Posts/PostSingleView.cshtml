@@ -1,0 +1,231 @@
+﻿@model WallProject.Models.PostEditViewModel
+
+
+<div id="post_@Model.Post.Id">
+
+    <div class="post_title" style="font-size:160%;font-family:Lucida Console;text-align:center;">
+        <input style="border:none;text-align:center;"
+               disabled="false"
+               type="text"
+               onkeypress="this.style.width = ((this.value.length + 2) * 15) + 'px';"
+               id="PostTitleInput_@Model.Post.Id.ToString()"
+               value="@Model.Post.Title" />
+    </div>
+
+
+
+
+    <div style="text-align:right; color:@(Model.Post.IsPromoted ? "orangered" : "grey")">@(Model.Post.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
+    <div class="fb-user-thumb">
+        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
+    </div>
+
+    <!--Category-->
+    <div class="fb-user-details">
+        <h3><a href="#" class="#">@Model.Post.OwnerName </a></h3>
+        <div style="color:grey"> Dodano: @Model.Post.Datetime </div>
+        <div id="PostCategoryDisplayed_@Model.Post.Id" class="post_category" style="text-align:right; color:chocolate">@Model.Post.Category </div>
+
+        <div id="PostCategoryMenu_@Model.Post.Id" hidden="true" class="post_category" style="text-align:right; color:chocolate">
+            <select name="CategorySelection" id="PostCategoryMenuSelection_@Model.Post.Id">
+                @foreach (var category in Model.AviableCategories)
+                {
+                    <option value="@category.CategoryID">@category.CategoryName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+
+    <!-- Content -->
+    <p class="fb-user-status">
+        <input style="border:none;background-color:white"
+               disabled="false"
+               type="text"
+               style="color:black"
+               id="PostContentInput_@Model.Post.Id.ToString()"
+               value="@Model.Post.Content" />
+    </p>
+
+    <!-- Liki itp -->
+    <div class="fb-status-container fb-border">
+        <div class="fb-time-action">
+            <a id="Like_post_@Model.Post.Id" href="#" onclick="LikePost( @Model.Post.CurrentUser.UserID, @Model.Post.Id, @(Model.Post.IsLikedByUser ? "false" : "true")  )" style="color:@(Model.Post.IsLikedByUser ? "midnightblue" : "blue")">
+                @(Model.Post.IsLikedByUser ? "You like it!. Click to unlike." : "Like it!" )
+            </a>
+
+            @if (@Model.Post.Owner.UserID == Model.Post.CurrentUser.UserID)
+            {
+                <p style="float:inline-end;">
+                    <a id="PostEditButton_@Model.Post.Id.ToString()" href="#" class="btn-block" onclick="PostEditClick(@Model.Post.Id)">
+                        <button type="button" class="btn btn-outline-warning"> Edit </button>
+                    </a>
+                    <a id="PostSaveButton_@Model.Post.Id.ToString()" href="#" class="btn-block" onclick="PostSaveClick(@Model.Post.CurrentUser.UserID, @Model.Post.Id, @(Model.Post.IsPromoted? 1 : 0))" hidden=true>
+                        <button type="button" class="btn btn-outline-primary"> Save </button>
+                    </a>
+                    <a id="PostDeleteButton_@Model.Post.Id.ToString()" href="#" class="btn-block" hidden=true >
+                        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal"> Delete </button>
+                    </a>
+                </p>
+            }
+
+
+        </div>
+        <div class="fb-time-action like-info" style="text-align:right">
+            <a href="#">@Model.Post.Likes people like it.</a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel">
+        <div class="fb-status-container  fb-gray-bg">
+            <div><h3>Comments:</h3></div>
+            <ul class="fb-comments">
+                @foreach (var comment in Model.Post.Comments)
+                {
+                    <!-- Wyswietl komentarz -->
+                    @await Html.PartialAsync("Comments/CommentView", comment)
+                }
+                <!-- Dodaj komentarz -->
+                @await Html.PartialAsync("Comments/AddCommentView", Model.Post)
+            </ul>
+
+            <div class="clearfix"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you want to delete this post?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick="PostDeleteClick(@Model.Post.CurrentUser.UserID, @Model.Post.Id)"> 
+                    @Html.ActionLink("Yes, delete", "UserWall", "Home", new { userID = Model.Post.CurrentUser.UserID }, new { @style = "color:white;" })  
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //PURE JS
+
+    async function PostEditClick(postID) {
+
+        //Handle Edit/Save/Delete buttons
+        document.getElementById("PostSaveButton_" + postID.toString()).hidden = !document.getElementById("PostSaveButton_" + postID.toString()).hidden;
+        document.getElementById("PostEditButton_" + postID.toString()).hidden = !document.getElementById("PostEditButton_" + postID.toString()).hidden;
+        document.getElementById("PostDeleteButton_" + postID.toString()).hidden = !document.getElementById("PostDeleteButton_" + postID.toString()).hidden;
+
+        //Enable post fields
+        document.getElementById("PostTitleInput_" + postID.toString()).disabled = !document.getElementById("PostTitleInput_" + postID.toString()).disabled;
+        document.getElementById("PostContentInput_" + postID.toString()).disabled = !document.getElementById("PostContentInput_" + postID.toString()).disabled;
+        document.getElementById("PostCategoryMenu_" + postID.toString()).hidden = !document.getElementById("PostCategoryMenu_" + postID.toString()).hidden;
+        document.getElementById("PostCategoryDisplayed_" + postID.toString()).hidden = !document.getElementById("PostCategoryDisplayed_" + postID.toString()).hidden;
+
+    }
+
+    async function PostSaveClick(userID, postID, isPromoted) {
+        //Handle Edit/Save/Delete buttons
+        document.getElementById("PostSaveButton_" + postID.toString()).hidden = !document.getElementById("PostSaveButton_" + postID.toString()).hidden;
+        document.getElementById("PostEditButton_" + postID.toString()).hidden = !document.getElementById("PostEditButton_" + postID.toString()).hidden;
+        document.getElementById("PostDeleteButton_" + postID.toString()).hidden = !document.getElementById("PostDeleteButton_" + postID.toString()).hidden;
+
+
+        //Disable post fields
+        document.getElementById("PostTitleInput_" + postID.toString()).disabled = !document.getElementById("PostTitleInput_" + postID.toString()).disabled;
+        document.getElementById("PostContentInput_" + postID.toString()).disabled = !document.getElementById("PostContentInput_" + postID.toString()).disabled;
+        document.getElementById("PostCategoryMenu_" + postID.toString()).hidden = !document.getElementById("PostCategoryMenu_" + postID.toString()).hidden;
+        document.getElementById("PostCategoryDisplayed_" + postID.toString()).hidden = !document.getElementById("PostCategoryDisplayed_" + postID.toString()).hidden;
+
+        //Send Request
+        var title = document.getElementById("PostTitleInput_" + postID.toString()).value.toString();
+        var content = document.getElementById("PostContentInput_" + postID.toString()).value.toString();
+        var categoryId = document.getElementById("PostCategoryMenuSelection_" + postID.toString()).value;
+        EditPost(userID, postID, title, content, categoryId, isPromoted);
+    }
+
+    async function PostDeleteClick(userID, postID) {
+        //Handle Edit/Save
+        document.getElementById("PostSaveButton_" + postID.toString()).hidden = !document.getElementById("PostSaveButton_" + postID.toString()).hidden;
+        document.getElementById("PostEditButton_" + postID.toString()).hidden = !document.getElementById("PostEditButton_" + postID.toString()).hidden;
+        document.getElementById("PostDeleteButton_" + postID.toString()).hidden = !document.getElementById("PostDeleteButton_" + postID.toString()).hidden;
+        //Disable post fields
+
+        DeletePost(userID, postID);
+    }
+
+    //AJAX
+    async function LikePost(userId, postId, like) {
+
+        $.ajax({
+            url: '@Url.Action("EditPostLikeStatus", "Post")',
+            data: { "postID": postId, "userID": userId, "like": like },
+
+
+        type: 'POST',
+        dateType: "json",
+        cache:false,
+            success: function (data) {
+
+        },
+        error: function (data) {
+            console.log("ERROR " + data)
+            }
+        });
+        location.reload(true);
+    }
+
+    async function EditPost(userId, postId, title, content, categoryID, isPromoted) {
+
+        $.ajax({
+            url: '@Url.Action("EditPost", "Post")',
+            data: { "userID": userId, "postID": postId, "title": title, "content": content, "categoryID": categoryID, "isPromoted": isPromoted },
+
+
+            type: 'PUT',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+        location.reload(true);
+    }
+
+
+    async function DeletePost(userId, postId) {
+
+        $.ajax({
+            url: '@Url.Action("DeletePost", "Post")',
+            data: { "userID": userId, "postID": postId},
+
+        type: 'DELETE',
+        dateType: "json",
+        cache:false,
+            success: function (data) {
+        },
+        error: function (data) {
+            console.log("ERROR " + data)
+            }
+        });
+    }
+
+
+</script>

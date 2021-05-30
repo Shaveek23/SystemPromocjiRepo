@@ -20,7 +20,7 @@
             var commentText =await  document.getElementById(s).value;
 
             $.ajax({
-            url: '@Url.Action("AddNewComment", "Home")',
+            url: '@Url.Action("AddNewComment", "Comment")',
             data: { "commentText": commentText, "postId": postId, "UserId": userId},
             type: 'POST',
             dateType: "json",

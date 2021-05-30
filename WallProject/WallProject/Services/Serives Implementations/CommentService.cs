@@ -109,6 +109,41 @@ namespace WallProject.Services.Serives_Implementations
             }
         }
 
+
+
+
+        async public Task<ServiceResult<List<CommentViewModel>>> getByUserId(int userID)
+        {
+            var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
+            var result = await client.GetAsync($"comments/{userID}");
+            var jsonString = await result.Content.ReadAsStringAsync();
+
+            if (result.IsSuccessStatusCode)
+            {
+                List<CommentViewModel> commentVMs = new List<CommentViewModel>();
+                List<CommentGetDTO> commentDTOs = JsonConvert.DeserializeObject<List<CommentGetDTO>>(jsonString);
+
+                var user = await _userService.getById(userID);
+
+                foreach (var commentDTO in commentDTOs)
+                {
+                    var commentVM = Mapper.Map(commentDTO);
+                    commentVM.Owner = user.Result;
+                    commentVM.CurrentUser = user.Result;
+                    commentVMs.Add(commentVM);
+                }
+                return new ServiceResult<List<CommentViewModel>>(commentVMs);
+            }
+            else
+            {
+                return ServiceResult<List<CommentViewModel>>.GetMessage(jsonString, result.StatusCode);
+            }
+        }
+
+
+
+
         //TO DO: teoretycznie powinno to zwracać listę ID uzytkowinków którzy polajkwoali
         // ale narazie zwraca jakby Count tej listy, ale skoro nie zwracamy tego z WallApi
         // to zwracam  tutaj random 
@@ -158,6 +193,26 @@ namespace WallProject.Services.Serives_Implementations
             var jsonComment = JsonConvert.SerializeObject(postDTO);
             //przygotowanie HttpRequest
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}/likedUsers");
+            HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            requestMessage.Headers.Add("userId", userID.ToString());
+            requestMessage.Content = httpContent;
+
+            //Wysyłanie Request
+            var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
+            var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
+        }
+
+
+        async public Task<ServiceResult<bool>> Edit(int userID, int commentID, string content)
+        {     
+            CommentPutDTO commentDTO = new CommentPutDTO { Content = content };
+
+            //serializacja do JSONa
+            var jsonComment = JsonConvert.SerializeObject(commentDTO);
+            //przygotowanie HttpRequest
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"comment/{commentID}");
             HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
             requestMessage.Headers.Add("userId", userID.ToString());
             requestMessage.Content = httpContent;

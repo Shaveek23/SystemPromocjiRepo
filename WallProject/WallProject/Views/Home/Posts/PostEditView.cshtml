@@ -1,15 +1,10 @@
 ﻿@model WallProject.Models.PostViewModel
 
-
 <div id="post_@Model.Id">
+    <!-- OBSZAR POJEDYNCZEGO POSTA -->
+    <div class="post_title" style="font-size:160%;font-family:Lucida Console;text-align:center"> @Model.Title</div>
 
-    <div class="post_title" style="font-size:160%;font-family:Lucida Console;text-align:center;"> 
-        @Html.ActionLink(Model.Title, "showPost", "Home",
-        new { postID = Model.Id, userID = Model.CurrentUser.UserID },
-        new { @style = "color:black;" })
-    </div>
-
-
+    <!-- Info -->
     <div style="text-align:right; color:@(Model.IsPromoted ? "orangered" : "grey")">@(Model.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
     <div class="fb-user-thumb">
         <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">

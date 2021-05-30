@@ -59,42 +59,37 @@ namespace WallProject.Controllers
                 return View("Privacy", wall.Message);
         }
 
-        public async Task<IActionResult> AddNewPost(string postText, int userId, int categoryId, string title)
+        [Route("userPosts/{userID}")]
+        public async Task<IActionResult> UserPosts([FromRoute] int userID)
         {
-            var result = await _postService.AddNewPost(postText, userId,categoryId,title);
-            if (result.Result)
-                return View();
+            ServiceResult<WallViewModel> wall = await _service.getUserPosts(userID);
+            if (wall.IsOk())
+                return View(wall.Result);
             else
-                return View(new ErrorViewModel());
+                return View("Privacy", wall.Message);
+        }
+
+        [Route("userComments/{userID}")]
+        public async Task<IActionResult> UserComments([FromRoute] int userID)
+        {
+            ServiceResult<CommentListViewModel> wall = await _service.getUserComments(userID);
+            if (wall.IsOk())
+                return View(wall.Result);
+            else
+                return View("Privacy", wall.Message);
+        }
+
+        [Route("showPost/{postID}")]
+        public async Task<IActionResult> ShowPost([FromRoute] int postID, int userID)
+        {
+            ServiceResult<PostEditViewModel> postVM = await _service.getPostToEdit(userID, postID);
+            if (postVM.IsOk())
+                return View(postVM.Result);
+            else
+                return View("Privacy", postVM.Message);
         }
 
 
-        public async Task<IActionResult> AddNewComment(string commentText, int postId, int userId)
-        {
-            var result = await _commentService.AddNewComment(commentText, postId, userId);
-            if (result.Result)
-                return View();
-            else
-                return View(new ErrorViewModel());
-        }
-
-        public async Task<IActionResult> EditPostLikeStatus(int postID, int userID, bool like)
-        {
-            var result = await _postService.EditLikeStatus(postID, userID, like);
-            if (result.Result)
-                return View();
-            else
-                return View(new ErrorViewModel());
-        }
-
-        public async Task<IActionResult> EditCommentLikeStatus(int commentID, int userID, bool like)
-        {
-            var result = await _commentService.EditLikeStatus(commentID, userID, like);
-            if (result.Result)
-                return View();
-            else
-                return View(new ErrorViewModel());
-        }
         public async Task<IActionResult> ChangeCategoryFilterStatus(int categoryID)
         {
             _service.ChangeCategoryFilterStatus(categoryID);
