@@ -68,7 +68,7 @@ namespace WebApi.Services.Serives_Implementations
             }
 
             var postLikes = GetLikes(postID);
-            var user = _userRepository.GetById(userID);
+            var user = _userRepository.GetById(result.Result.UserID);
 
             var postDTO = PostMapper.Map(result.Result);
 
