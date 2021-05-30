@@ -2,6 +2,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using Xunit;
@@ -10,13 +11,36 @@ namespace UIAutomatedTests
 {
     public class AutomatedUITests : IDisposable
     {
+        private readonly string projectName = "WallProject";
+
+        private static readonly string localHostUrl = "https://localhost:44399/getWall/1";
+        private static readonly string deployedWallAppUrl = "https://wallproject.azurewebsites.net/getWall/1";
+
+        private readonly string targetURL = $"{deployedWallAppUrl}";
+
+        private readonly string APIurl = "https://systempromocji.azurewebsites.net/";
+        private string getDriverPath()
+        {
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
+        }
+
+        private string getApplicationPath()
+        {
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")) + projectName;
+        }
+
         private readonly IWebDriver _driver;
         public AutomatedUITests()
         {
-            _driver = new ChromeDriver("driver");
+            var driverPath = getDriverPath();
+
+
+            _driver = new ChromeDriver(driverPath + "driver");
+            
         }
         public void Dispose()
         {
+            
             _driver.Quit();
             _driver.Dispose();
         }
@@ -36,7 +60,7 @@ namespace UIAutomatedTests
             string postRandomContent = "Nowy post utworzony przez selenium: " + RandomString(20);
 
             _driver.Navigate()
-                .GoToUrl("https://localhost:44399/getWall/1");
+                .GoToUrl(targetURL);
         
 
             // Dodanie nowego posta:
@@ -53,7 +77,7 @@ namespace UIAutomatedTests
             postButton.Click();
 
             _driver.Navigate()
-               .GoToUrl("https://localhost:44399/getWall/1");
+               .GoToUrl(targetURL);
 
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
@@ -79,7 +103,7 @@ namespace UIAutomatedTests
             //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
+                client.BaseAddress = new Uri(APIurl);
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -95,7 +119,7 @@ namespace UIAutomatedTests
             string commentRandomContent = "Nowy komentarz utworzony przez selenium: " + RandomString(20);
 
             _driver.Navigate()
-                .GoToUrl("https://localhost:44399/getWall/1");
+                .GoToUrl(targetURL);
             var textBox = _driver.FindElement(By.CssSelector("textarea[id ^= 'NewComment_']"));
 
             textBox.Click();
@@ -107,7 +131,7 @@ namespace UIAutomatedTests
             commentButton.Click();
 
             _driver.Navigate()
-               .GoToUrl("https://localhost:44399/getWall/1");
+               .GoToUrl(targetURL);
 
 
             var commentsContents = _driver.FindElements(By.ClassName("fb-user-status-comment"));
@@ -131,7 +155,7 @@ namespace UIAutomatedTests
             //Wysy³anie Request z delete
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
+                client.BaseAddress = new Uri(APIurl);
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"comment/{id}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -145,7 +169,7 @@ namespace UIAutomatedTests
         public void FiltrationTest()
         {
             _driver.Navigate()
-                   .GoToUrl("https://localhost:44399/getWall/1");
+                   .GoToUrl(targetURL);
            
             var categories = _driver.FindElements(By.ClassName("icheck"));
             var postsContents = _driver.FindElements(By.ClassName("displayedCategories"));
@@ -175,7 +199,7 @@ namespace UIAutomatedTests
         public async void Like_Post_Test()
         {
             _driver.Navigate()
-              .GoToUrl("https://localhost:44399/getWall/1");
+              .GoToUrl(targetURL);
             var posts = _driver.FindElements(By.ClassName("fb-user-status"));
             string likeName= "Like_"+ posts[0].FindElement(By.XPath("..")).GetProperty("id");
 
@@ -201,7 +225,7 @@ namespace UIAutomatedTests
             string postRandomContent = "Nowy post utworzony przez selenium: " + RandomString(20);
 
             _driver.Navigate()
-                .GoToUrl("https://localhost:44399/getWall/1");
+                .GoToUrl(targetURL);
 
 
             // Dodanie nowego posta:
@@ -223,7 +247,7 @@ namespace UIAutomatedTests
             postButton.Click();
 
             _driver.Navigate()
-               .GoToUrl("https://localhost:44399/getWall/1");
+               .GoToUrl(targetURL);
 
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
@@ -254,7 +278,7 @@ namespace UIAutomatedTests
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
+                client.BaseAddress = new Uri(APIurl);
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -270,7 +294,7 @@ namespace UIAutomatedTests
             string titleRandomContent =  RandomString(20);
 
             _driver.Navigate()
-                .GoToUrl("https://localhost:44399/getWall/1");
+                .GoToUrl(targetURL);
 
 
             // Dodanie nowego posta:
@@ -297,7 +321,7 @@ namespace UIAutomatedTests
             postButton.Click();
 
             _driver.Navigate()
-               .GoToUrl("https://localhost:44399/getWall/1");
+               .GoToUrl(targetURL);
 
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
@@ -329,7 +353,7 @@ namespace UIAutomatedTests
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://systempromocji.azurewebsites.net/");
+                client.BaseAddress = new Uri(APIurl);
                 client.DefaultRequestHeaders.Add("userID", "1");
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
@@ -339,5 +363,7 @@ namespace UIAutomatedTests
             Assert.Equal(title, titleRandomContent);
             Assert.True(isDeleted);
         }
+
+
     }
 }

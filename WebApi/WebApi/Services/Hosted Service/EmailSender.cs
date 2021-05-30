@@ -17,12 +17,12 @@ namespace WebApi.Services.Hosted_Service
     {
         public IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> TaskQueue { get; }
 
-        private readonly string websiteURL = "SystemPromocjiGrupaI.com";
-        private readonly string serviceEmail = "https://systempromocji.azurewebsites.net/";
+        private readonly string websiteURL = "https://systempromocji.azurewebsites.net/";
+        private readonly string serviceEmail = "systempromocji.grupai@gmail.com";
         private readonly string emailPassword = "1715grupaI";
         private readonly string serviceName = "System Promocji Grupa I";
 
-        private readonly string sendGridApiKey = "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";
+        private readonly string sendGridApiKey = "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";
 
         public EmailSender([NotNull] IBackgroundTaskQueueService<(List<ReceiverDTO>, string, string)> taskQueue)
         {
@@ -42,20 +42,20 @@ namespace WebApi.Services.Hosted_Service
 
         }
 
-        private void SendEmailNotifications((List<ReceiverDTO> recipients, string postTitle, string category) workItem)
+        private async void SendEmailNotifications((List<ReceiverDTO> recipients, string postTitle, string category) workItem)
         {
             foreach (var recipient in workItem.recipients)
             {
                 var client = new SendGridClient(sendGridApiKey);
                 EmailAddress from = new EmailAddress(serviceEmail, serviceName);
-                EmailAddress to = new EmailAddress(recipient.Email); 
-                var subject = "Zobacz nową promocję!";
+                EmailAddress to = new EmailAddress("spotifijak5@gmail.com");
+                 var subject = "Zobacz nową promocję!";
                 var plaintextContent = BuildNotificationContent(recipient, workItem.postTitle, workItem.category);
 
                 var htmlContent = $"{plaintextContent}";
 
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plaintextContent, htmlContent);
-                client.SendEmailAsync(msg);
+                var res = await client.SendEmailAsync(msg);
             }
         }
 

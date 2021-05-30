@@ -7,7 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WallProject", "WallProject\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WallProjectTest", "WallProjectTest\WallProjectTest.csproj", "{A261E475-1AAF-4038-B5E7-DB5329EE59D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIAutomatedTests", "UIAutomatedTests\UIAutomatedTests.csproj", "{A1FEBA3A-13E5-4677-8B6B-81E116005E82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIAutomatedTests", "UIAutomatedTests\UIAutomatedTests.csproj", "{A1FEBA3A-13E5-4677-8B6B-81E116005E82}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92DC490D-C518-4413-ABAE-3B7F5FD9728C} = {92DC490D-C518-4413-ABAE-3B7F5FD9728C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
