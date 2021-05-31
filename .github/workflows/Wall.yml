@@ -22,5 +22,3 @@ jobs:
       run: dotnet build WallProject
     - name: Test
       run: dotnet test WallProject/WallProjectTest
-    - name: UIAutomatedTests
-      run: dotnet test WallProject/UIAutomatedTests
