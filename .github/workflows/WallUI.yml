@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore WallProject
     - name: Build
-      run: dotnet build --configuration Release --no-restore WebApi
+      run: dotnet build --configuration Release --no-restore WallProject
     - name: Test
-      run: dotnet test --no-restore --verbosity WebApi/UIAutomatedTest
+      run: dotnet test --no-restore --verbosity WallProject/UIAutomatedTest
