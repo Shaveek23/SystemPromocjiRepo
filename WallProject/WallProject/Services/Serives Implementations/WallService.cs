@@ -128,7 +128,6 @@ namespace WallProject.Services.Serives_Implementations
                 AviableCategories = Categories.Result
             };
 
-
             return new ServiceResult<PostEditViewModel>(postEditVM, System.Net.HttpStatusCode.OK, null);
         }
     }
