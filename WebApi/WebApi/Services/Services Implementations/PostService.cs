@@ -139,8 +139,11 @@ namespace WebApi.Services.Serives_Implementations
 
         public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body)
         {
-            Post post = PostEditMapper.Map(body);
-            post.PostID = id;
+            var post = _postRepository.GetById(id).Result;
+            post.Title = body.title;
+            post.Content = body.content;
+            post.CategoryID = body.categoryID.Value;
+            post.IsPromoted = body.isPromoted.Value;
             post.Date = DateTime.Now;
             var result = await _postRepository.UpdateAsync(post);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);

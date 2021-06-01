@@ -1,4 +1,5 @@
-name: Wall test
+name: UI Automated Tests
+
 on:
   push:
     branches: [ develop ]
@@ -16,9 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Restore dependencies
+    - name: Install dependencies
       run: dotnet restore WallProject
     - name: Build
-      run: dotnet build WallProject
+      run: dotnet build --configuration Release --no-restore WallProject
     - name: Test
-      run: dotnet test WallProject/WallProjectTest
+      run: dotnet test --no-restore WallProject/UIAutomatedTests
