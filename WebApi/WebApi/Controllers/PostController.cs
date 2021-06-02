@@ -58,20 +58,20 @@ namespace WebApi.Controllers
         [HttpDelete("post/{postID}")]
         public async Task<IActionResult> Delete([Required][FromHeader] int userID, [FromRoute] int postID)
         {
-            var result = await _postService.DeletePostAsync(postID);
+            var result = await _postService.DeletePostAsync(postID, userID);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
         [HttpPut("post/{postID}")]
         public async Task<IActionResult> Edit([Required][FromHeader] int userID, [FromRoute] int postID, [FromBody] PostPutDTO post)
         {
-            var result = await _postService.EditPostAsync(postID, post);
+            var result = await _postService.EditPostAsync(postID, post, userID);
             return new ControllerResult<bool>(result).GetResponse();
         }
 
 
         [HttpPost("post")]
-        public async Task<ActionResult<idDTO>> Create( [Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
+        public async Task<ActionResult<idDTO>> Create([Required][FromHeader] int userID, [Required][FromBody] PostPostDTO post) //NO USERID IN DOCUMENTATION, discuss with other groups
         {
             var result = await _postService.AddPostAsync(userID, post);
             _newsletterService.SendNewsletterNotifications(result.IsOk(), post.title, post.categoryID.Value);

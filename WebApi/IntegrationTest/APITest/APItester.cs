@@ -17,28 +17,36 @@ namespace IntegrationTest.APITest
         {
             ["D"] = new HttpClient { BaseAddress = new Uri("https://salesystemapi.azurewebsites.net/") },
             ["I"] = new HttpClient { BaseAddress = new Uri("https://systempromocji.azurewebsites.net/") },
-            ["K"] = new HttpClient { BaseAddress = new Uri("https://serverappats.azurewebsites.net/") }
+            ["K"] = new HttpClient { BaseAddress = new Uri("https://serverappts.azurewebsites.net/") }
         };
 
         static readonly Dictionary<string, int> postIDs = new Dictionary<string, int>()
         {
-            ["D"] = 90,
-            ["I"] = 1,
-            ["K"] = 1
+            ["D"] = 1146,
+            ["I"] = 111,
+            ["K"] = 5
         };
         static readonly Dictionary<string, int> commentIDs = new Dictionary<string, int>()
         {
-            ["D"] = 90,
-            ["I"] = 1,
-            ["K"] = 2
+            ["D"] = 815,
+            ["I"] = 178,
+            ["K"] = 136
         };
         static readonly Dictionary<string, (int, int, int)> userIDs = new Dictionary<string, (int, int, int)>()
         {
-            ["K"] = (27, 28, 1000),
-            ["I"] = (2, 3, 1),
-            ["D"] = (2, 3, 1000)
+            ["D"] = (1, 2, 4),
+            ["I"] = (135, 136, 422),
+            ["K"] = (31, 32, 249)
         };
-        public static readonly string group = "I";
+
+        static readonly Dictionary<string,int> categoryIDs = new Dictionary<string, int>()
+        {
+            ["D"] = 1,
+            ["I"] = 1,
+            ["K"] = 7
+        };
+        public static readonly string group = "D" +
+            "";
         //wybrany client
         public readonly HttpClient client = clients[group];
         public readonly int existingPostID = postIDs[group];
@@ -46,6 +54,7 @@ namespace IntegrationTest.APITest
         public readonly int existingUserID = userIDs[group].Item1;
         public readonly int NotOwnerUserID = userIDs[group].Item2;
         public readonly int AdminUserID = userIDs[group].Item3;
+        public readonly int existingCategoryID = categoryIDs[group];
         #endregion
 
         //kreator requestów do API

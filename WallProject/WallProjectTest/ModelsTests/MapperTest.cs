@@ -162,6 +162,36 @@ namespace WallProjectTest.ModelsTests
             result.Name == isItem.CategoryName
             )));
         }
+        public static IEnumerable<object[]> CommentDTODataList()
+        {
+            yield return new object[]
+            {
+                new List<CommentGetDTO>
+                {
+                    new CommentGetDTO{ID=0,IsLikedByUser=true,Content= "contencik xD",OwnerMode =false, AuthorName= "test"},
+                    new CommentGetDTO{ID=1,IsLikedByUser=false,Content= "contencik xD",OwnerMode =true, AuthorName= "test"},
+                }
+
+             };
+        }
+        [Theory]
+        [MemberData(nameof(CommentDTODataList))]
+        public void CommentDTOListToViewModel(List<CommentGetDTO> commentDTOs)
+        {
+            var mappedComments = Mapper.Map(commentDTOs);
+            Assert.True(commentDTOs.AsQueryable().All(result => mappedComments.AsQueryable().Any(isItem =>
+            result.ID == isItem.Id &&
+            result.IsLikedByUser == isItem.IsLikedByUser &&
+            result.Content == isItem.Content&&
+            result.OwnerMode == isItem.OwnerMode &&
+           
+            result.AuthorName == isItem.OwnerName
+
+           
+            )));
+        }
+       
+      
 
     }
 }

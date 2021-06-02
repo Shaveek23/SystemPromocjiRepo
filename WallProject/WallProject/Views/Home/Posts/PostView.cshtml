@@ -1,0 +1,82 @@
+﻿@model WallProject.Models.PostViewModel
+
+
+<div id="post_@Model.Id">
+
+    <div class="post_title" style="font-size:160%;font-family:Lucida Console;text-align:center;"> 
+        @Html.ActionLink(Model.Title, "showPost", "Home",
+        new { postID = Model.Id, userID = Model.CurrentUser.UserID },
+        new { @style = "color:black;" })
+    </div>
+
+
+    <div style="text-align:right; color:@(Model.IsPromoted ? "orangered" : "grey")">@(Model.IsPromoted ? "Promoted post" : "Unpromoted post")</div>
+    <div class="fb-user-thumb">
+        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
+    </div>
+
+    <div class="fb-user-details">
+        <h3><a href="#" class="#">@Model.OwnerName </a></h3>
+        <div style="color:grey"> Dodano: @Model.Datetime </div>
+        <div class="post_category" style="text-align:right; color:chocolate">@Model.Category </div>
+    </div>
+    <div class="clearfix"></div>
+
+
+    <!-- Content -->
+    <p class="fb-user-status">
+        @Model.Content
+    </p>
+
+    <!-- Liki itp -->
+    <div class="fb-status-container fb-border">
+        <div class="fb-time-action">
+            <a id="Like_post_@Model.Id" href="#" onclick="LikePost(@Model.Id, @Model.CurrentUser.UserID, @(Model.IsLikedByUser ? "false" : "true")  )" style="color:@(Model.IsLikedByUser ? "midnightblue" : "blue")">
+                @(Model.IsLikedByUser ? "You like it!. Click to unlike." : "Like it!" )
+            </a>
+        </div>
+        <div class="fb-time-action like-info" style="text-align:right">
+            <a href="#">@Model.Likes people like it.</a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel">
+        <div class="fb-status-container  fb-gray-bg">
+            <div><h3>Comments:</h3></div>
+            <ul class="fb-comments">
+                @foreach (var comment in Model.Comments)
+                {
+                    <!-- Wyswietl komentarz -->
+                    @await Html.PartialAsync("Comments/CommentView", comment)
+                }
+                <!-- Dodaj komentarz -->
+                @await Html.PartialAsync("Comments/AddCommentView", Model)
+            </ul>
+
+            <div class="clearfix"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+        async function LikePost(postId, userId, like) {
+
+            $.ajax({
+                url: '@Url.Action("EditPostLikeStatus", "Post")',
+                data: { "postID": postId, "userID": userId, "like": like },
+
+
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+            location.reload(true);
+        }
+</script>

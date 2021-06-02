@@ -14,6 +14,7 @@ using WallProject.Services.Services_Interfaces;
 using WallProject.Services;
 using WallProject.Models;
 using System.Collections.Generic;
+using WallProject.Models.MainView;
 
 namespace WallProjectTest
 {
@@ -59,14 +60,27 @@ namespace WallProjectTest
             var client = new HttpClient(mockHttpMessageHandler.Object);
             client.BaseAddress = fixure.Create<Uri>();
             mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
-            var mockResult = new ServiceResult<List<CommentViewModel>>(new List<CommentViewModel>());
+
+            var mockCommentResult = new ServiceResult<List<CommentViewModel>>(new List<CommentViewModel>());
             var mockCommentService = new Mock<ICommentService>();
             mockCommentService.Setup(_ => _.getByPostId(1, 1))
-                .Returns(Task.FromResult(mockResult));
+                .Returns(Task.FromResult(mockCommentResult));
+
+            var mockUserResult = new ServiceResult<List<UserViewModel>>(new List<UserViewModel>() { new UserViewModel() 
+            {
+                UserID = 1, IsActive = true, IsAdmin = false, IsEnterprenuer = false, IsVerified = true, Timestamp = DateTime.MinValue, UserEmail="DSADASDAS", UserName="name"
+            } 
+            });
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(_ => _.getAll())
+            .Returns(Task.FromResult(mockUserResult));
+
             var mockPersonService = new Mock<IUserService>();
 
-            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockPersonService.Object);
+            PostService postService = new PostService(mockFactory.Object, mockCommentService.Object, mockUserService.Object);
             var result = await postService.getById(1, 1);
+
+
             Assert.NotNull(result);
             Assert.Null(result.Message);
             Assert.Equal(HttpStatusCode.OK, result.Code);

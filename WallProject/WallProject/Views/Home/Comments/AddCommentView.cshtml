@@ -1,0 +1,40 @@
+﻿@model WallProject.Models.PostViewModel
+
+@if (Model != null)
+{
+    <li>
+        <a href="#" class="cmt-thumb">
+            <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
+        </a>
+        <div class="cmt-form">
+            <textarea id="@("NewComment_" + Model.Id.ToString())" class="form-control" placeholder="Write a comment..." name=""></textarea>
+        </div>
+        <button id="AddNewComment" onclick="AddComment( @Model.Id, @Model.CurrentUser.UserID)" type="button" class="btn btn-info pull-right">AddComment</button>
+    </li>
+}
+
+
+<script type="text/javascript">
+    async function AddComment(postId, userId) {
+            var s = "NewComment_" + String(postId);
+            var commentText =await  document.getElementById(s).value;
+
+            $.ajax({
+            url: '@Url.Action("AddNewComment", "Comment")',
+            data: { "commentText": commentText, "postId": postId, "UserId": userId},
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+
+
+
+            },
+            error: function (data) {
+            console.log("ERROR " + data)
+
+            }
+            });
+            location.reload();
+    }
+</script>

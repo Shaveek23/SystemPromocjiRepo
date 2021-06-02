@@ -136,7 +136,7 @@ namespace WallProjectTest.ServicesTest
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
         [Fact]
-        public async void CommentGetValidCall()
+        public async void CommentGetAllValidCall()
         {
             var fixure = new Fixture();
             var mockFactory = new Mock<IHttpClientFactory>();
@@ -159,6 +159,65 @@ namespace WallProjectTest.ServicesTest
             Assert.NotNull(result);
             Assert.Null(result.Message);
             Assert.Equal(HttpStatusCode.OK, result.Code);
+        }
+
+        [Theory]
+        [InlineData(1)]
+       
+        public async void CommentGetUserIdValidCall(int userId)
+        {
+            var fixure = new Fixture();
+            var mockFactory = new Mock<IHttpClientFactory>();
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            mockHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent("[{\"id\":1,\"ownerMode\":true,\"content\":\"Oto mój pierwszy komentarz!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"authorID\":1,\"authorName\":\"Jan\",\"likesCount\":5,\"isLikedByUser\":false, \"postID\":1}," +
+                    "{\"id\":2,\"ownerMode\":true,\"content\":\"Oto mój drugi komentarz!\",\"datetime\":\"2021-03-30T22:21:46.5885085\",\"authorID\":1,\"authorName\":\"Jan Rapowanie\",\"likesCount\":10,\"isLikedByUser\":false, \"postID\":1}]")
+                });
+            var client = new HttpClient(mockHttpMessageHandler.Object);
+            client.BaseAddress = fixure.Create<Uri>();
+            mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
+            var mockPersonService = new Mock<IUserService>();
+            mockPersonService.Setup(x => x.getById(userId)).Returns(Task.FromResult(new ServiceResult<UserViewModel>(new UserViewModel { UserID = userId }, HttpStatusCode.OK)));
+            CommentService commentService = new CommentService(mockFactory.Object, mockPersonService.Object);
+            var result = await commentService.getByUserId(userId);
+            Assert.NotNull(result);
+            Assert.Null(result.Message);
+            Assert.Equal(2, result.Result.Count);
+            Assert.Equal(HttpStatusCode.OK, result.Code);
+        }
+
+        [Theory]
+        [InlineData("text", 1, 1)]
+        public async void CommentEditValidCall(string commentText, int postId, int userId)
+        {
+            var fixure = new Fixture();
+            var mockFactory = new Mock<IHttpClientFactory>();
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            mockHttpMessageHandler.Protected()
+                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                    .ReturnsAsync(new HttpResponseMessage()
+                    {
+                        StatusCode = HttpStatusCode.OK,
+
+                    });
+
+            var client = new HttpClient(mockHttpMessageHandler.Object);
+            client.BaseAddress = fixure.Create<Uri>();
+            mockFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client).Verifiable();
+
+
+
+            var mockUserService = new Mock<IUserService>();
+            CommentService commentService = new CommentService(mockFactory.Object, mockUserService.Object);
+
+
+
+            var result = await commentService.Edit(userId, postId,commentText);
+            Assert.True(result.Result);
         }
 
 

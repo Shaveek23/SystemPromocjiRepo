@@ -83,11 +83,11 @@ namespace WebApiTest
 
         public void EditUser_ValidCall()
         {
-            var newUserDTO = new UserPutDTO {  userEmail = "iojestsuper@mini.pw.edu.pl", userName = "student",  isEntrepreneur = false, isAdmin = false, isVerified = false, isActive = false };
+            var newUserDTO = new UserPutDTO { userEmail = "iojestsuper@mini.pw.edu.pl", userName = "student", isEntrepreneur = false, isAdmin = false, isVerified = false, isActive = false };
             var newUser = new User { UserID = 1, UserEmail = "iojestsuper@mini.pw.edu.pl", UserName = "student", Timestamp = new DateTime(2021, 4, 16, 8, 4, 12), IsEnterprenuer = false, IsAdmin = false, IsVerified = false, Active = false };
 
             var mockIUserRepository = new Mock<IUserRepository>();
-            mockIUserRepository.Setup(x => x.UpdateAsync(It.IsAny<User>())).Returns(Task.Run(() => new ServiceResult<User>(newUser)));
+            mockIUserRepository.Setup(x => x.UpdateAsync(It.IsAny<User>(), newUser.UserID)).Returns(Task.Run(() => new ServiceResult<User>(newUser)));
 
 
 

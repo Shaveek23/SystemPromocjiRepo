@@ -18,10 +18,20 @@ namespace WebApi.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.RouteData.Values.Values.Contains("GetAll") && context.RouteData.Values.Values.Contains("Category")) { }
-            else if (context.RouteData.Values.Values.Contains("GetAll") && context.RouteData.Values.Values.Contains("User")) { }
-            else if (context.RouteData.Values.Values.Contains("Get") && context.RouteData.Values.Values.Contains("User")) { }
-            else if (context.RouteData.Values.Values.Contains("AddUser") && context.RouteData.Values.Values.Contains("User")) { }
+
+            Dictionary<(string, string), bool> endpoints_without_authorization = new Dictionary<(string, string), bool>()
+            {
+                { ("GetAll", "Category"), true },
+                { ("GetById", "Category"), true },
+                { ("GetAll", "User"), true },
+                { ("Get", "User"), true },
+                { ("AddUser", "User"), true },
+                { ("GetUserPosts", "Post"), true }
+            };
+
+            
+            var keys = context.RouteData.Values.Values.ToList();
+            if (endpoints_without_authorization.ContainsKey(((string)keys[0], (string)keys[1]))) { }
             else
             {
                 var res = context.HttpContext.Request.Headers.TryGetValue("userID", out Microsoft.Extensions.Primitives.StringValues callerID);

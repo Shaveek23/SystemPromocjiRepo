@@ -18,7 +18,7 @@ namespace WebApi.Services.Serives_Implementations
         private readonly IUserRepository _userRepository;
         private readonly ICommentService _commentService;
         private readonly ICategoryService _categoryService;
-     
+
 
 
         public PostService(IPostRepository postRepository, IUserRepository userRepository, ICommentService commentService, ICategoryService categoryService)
@@ -68,7 +68,7 @@ namespace WebApi.Services.Serives_Implementations
             }
 
             var postLikes = GetLikes(postID);
-            var user = _userRepository.GetById(userID);
+            var user = _userRepository.GetById(result.Result.UserID);
 
             var postDTO = PostMapper.Map(result.Result);
 
@@ -126,23 +126,26 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<IQueryable<PostGetDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> DeletePostAsync(int id)
+        public async Task<ServiceResult<bool>> DeletePostAsync(int id, int userID)
         {
             var GetResult = _postRepository.GetById(id);
 
             if (!GetResult.IsOk())
                 return new ServiceResult<bool>(false, GetResult.Code, GetResult.Message);
 
-            var RemoveResult = await _postRepository.RemoveAsync(GetResult.Result);
+            var RemoveResult = await _postRepository.RemoveAsync(GetResult.Result, userID);
             return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body)
+        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body, int userID)
         {
-            Post post = PostEditMapper.Map(body);
-            post.PostID = id;
+            var post = _postRepository.GetById(id).Result;
+            post.Title = body.title;
+            post.Content = body.content;
+            post.CategoryID = body.categoryID.Value;
+            post.IsPromoted = body.isPromoted.Value;
             post.Date = DateTime.Now;
-            var result = await _postRepository.UpdateAsync(post);
+            var result = await _postRepository.UpdateAsync(post, userID);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
@@ -151,7 +154,7 @@ namespace WebApi.Services.Serives_Implementations
             var result = _postRepository.GetLikes(postID);
             return new ServiceResult<IQueryable<LikerDTO>>(Mapper.Map(result.Result.Select(x => x.UserID)), result.Code, result.Message);
         }
-        
+
         public async Task<ServiceResult<bool>> EditLikeStatusAsync(int userID, int postID, LikeDTO like)
         {
             var result = await _postRepository.UpdateLikeStatusAsync(userID, postID, like.like);

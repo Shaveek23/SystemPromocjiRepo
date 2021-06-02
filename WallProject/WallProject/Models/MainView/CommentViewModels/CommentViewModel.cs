@@ -10,6 +10,7 @@ namespace WallProject.Models
     {
         public int Id;
 
+        public UserViewModel CurrentUser;
         public UserViewModel Owner;
         public string OwnerName; //do wyświetlenia userID w ramach prezentacji
         public bool OwnerMode;

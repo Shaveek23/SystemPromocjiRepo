@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
@@ -20,3 +20,5 @@ jobs:
       run: dotnet restore WallProject
     - name: Build
       run: dotnet build WallProject
+    - name: Test
+      run: dotnet test WallProject/WallProjectTest

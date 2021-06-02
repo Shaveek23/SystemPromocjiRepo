@@ -1,0 +1,55 @@
+﻿@model WallProject.Models.CommentListViewModel
+
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<link rel="stylesheet" type="text/css" href="~/css/Wall.css" media="screen" />
+<head>
+    <meta charset="utf-8">
+
+    <!--  All snippets are MIT license http://bootdey.com/license -->
+    <title>social network wall - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="panel-header"> <h1 class="text-header">System Promocji</h1></div>
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block">@Html.ActionLink("Go back to wall", "UserWall", "Home", new { userID = Model.CommentsOwner.UserID }, null)</button>
+        </div>
+        <div class="flex-sm-row-reverse">
+
+            <!-- Add post -->
+            <br/>
+            <h3>Here are your comments @Model.CommentsOwner.UserName.Split().First():</h3>
+
+            <hr />
+            <div class="panel">
+                <div class="fb-status-container  fb-gray-bg">
+                    <ul class="fb-comments">
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <!-- Wyswietl komentarz -->
+                            @await Html.PartialAsync("Comments/CommentViewInListing", comment)
+                        }
+                    </ul>
+
+                    <div class="clearfix"></div>
+                    <hr />
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+
+    </script>
+</body>

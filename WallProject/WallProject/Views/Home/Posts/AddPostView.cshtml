@@ -1,0 +1,62 @@
+﻿@model WallProject.Models.WallViewModel
+
+
+<div class="panel profile-info">
+    <form>
+        <textarea id="Title" class="form-control input-lg p-text-area" rows="1" style="background-color: #EBF5FB; color: black; border: #7F8C8D;border-width: 2px;
+                             border-style: solid;
+                            " placeholder="Whats a post title?"></textarea>
+        <textarea id="NewPost" class="form-control input-lg p-text-area" rows="2" style="color: black" placeholder="Whats in your mind today, @Model.Owner.UserName.Split().First()?"></textarea>
+    </form>
+    <footer class="panel-footer">
+
+        <button id="PostBtnId" onclick="CreateNewPost(@Model.Owner.UserID)" type="button" class="btn btn-info pull-right">Post</button>
+        <label id="CategoriesNames">Categories</label>
+        <select name="CategorySelection" id="CategorySelection">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.CategoryID">@category.CategoryName</option>
+            }
+        </select>
+
+        <ul class="nav nav-pills">
+            <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
+            <li><a href="#"><i class="fa fa-camera"></i></a></li>
+            <li><a href="#"><i class=" fa fa-film"></i></a></li>
+            <li><a href="#"><i class="fa fa-microphone"></i></a></li>
+        </ul>
+    </footer>
+</div>
+
+
+
+<script type="text/javascript">
+        function CreateNewPost(userId) {
+            var postText = document.getElementById("NewPost").value;
+            var categoryId = document.getElementById("CategorySelection").value;
+            var title = document.getElementById("Title").value;
+
+            //postText = $("#NewPost").value;
+            $.ajax({
+            url: '@Url.Action("AddNewPost", "Post")',
+                data: { "postText": postText, "userId": userId, "categoryId": categoryId, "title": title },
+
+            type: 'POST',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+
+
+
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+
+                }
+
+
+            });
+            location.reload();
+    }
+</script>
+

@@ -1,0 +1,106 @@
+﻿@model WallProject.Models.CommentViewModel
+
+<li>
+    <a href="#" class="cmt-thumb">
+        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+    </a>
+    <div class="cmt-details">
+        <a href="#"><h5>@Model.OwnerName</h5></a>
+        <br />
+
+        <p class="fb-user-status-comment">
+
+            <input style="border:none;width:700px"
+
+                   disabled="false"
+                   type="text"
+                   id="EditComment_@Model.Id.ToString()"
+                   value="@Model.Content">
+        </p>
+        <div style="overflow: hidden;">
+
+            @if (@Model.OwnerMode)
+            {
+                <p style="float:inline-end;">
+                    <a id="CommentEditButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentEditClick(@Model.Id)">
+                        Edit
+                    </a>
+                    <a id="CommentSaveButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentSaveClick(@Model.CurrentUser.UserID, @Model.Id)" hidden=true>
+                        Save
+                    </a>
+                </p>
+            }
+
+            <p style="float: left; color:Highlight">
+                @Model.Likes people like this.
+                <a href="#" class="btn-block" onclick="LikeComment(  @Model.CurrentUser.UserID, @Model.Id, @(Model.IsLikedByUser ? "false" : "true") )">
+                    @(Model.IsLikedByUser ? "You like it! Click to unlike." : "Like this comment!" )
+                </a>
+            </p>
+            <p style="float: right;">@Model.Time</p>
+        </div>
+    </div>
+</li>
+
+
+<script type="text/javascript">
+    //PURE JS
+
+    async function CommentEditClick(id) {
+        document.getElementById("EditComment_" + id.toString()).disabled = !document.getElementById("EditComment_" + id.toString()).disabled;
+        document.getElementById("CommentSaveButton_" + id.toString()).hidden = !document.getElementById("CommentSaveButton_" + id.toString()).hidden;
+        document.getElementById("CommentEditButton_" + id.toString()).hidden = !document.getElementById("CommentEditButton_" + id.toString()).hidden;
+    }
+
+    async function CommentSaveClick(userID, commentID) {
+        var content = document.getElementById("EditComment_" + commentID.toString()).value.toString();
+        EditComment(userID, commentID, content)
+
+        document.getElementById("EditComment_" + commentID.toString()).disabled = !document.getElementById("EditComment_" + commentID.toString()).disabled;
+        document.getElementById("CommentSaveButton_" + commentID.toString()).hidden = !document.getElementById("CommentSaveButton_" + commentID.toString()).hidden;
+        document.getElementById("CommentEditButton_" + commentID.toString()).hidden = !document.getElementById("CommentEditButton_" + commentID.toString()).hidden;
+    }
+
+    //AJAX
+
+    async function EditComment(userId, commentId, content) {
+        $.ajax({
+            url: '@Url.Action("EditComment", "Comment")',
+            data: { "userID": userId, "commentID": commentId, "content": content },
+
+        type: 'PUT',
+        dateType: "json",
+        cache:false,
+        success: function (data)
+        {
+        },
+        error: function (data)
+        {
+            console.log("ERROR " + data)
+        }
+     });
+
+        location.reload(true);
+    }
+
+    async function LikeComment(userId, commentId, like) {
+        $.ajax({
+            url: '@Url.Action("EditCommentLikeStatus", "Comment")',
+            data: { "userID": userId,  "commentID": commentId, "like": like },
+
+        type: 'PUT',
+        dateType: "json",
+        cache:false,
+        success: function (data)
+        {
+        },
+        error: function (data)
+        {
+            console.log("ERROR " + data)
+        }
+     });
+
+        location.reload(true);
+    }
+
+</script>
