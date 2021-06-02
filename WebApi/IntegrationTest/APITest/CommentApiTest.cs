@@ -19,7 +19,7 @@ namespace IntegrationTest.APITest
         {
             return new CommentAPI_post
             {
-                postID = 1,
+                postID = existingPostID,
                 content = content
             };
         }
@@ -63,7 +63,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"comment/{commentID}");
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
 
             Assert.Equal(commentID, commentAfterPost.id);
             Assert.Equal(commentToPost.content, commentAfterPost.content);
@@ -217,7 +217,7 @@ namespace IntegrationTest.APITest
 
             //GET
             (_, statusCode) = await Get($"comment/{commentID}");
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
 
         }
         #endregion
@@ -247,8 +247,8 @@ namespace IntegrationTest.APITest
             CommentAPI_post comment = GetCommentToPost();
             comment.content = null;
             (commentID, statusCode) = await Post("comment", comment);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
-            if(statusCode.IsOK())
+            Assert.False(statusCode.IsOK());
+            if (statusCode.IsOK())
             {
                 //DELETE
                 statusCode = await Delete($"comment/{commentID}");
@@ -264,7 +264,7 @@ namespace IntegrationTest.APITest
             CommentAPI_post comment = GetCommentToPost();
             comment.postID = null;
             (commentID, statusCode) = await Post("comment", comment);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
             if (statusCode.IsOK())
             {
                 //DELETE
@@ -280,7 +280,7 @@ namespace IntegrationTest.APITest
             //POST
             CommentAPI_post comment = GetCommentToPost();
             (commentID, statusCode) = await Post("comment", comment, null);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
             if (statusCode.IsOK())
             {
                 //DELETE
@@ -319,7 +319,7 @@ namespace IntegrationTest.APITest
 
             //DELETE Invalid
             statusCode = await Delete($"comment/{commentID}", NotOwnerUserID);
-            Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+            Assert.False(statusCode.IsOK());
 
             //DELETE Valid
             statusCode = await Delete($"comment/{commentID}", existingUserID);
@@ -343,7 +343,7 @@ namespace IntegrationTest.APITest
             {
                 //DELETE
                 statusCode = await Delete($"comment/{commentID}", existingUserID);
-                Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+                Assert.True(statusCode.IsOK());
             }
         }
         [Fact]
@@ -359,7 +359,7 @@ namespace IntegrationTest.APITest
 
             //DELETE Invalid
             statusCode = await Delete($"comment/{commentID}", null);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
 
             //DELETE Valid
             statusCode = await Delete($"comment/{commentID}");
@@ -382,7 +382,7 @@ namespace IntegrationTest.APITest
 
             //DELETE Invalid
             statusCode = await Delete($"comment/{commentID}", null);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
         }
         #endregion
 
@@ -422,7 +422,7 @@ namespace IntegrationTest.APITest
 
             //PUT Invalid
             statusCode = await Put($"comment/{commentID}", commentToPut, null);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
 
             //DELETE Valid
             statusCode = await Delete($"comment/{commentID}");
@@ -438,11 +438,11 @@ namespace IntegrationTest.APITest
 
             //POST
             (commentID, statusCode) = await Post("comment", commentToPost);
-            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.True(statusCode.IsOK());
 
             //PUT Invalid
             statusCode = await Put($"comment/{commentID}", commentToPut, NotOwnerUserID);
-            Assert.Equal(HttpStatusCode.BadRequest, statusCode);
+            Assert.False(statusCode.IsOK());
 
             //DELETE Valid
             statusCode = await Delete($"comment/{commentID}");
