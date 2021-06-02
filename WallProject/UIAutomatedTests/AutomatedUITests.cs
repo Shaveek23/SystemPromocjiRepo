@@ -16,7 +16,7 @@ namespace UIAutomatedTests
         private static readonly string localHostUrl = $"https://localhost:44399/getWall/{currentUser}";
         private static readonly string deployedWallAppUrl = $"https://wallproject.azurewebsites.net/getWall/{currentUser}";
 
-        private readonly string targetURL = $"{deployedWallAppUrl}";
+        private readonly string targetURL = $"{localHostUrl}";
 
         private readonly string APIurl = "https://systempromocji.azurewebsites.net/";
         private string getDriverPath()
@@ -302,6 +302,8 @@ namespace UIAutomatedTests
             _driver.Navigate()
                 .GoToUrl(targetURL);
 
+          
+
 
             // Dodanie nowego posta:
             var textBox = _driver.FindElement(By.Id("NewPost"));
@@ -314,13 +316,9 @@ namespace UIAutomatedTests
             var titleBox = _driver.FindElement(By.Id("Title"));
 
             titleBox.Click();
-
-           // titleBox.Clear();
+            titleBox.Clear();
 
             titleBox.SendKeys(titleRandomContent);
-
-
-
 
             var postButton = _driver.FindElement(By.Id("PostBtnId"));
 
@@ -328,6 +326,8 @@ namespace UIAutomatedTests
 
             _driver.Navigate()
                .GoToUrl(targetURL);
+          
+        
 
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
@@ -480,8 +480,8 @@ namespace UIAutomatedTests
             saveButton = _driver.FindElement(By.CssSelector("button[class='btn btn-outline-primary']"));
             saveButton.Click();
             var currentText = _driver.FindElement(By.CssSelector("input[id ^= 'PostContentInput_']")).GetProperty("value");
-            Assert.Equal(postRandomContent, editedText);
-            Assert.Equal(postText, currentText);
+            Assert.Equal(postRandomContent, currentText);
+            Assert.Equal(postText, editedText );
 
 
 
