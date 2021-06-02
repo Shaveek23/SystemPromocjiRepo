@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using WebApi.Exceptions;
+using WebApi.Models.POCO;
 using WebApi.Services;
 
 namespace WebApi.Database
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, new()
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IUserable, new()
     {
         protected readonly DatabaseContext dbContext;
 
@@ -53,8 +54,24 @@ namespace WebApi.Database
             }
         }
 
-        public async Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity)
+        private bool isAuthorized(TEntity entity, int userID)
         {
+            if (entity != null)
+            {
+                int owner = entity.GetOwner();
+                var isAdmin = dbContext.Find<User>(userID)?.IsAdmin ?? false;
+
+                if (owner == userID || isAdmin)
+                    return true;
+            }
+            return false;
+        }
+
+        public async Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity, int userID)
+        {
+            if (!isAuthorized(entity, userID))
+                return ServiceResult<TEntity>.GetUserNotAuthorized();
+
             if (entity == null)
             {
                 return ServiceResult<TEntity>.GetEntityNullResult();
@@ -74,8 +91,10 @@ namespace WebApi.Database
         }
 
 
-        public async Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity)
+        public async Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity, int userID)
         {
+            if (!isAuthorized(entity, userID))
+                return ServiceResult<TEntity>.GetUserNotAuthorized();
             if (entity == null)
             {
                 return ServiceResult<TEntity>.GetEntityNullResult();
@@ -94,8 +113,10 @@ namespace WebApi.Database
             }
         }
 
-        public ServiceResult<bool> Delete(int entityID, int userId)
+        public ServiceResult<bool> Delete(int entityID, int userID)
         {
+            if (!isAuthorized(dbContext.Find<TEntity>(entityID), userID))
+                return ServiceResult<bool>.GetUserNotAuthorized();
             try
             {
                 dbContext.Remove(dbContext.Find<TEntity>(entityID));

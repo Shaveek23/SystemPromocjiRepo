@@ -277,7 +277,7 @@ namespace WebApiTest
 
                 var cls = new CommentRepository(dbContext);
 
-                var actual = cls.UpdateAsync(expected).Result.Result;
+                var actual = cls.UpdateAsync(expected, expected.UserID).Result.Result;
                 Assert.Equal(expected.CommentID, actual.CommentID);
                 Assert.Equal(expected.Content, actual.Content);
                 Assert.Equal(expected.DateTime, actual.DateTime);
@@ -307,7 +307,7 @@ namespace WebApiTest
                 var expected = new Comment() { CommentID = 100, UserID = 1, PostID = 1, DateTime = new DateTime(2008, 3, 1, 7, 0, 0), Content = expectedText };
                 var cls = new CommentRepository(dbContext);
 
-                Assert.ThrowsAsync<UpdateAsyncFailException>(() => cls.UpdateAsync(expected));
+                Assert.ThrowsAsync<UpdateAsyncFailException>(() => cls.UpdateAsync(expected, expected.UserID));
                 Assert.Equal(dbContext.Comments.Count(), initLength);
             }
         }

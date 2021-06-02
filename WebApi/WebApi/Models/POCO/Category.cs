@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models.POCO
 {
-    public class Category
+    public class Category : IUserable
     {
         [Key]
         [Required]
@@ -16,5 +16,7 @@ namespace WebApi.Models.POCO
         [MaxLength(50)]
         [MinLength(1)]
         public string Name { get; set; }
+
+        public int GetOwner() => 0;
     }
 }
