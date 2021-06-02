@@ -148,7 +148,7 @@ namespace WebApiTest.ServiceTest
             };
 
             var mockIPostRepository = new Mock<IPostRepository>();
-            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>())).Returns(Task.Run(() => new ServiceResult<Post>(expectedPost)));
+            mockIPostRepository.Setup(x => x.UpdateAsync(It.IsAny<Post>(), expectedPost.UserID)).Returns(Task.Run(() => new ServiceResult<Post>(expectedPost)));
             mockIPostRepository.Setup(x => x.GetById(postID)).Returns(new ServiceResult<Post>(expectedPost));
 
             var mockIUserRespository = new Mock<IUserRepository>();
@@ -156,7 +156,7 @@ namespace WebApiTest.ServiceTest
             var mockICategoryService = new Mock<ICategoryService>();
 
             var postService = new PostService(mockIPostRepository.Object, mockIUserRespository.Object, mockICommentService.Object, mockICategoryService.Object);
-            var actual = postService.EditPostAsync(postID, newPostDTO).Result.Result;
+            var actual = postService.EditPostAsync(postID, newPostDTO, expectedPost.UserID).Result.Result;
             Assert.True(actual);
 
         }

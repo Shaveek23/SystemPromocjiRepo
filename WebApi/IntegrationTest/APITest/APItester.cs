@@ -22,7 +22,7 @@ namespace IntegrationTest.APITest
 
         static readonly Dictionary<string, int> postIDs = new Dictionary<string, int>()
         {
-            ["D"] = 1124,
+            ["D"] = 1146,
             ["I"] = 111,
             ["K"] = 5
         };
@@ -45,7 +45,8 @@ namespace IntegrationTest.APITest
             ["I"] = 1,
             ["K"] = 7
         };
-        public static readonly string group = "K";
+        public static readonly string group = "D" +
+            "";
         //wybrany client
         public readonly HttpClient client = clients[group];
         public readonly int existingPostID = postIDs[group];

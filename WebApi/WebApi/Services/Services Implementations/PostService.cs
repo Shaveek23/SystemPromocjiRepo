@@ -126,18 +126,18 @@ namespace WebApi.Services.Serives_Implementations
             return new ServiceResult<IQueryable<PostGetDTO>>(postDTOs.AsQueryable(), serviceResult.Code, serviceResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> DeletePostAsync(int id)
+        public async Task<ServiceResult<bool>> DeletePostAsync(int id, int userID)
         {
             var GetResult = _postRepository.GetById(id);
 
             if (!GetResult.IsOk())
                 return new ServiceResult<bool>(false, GetResult.Code, GetResult.Message);
 
-            var RemoveResult = await _postRepository.RemoveAsync(GetResult.Result);
+            var RemoveResult = await _postRepository.RemoveAsync(GetResult.Result, userID);
             return new ServiceResult<bool>(RemoveResult.IsOk(), RemoveResult.Code, RemoveResult.Message);
         }
 
-        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body)
+        public async Task<ServiceResult<bool>> EditPostAsync(int id, PostPutDTO body, int userID)
         {
             var post = _postRepository.GetById(id).Result;
             post.Title = body.title;
@@ -145,7 +145,7 @@ namespace WebApi.Services.Serives_Implementations
             post.CategoryID = body.categoryID.Value;
             post.IsPromoted = body.isPromoted.Value;
             post.Date = DateTime.Now;
-            var result = await _postRepository.UpdateAsync(post);
+            var result = await _postRepository.UpdateAsync(post, userID);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 
