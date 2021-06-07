@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WallProject.Models;
 using WallProject.Models.DTO;
+using WallProject.Models.DTO.UserDTOs;
 using WallProject.Models.MainView;
 using WallProject.Models.Mapper;
 using WallProject.Services.Services_Interfaces;
@@ -54,6 +55,25 @@ namespace WallProject.Services.Serives_Implementations
             {
                 return ServiceResult<List<UserViewModel>>.GetMessage(jsonString, result.StatusCode);
             }
+        }
+        public async Task<ServiceResult<bool>> EditUser(int userID, string userName, string userEmail)
+        {
+            UserPutDTO userDTO = new UserPutDTO { UserName = userName, UserEmail = userEmail };
+
+
+            //serializacja do JSONa
+            var jsonComment = JsonConvert.SerializeObject(userDTO);
+            //przygotowanie HttpRequest
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, $"user/{userID}");
+            HttpContent httpContent = new StringContent(jsonComment, Encoding.UTF8, "application/json");
+            requestMessage.Headers.Add("userID", userID.ToString());
+            requestMessage.Content = httpContent;
+
+            //Wysyłanie Request
+            var client = _clientFactory.CreateClient("webapi");
+            client.DefaultRequestHeaders.Add("userID", $"{userID}");
+            var response = await client.SendAsync(requestMessage);
+            return new ServiceResult<bool>(response.IsSuccessStatusCode);
         }
 
 

@@ -1,0 +1,72 @@
+﻿@model WallProject.Models.MainView.UserViewModel
+
+@{
+    ViewData["Title"] = "UserInterface";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.UserName</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <h4>User Name</h4>
+        <p class="fb-user-status">
+            <input style="border:none;background-color:white"
+                   type="text"
+                   id="UserName"
+                   value="@Model.UserName" />
+        </p>
+        <hr />
+        <h4>User Email</h4>
+        <p class="fb-user-status">
+            <input style="border:none;background-color:white"
+                   type="text"
+                   id="UserEmail"
+                   value="@Model.UserEmail" />
+        </p>
+        @*<div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>*@
+        <div class="form-group">
+            <input type="button" value="Save" class="submitBtn" onclick="UserSubmitClick(@Model.UserID)" />
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block">@Html.ActionLink("Go back to wall", "UserWall", "Home", new { userID = Model.UserID }, null)</button>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script type="text/javascript">
+
+    async function UserSubmitClick(userID) {
+        //Send Request
+        var userName = document.getElementById("UserName").value.toString();
+        var userEmail = document.getElementById("UserEmail").value.toString();
+        EditPost(userID, userName, userEmail);
+    }
+
+    async function EditUser(userId, userName, userEmail) {
+
+        $.ajax({
+            url: '@Url.Action("EditUser", "UserInterface")',
+            data: { "userID": userId, "userName": userName, "userEmail": userEmail },
+
+
+            type: 'PUT',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+        location.reload(true);
+    }
+</script>
