@@ -1,11 +1,11 @@
-﻿@model WallProject.Models.MainView.UserViewModel
+﻿@model WallProject.Models.MainView.UserInterfaceView
 
 @{
     ViewData["Title"] = "UserInterface";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@Model.UserName</h1>
+<h1>@Model.User.UserName</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,7 +14,7 @@
             <input style="border:none;background-color:white"
                    type="text"
                    id="UserName"
-                   value="@Model.UserName" />
+                   value="@Model.User.UserName" />
         </p>
         <hr />
         <h4>User Email</h4>
@@ -22,7 +22,7 @@
             <input style="border:none;background-color:white"
                    type="text"
                    id="UserEmail"
-                   value="@Model.UserEmail" />
+                   value="@Model.User.UserEmail" />
         </p>
         @*<div class="form-group form-check">
                 <label class="form-check-label">
@@ -30,25 +30,37 @@
                 </label>
             </div>*@
         <div class="form-group">
-            <input type="button" value="Save" class="submitBtn" onclick="UserSubmitClick(@Model.UserID)" />
+            <input type="button" value="Save" class="submitBtn" onclick="UserSubmitClick(@Model.User.UserID)" />
         </div>
         <div class="form-group">
-            <button type="button" class="btn btn-outline-secondary btn-lg btn-block">@Html.ActionLink("Go back to wall", "UserWall", "Home", new { userID = Model.UserID }, null)</button>
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block">@Html.ActionLink("Go back to wall", "UserWall", "Home", new { userID = Model.User.UserID }, null)</button>
         </div>
     </div>
-</div>
+    <div class="col-md-4">
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <h4>All categories you can subscribe to:</h4>
+        @foreach (var category in Model.AllCategories)
+        {
+            <div class="checkbox">
+                @if (Model.SubscribedCategoriesID.Contains(category.CategoryID))
+                {
+                    <label><input type="checkbox" class="icheck" checked onclick="SubscribeCategory(Model.userID, @category.CategoryID, false)"> @category.CategoryName </label>
+                }
+                else
+                {
+                    <label><input type="checkbox" class="icheck" onclick="SubscribeCategory(Model.userID, @category.CategoryID, true)"> @category.CategoryName </label>
+                }
+            </div>
+        }
+    </div>
 </div>
 
 <script type="text/javascript">
 
     async function UserSubmitClick(userID) {
-        //Send Request
         var userName = document.getElementById("UserName").value.toString();
         var userEmail = document.getElementById("UserEmail").value.toString();
-        EditPost(userID, userName, userEmail);
+        EditUser(userID, userName, userEmail);
     }
 
     async function EditUser(userId, userName, userEmail) {
@@ -59,6 +71,25 @@
 
 
             type: 'PUT',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+        location.reload(true);
+    }
+
+        async function SubscribeCategory(userId, categoryId, subscribe) {
+
+        $.ajax({
+            url: '@Url.Action("SubscribeCategory", "UserInterface")',
+            data: { "userID": userId, "categoryID": categoryId, "subscribe": subscribe },
+
+
+            type: 'POST',
             dateType: "json",
             cache:false,
             success: function (data) {

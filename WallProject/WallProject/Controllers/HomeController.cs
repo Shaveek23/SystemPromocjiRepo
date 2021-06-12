@@ -20,14 +20,17 @@ namespace WallProject.Controllers
         private readonly ICommentService _commentService;
         private readonly IPostService _postService;
         private readonly IUserService _userService;
+        private readonly IUserInterfaceService _userInterfaceService;
 
-        public HomeController(ILogger<HomeController> logger, IWallService service, ICommentService commentService, IPostService postService, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IWallService service, ICommentService commentService, IPostService postService, IUserService userService,IUserInterfaceService userInterfaceService)
         {
             _logger = logger;
             _service = service;
             _commentService = commentService;
             _postService = postService;
             _userService = userService;
+            _userInterfaceService = userInterfaceService;
+
         }
 
 
@@ -62,10 +65,10 @@ namespace WallProject.Controllers
                 return View("Privacy", wall.Message);
         }
 
-        [Route("getUserInterface/{userID}")]
+        [Route("UserInterface/{userID}")]
         public async Task<IActionResult> UserInterface([FromRoute] int userID)
         {
-            ServiceResult<UserViewModel> wall = await _userService.getById(userID);
+            ServiceResult<UserInterfaceView> wall = await _userInterfaceService.getUserInterface(userID);
             if (wall.IsOk())
                 return View("UserInterface", wall.Result);
             else

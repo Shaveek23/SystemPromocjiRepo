@@ -16,22 +16,16 @@ namespace WallProject.Controllers
     {
         private readonly ILogger<UserInterfaceController> _logger;
         private readonly IUserService _userService;
+        private readonly IUserInterfaceService _userInterfaceService;
 
-        public UserInterfaceController(ILogger<UserInterfaceController> logger, IUserService userService)
+        public UserInterfaceController(ILogger<UserInterfaceController> logger, IUserService userService, IUserInterfaceService userInterfaceService)
         {
             _logger = logger;
             _userService = userService;
+            _userInterfaceService = userInterfaceService;
         }
 
-        [Route("getUserInterface/{userID}")]
-        public async Task<IActionResult> UserInterface([FromRoute] int userID)
-        {
-            ServiceResult<UserViewModel> user = await _userService.getById(userID);
-            if (user.IsOk())
-                return View(user.Result);
-            else
-                return View("Privacy");
-        }
+
         public async Task<IActionResult> EditUser(int userID, string userName, string userEmail)
         {
             var result = await _userService.EditUser(userID, userName, userEmail);
@@ -40,6 +34,17 @@ namespace WallProject.Controllers
             else
                 return View(new ErrorViewModel());
         }
+        
+        public async Task<IActionResult> SubscribeCategory(int userID, int categoryID, bool subscribe)
+        {
+            var result = await _userInterfaceService.SubscribeCategory(userID, categoryID, subscribe);
+            if (result.Result)
+                return View();
+            else
+                return View(new ErrorViewModel());
+        }
+
+
 
     }
 }

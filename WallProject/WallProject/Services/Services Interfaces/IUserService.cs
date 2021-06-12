@@ -11,6 +11,7 @@ namespace WallProject.Services.Services_Interfaces
     {
         public Task<ServiceResult<UserViewModel>> getById(int userID);
         public Task<ServiceResult<List<UserViewModel>>> getAll();
+        public Task<ServiceResult<List<int>>> getAllSubscribedCategoriesID(int userID);
 
         public Task<ServiceResult<bool>> EditUser(int userId, string userName, string userEmail);
     }
