@@ -13,11 +13,10 @@ namespace WebApi.Database
         ServiceResult<TEntity> GetById(int id);
 
         Task<ServiceResult<TEntity>> AddAsync(TEntity entity);
+        Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity, int userID);
 
-        Task<ServiceResult<TEntity>> UpdateAsync(TEntity entity);
+        Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity, int userID);
 
-        Task<ServiceResult<TEntity>> RemoveAsync(TEntity entity);
-
-        ServiceResult<bool> Delete(int entityID, int userId);
+        ServiceResult<bool> Delete(int entityID, int userID);
     }
 }

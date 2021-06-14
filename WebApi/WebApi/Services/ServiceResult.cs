@@ -31,6 +31,10 @@ namespace WebApi.Services
         {
             return new ServiceResult<T>(default(T), HttpStatusCode.BadRequest, "Requested resource has not been found.");
         }
+        public static ServiceResult<T> GetUserNotAuthorized()
+        {
+            return new ServiceResult<T>(default(T), HttpStatusCode.BadRequest, "User not authorized.");
+        }
 
         public T Result { get; set; }
 

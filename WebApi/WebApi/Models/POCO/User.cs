@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApi.Models.POCO
 {
-    public class User
+    public class User : IUserable
     {
         [Key]
         public int UserID { get; set; }
@@ -20,5 +20,6 @@ namespace WebApi.Models.POCO
         public bool IsEnterprenuer { get; set; }
         public bool IsVerified { get; set; }
         public bool Active { get; set; }
+        public int GetOwner() => UserID;
     }
 }

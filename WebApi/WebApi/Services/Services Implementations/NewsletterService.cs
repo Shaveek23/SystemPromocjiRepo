@@ -111,7 +111,7 @@ namespace WebApi.Services.Services_Implementations
             else
             {
                 Newsletter toBeRemoved = newsletters.Where(n => n.CategoryID == dto.CategoryID.Value).FirstOrDefault();
-                var removeRes = await _newsletterRepository.RemoveAsync(toBeRemoved);
+                var removeRes = await _newsletterRepository.RemoveAsync(toBeRemoved, userID);
 
                 if (!removeRes.IsOk())
                     return new ServiceResult<bool>(false, res.Code, res.Message);

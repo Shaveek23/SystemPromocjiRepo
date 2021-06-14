@@ -42,7 +42,7 @@ namespace WebApi.Services.Serives_Implementations
         {
             Comment currentComment = _commentRepository.GetById(commentId).Result;
             currentComment.Content = comment.Content;
-            var result = await _commentRepository.UpdateAsync(currentComment);
+            var result = await _commentRepository.UpdateAsync(currentComment, userId);
             return new ServiceResult<bool>(result.IsOk(), result.Code, result.Message);
         }
 

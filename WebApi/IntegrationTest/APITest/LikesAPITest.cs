@@ -1,4 +1,7 @@
-﻿using IntegrationTest.APITest.Models.Likes;
+﻿using IntegrationTest.APITest.Models;
+using IntegrationTest.APITest.Models.Comment;
+using IntegrationTest.APITest.Models.Likes;
+using IntegrationTest.APITest.Models.Post;
 using IntegrationTest.Extensions;
 using Newtonsoft.Json;
 using System;
@@ -22,14 +25,59 @@ namespace IntegrationTest.APITest
             };
         }
 
+        public PostAPI_post GetPostToPost(string content = "content")
+        {
+            return new PostAPI_post
+            {
+                title = "API title",
+                content = content,
+                categoryID = existingCategoryID
+            };
+        }
+        public CommentAPI_post GetCommentToPost(string content = "content")
+        {
+            return new CommentAPI_post
+            {
+                postID = existingPostID,
+                content = content
+            };
+        }
+
+        public async Task<(int, HttpStatusCode)> PostPost(string requestUri, PostAPI_post obj, int? userID = 0)
+        {
+            var requestMessage = CreateRequest(HttpMethod.Post, requestUri, obj, userID);
+            var responseMessage = await client.SendAsync(requestMessage);
+            var jsonString = await responseMessage.Content.ReadAsStringAsync();
+            if (!responseMessage.IsSuccessStatusCode)
+                return (default(int), responseMessage.StatusCode);
+            responseID response = JsonConvert.DeserializeObject<responseID>(jsonString);
+            return (response.id, responseMessage.StatusCode);
+        }
+
+        public async Task<(int, HttpStatusCode)> PostComment(string requestUri, CommentAPI_post obj, int? userID = 0)
+        {
+            var requestMessage = CreateRequest(HttpMethod.Post, requestUri, obj, userID);
+            var responseMessage = await client.SendAsync(requestMessage);
+            var jsonString = await responseMessage.Content.ReadAsStringAsync();
+            if (!responseMessage.IsSuccessStatusCode)
+                return (default(int), responseMessage.StatusCode);
+            responseID response = JsonConvert.DeserializeObject<responseID>(jsonString);
+            return (response.id, responseMessage.StatusCode);
+        }
+
         [Fact]
 
         public async void PostLikeAndDislike_ValidCall()
         {
             HttpStatusCode statusCode;
-            int postID = existingPostID;
             int userID = existingUserID;
             List<LikeAPI_get> likes;
+            int postID;
+
+            PostAPI_post post = GetPostToPost();
+            (postID, statusCode) = await PostPost("/post", post);
+            Assert.True(statusCode.IsOK());
+
             // LIKE:
             // PUT
             LikeAPI_put like = getLikeToPut(true);
@@ -50,91 +98,22 @@ namespace IntegrationTest.APITest
             (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
             Assert.True(statusCode.IsOK());
             Assert.DoesNotContain(likes, like => like.id == userID);
-        }
-        [Fact]
-        public async void PostLikeAndDislike_InvalidCall_NotAnOwner()
-        {
-            HttpStatusCode statusCode;
-            int postID = existingPostID;
-            int userID = existingUserID;
-            List<LikeAPI_get> likes;
-            // LIKE:
-            // PUT
-            LikeAPI_put like = getLikeToPut(true);
-            statusCode = await Put($"post/{postID}/likedusers", like, userID);
-            Assert.True(statusCode.IsOK());
-            // GET
-            (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
 
-            //DISLIKE Invalid:
-            //PUT
-            LikeAPI_put dislike = getLikeToPut(false);
-            statusCode = await Put($"post/{postID}/likedUsers", dislike, NotOwnerUserID);
-            Assert.False(statusCode.IsOK());
-
-            // GET
-            (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
+            statusCode = await Delete($"/post/{postID}");
             Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
-
-            //DISLIKE Valid:
-            //PUT
-            statusCode = await Put($"post/{postID}/likedUsers", dislike, userID);
-            Assert.False(statusCode.IsOK());
-
-            // GET
-            (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.DoesNotContain(likes, like => like.id == userID);
-        }
-        [Fact]
-        public async void PostLikeAndDislike_InvalidCall_Admin()
-        {
-            HttpStatusCode statusCode;
-            int postID = existingPostID;
-            int userID = existingUserID;
-            List<LikeAPI_get> likes;
-            // LIKE:
-            // PUT
-            LikeAPI_put like = getLikeToPut(true);
-            statusCode = await Put($"post/{postID}/likedusers", like, userID);
-            Assert.True(statusCode.IsOK());
-            // GET
-            (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
-
-            //DISLIKE Invalid:
-            //PUT
-            LikeAPI_put dislike = getLikeToPut(false);
-            statusCode = await Put($"post/{postID}/likedUsers", dislike, AdminUserID);
-            Assert.False(statusCode.IsOK());
-            if (!statusCode.IsOK())
-            {
-                // GET
-                (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
-                Assert.True(statusCode.IsOK());
-                Assert.Contains(likes, like => like.id == userID);
-                //DISLIKE Valid:
-                //PUT
-                statusCode = await Put($"post/{postID}/likedUsers", dislike, userID);
-                Assert.False(statusCode.IsOK());
-            }
-            // GET
-            (likes, statusCode) = await GetAll($"post/{postID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.DoesNotContain(likes, like => like.id == userID);
-
         }
         [Fact]
         public async void PostLikeAndDislike_ValidCall_NoUserHeader()
         {
             HttpStatusCode statusCode;
-            int postID = existingPostID;
+            int postID;
             int userID = existingUserID;
             List<LikeAPI_get> likes;
+
+            PostAPI_post post = GetPostToPost();
+            (postID, statusCode) = await PostPost("/post", post);
+            Assert.True(statusCode.IsOK());
+
             // LIKE:
             // PUT
             LikeAPI_put like = getLikeToPut(true);
@@ -142,13 +121,16 @@ namespace IntegrationTest.APITest
             Assert.True(statusCode.IsOK());
             // GET
             (likes, statusCode) = await GetAll($"post/{postID}/likedUsers", null);
-            Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
+            Assert.False(statusCode.IsOK());
+            Assert.Null(likes);
 
             //DISLIKE:
             //PUT
             LikeAPI_put dislike = getLikeToPut(false);
             statusCode = await Put($"post/{postID}/likedUsers", dislike, userID);
+            Assert.True(statusCode.IsOK());
+
+            statusCode = await Delete($"/post/{postID}");
             Assert.True(statusCode.IsOK());
         }
 
@@ -156,9 +138,14 @@ namespace IntegrationTest.APITest
         public async void CommentLikeAndDislike_ValidCall()
         {
             HttpStatusCode statusCode;
-            int commentID = existingCommentID;
+            int commentID;
             int userID = existingUserID;
             List<LikeAPI_get> likes;
+
+            CommentAPI_post comment = GetCommentToPost();
+            (commentID, statusCode) = await PostComment("/comment", comment);
+            Assert.True(statusCode.IsOK());
+
             // LIKE:
             // PUT
 
@@ -180,90 +167,21 @@ namespace IntegrationTest.APITest
             (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
             Assert.True(statusCode.IsOK());
             Assert.DoesNotContain(likes, like => like.id == userID);
-        }
-        [Fact]
-        public async void CommentLikeAndDislike_InvalidCall_NotAnOwner()
-        {
-            HttpStatusCode statusCode;
-            int commentID = existingCommentID;
-            int userID = existingUserID;
-            List<LikeAPI_get> likes;
-            // LIKE:
-            // PUT
-            LikeAPI_put like = getLikeToPut(true);
-            statusCode = await Put($"comment/{commentID}/likedusers", like, userID);
-            Assert.True(statusCode.IsOK());
-            // GET
-            (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
 
-            //DISLIKE Invalid:
-            //PUT
-            LikeAPI_put dislike = getLikeToPut(false);
-            statusCode = await Put($"comment/{commentID}/likedUsers", dislike, NotOwnerUserID);
-            Assert.False(statusCode.IsOK());
-
-            // GET
-            (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
+            statusCode = await Delete($"/comment/{commentID}");
             Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
-
-            //DISLIKE Valid:
-            //PUT
-            statusCode = await Put($"comment/{commentID}/likedUsers", dislike, userID);
-            Assert.True(statusCode.IsOK());
-
-            // GET
-            (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.DoesNotContain(likes, like => like.id == userID);
-        }
-        [Fact]
-        public async void CommentLikeAndDislike_InvalidCall_Admin()
-        {
-            HttpStatusCode statusCode;
-            int commentID = existingCommentID;
-            int userID = existingUserID;
-            List<LikeAPI_get> likes;
-            // LIKE:
-            // PUT
-            LikeAPI_put like = getLikeToPut(true);
-            statusCode = await Put($"comment/{commentID}/likedusers", like, userID);
-            Assert.True(statusCode.IsOK());
-            // GET
-            (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.Contains(likes, like => like.id == userID);
-
-            //DISLIKE Valid:
-            //PUT
-            LikeAPI_put dislike = getLikeToPut(false);
-            statusCode = await Put($"comment/{commentID}/likedUsers", dislike, AdminUserID);
-            Assert.True(statusCode.IsOK());
-            if(!statusCode.IsOK())
-            {
-                // GET
-                (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
-                Assert.True(statusCode.IsOK());
-                Assert.Contains(likes, like => like.id == userID);
-                //DISLIKE Valid:
-                //PUT
-                statusCode = await Put($"comment/{commentID}/likedUsers", dislike, userID);
-                Assert.True(statusCode.IsOK());
-            }
-
-            // GET
-            (likes, statusCode) = await GetAll($"comment/{commentID}/likedUsers");
-            Assert.True(statusCode.IsOK());
-            Assert.DoesNotContain(likes, like => like.id == userID);
         }
         [Fact]
         public async void CommentLikeAndDislike_InvalidCall_NoUserHeader()
         {
             HttpStatusCode statusCode;
-            int commentID = existingCommentID;
+            int commentID;
             int userID = existingUserID;
+
+            CommentAPI_post comment = GetCommentToPost();
+            (commentID, statusCode) = await PostComment("/comment", comment);
+            Assert.True(statusCode.IsOK());
+
             // LIKE:
             // PUT
             LikeAPI_put like = getLikeToPut(true);
@@ -274,10 +192,13 @@ namespace IntegrationTest.APITest
             //PUT Invalid
             LikeAPI_put dislike = getLikeToPut(false);
             statusCode = await Put($"comment/{commentID}/likedUsers", dislike, null);
-            Assert.True(statusCode.IsOK());
+            Assert.False(statusCode.IsOK());
 
             //PUT VALID
             statusCode = await Put($"comment/{commentID}/likedUsers", dislike, userID);
+            Assert.True(statusCode.IsOK());
+
+            statusCode = await Delete($"/comment/{commentID}");
             Assert.True(statusCode.IsOK());
         }
 
