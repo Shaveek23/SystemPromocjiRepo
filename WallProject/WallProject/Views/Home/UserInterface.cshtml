@@ -39,16 +39,16 @@
     <div class="col-md-4">
 
         <h4>All categories you can subscribe to:</h4>
-        @foreach (var category in Model.AllCategories)
+        @foreach (var category in @Model.AllCategories)
         {
             <div class="checkbox">
                 @if (Model.SubscribedCategoriesID.Contains(category.CategoryID))
                 {
-                    <label><input type="checkbox" class="icheck" checked onclick="SubscribeCategory(Model.userID, @category.CategoryID, false)"> @category.CategoryName </label>
+                    <label><input type="checkbox" class="icheck" checked onclick="CheckboxClick(@Model.User.UserID, @category.CategoryID, 0)"> @category.CategoryName </label>
                 }
                 else
                 {
-                    <label><input type="checkbox" class="icheck" onclick="SubscribeCategory(Model.userID, @category.CategoryID, true)"> @category.CategoryName </label>
+                    <label><input type="checkbox" class="icheck" onclick="CheckboxClick(@Model.User.UserID, @category.CategoryID, 1)"> @category.CategoryName </label>
                 }
             </div>
         }
@@ -61,6 +61,10 @@
         var userName = document.getElementById("UserName").value.toString();
         var userEmail = document.getElementById("UserEmail").value.toString();
         EditUser(userID, userName, userEmail);
+    }
+
+    async function CheckboxClick(userID, categoryID, subscribe) {
+        SubscribeCategory(userID, categoryID, subscribe);
     }
 
     async function EditUser(userId, userName, userEmail) {
@@ -82,22 +86,12 @@
         location.reload(true);
     }
 
-        async function SubscribeCategory(userId, categoryId, subscribe) {
+    async function SubscribeCategory(userId, categoryId, subscribe) {
 
         $.ajax({
             url: '@Url.Action("SubscribeCategory", "UserInterface")',
-            data: { "userID": userId, "categoryID": categoryId, "subscribe": subscribe },
-
-
-            type: 'POST',
-            dateType: "json",
-            cache:false,
-            success: function (data) {
-            },
-            error: function (data) {
-                console.log("ERROR " + data)
-                }
-            });
+            data: { "userID": userId, "categoryID": categoryId, "subscribe": subscribe }
+        });
         location.reload(true);
     }
 </script>

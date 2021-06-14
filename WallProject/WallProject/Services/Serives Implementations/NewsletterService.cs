@@ -25,7 +25,7 @@ namespace WallProject.Services.Serives_Implementations
         {
 
 
-                NewsletterDTO comment = new NewsletterDTO { CategoryID = categoryID, IsSubscibed = isSubscribed }; 
+                NewsletterDTO comment = new NewsletterDTO { CategoryID = categoryID, IsSubscribed = isSubscribed }; 
 
                 //serializacja do JSONa
                 var jsonComment = JsonConvert.SerializeObject(comment);

@@ -80,20 +80,30 @@ namespace WallProject.Services.Serives_Implementations
 
             var client = _clientFactory.CreateClient("webapi");
             client.DefaultRequestHeaders.Add("UserID", $"{userID}");
-            var result = await client.GetAsync($"users/{userID}/subscibedCategories");
+            var result = await client.GetAsync($"users/{userID}/subscribedCategories");
             var jsonString = await result.Content.ReadAsStringAsync();
 
 
             if (result.IsSuccessStatusCode)
             {
-                List<int> ids = JsonConvert.DeserializeObject<List<int>>(jsonString);
+                List<CategoryId> ids = JsonConvert.DeserializeObject<List<CategoryId>>(jsonString);
 
-                return new ServiceResult<List<int>>(ids, result.StatusCode);
+                List<int> id = new List<int>();
+                foreach(CategoryId i in ids)
+                {
+                    id.Add(i.id);
+                }
+                return new ServiceResult<List<int>>(id, result.StatusCode);
             }
             else
             {
                 return ServiceResult<List<int>>.GetMessage(jsonString, result.StatusCode);
             }
+        }
+        
+        class CategoryId
+        {
+            public int id;
         }
 
     }

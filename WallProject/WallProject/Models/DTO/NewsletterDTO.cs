@@ -8,6 +8,6 @@ namespace WallProject.Models.DTO
     public class NewsletterDTO
     {
         public int CategoryID;
-        public bool IsSubscibed;
+        public bool IsSubscribed;
     }
 }
