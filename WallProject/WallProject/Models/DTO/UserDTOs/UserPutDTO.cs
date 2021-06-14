@@ -10,7 +10,7 @@ namespace WallProject.Models.DTO.UserDTOs
         public string UserName { get; set; }
         public string UserEmail { get; set; }
         public bool IsAdmin { get; set; }
-        public bool IsEnterprenuer { get; set; }
+        public bool IsEntrepreneur { get; set; }
         public bool IsVerified { get; set; }
         public bool IsActive { get; set; }
     }

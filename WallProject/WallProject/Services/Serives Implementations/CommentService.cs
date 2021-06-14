@@ -180,7 +180,7 @@ namespace WallProject.Services.Serives_Implementations
             var client = _clientFactory.CreateClient("webapi");
             var response = await client.SendAsync(requestMessage);
             return new ServiceResult<bool>(response.IsSuccessStatusCode);
-           ;
+           
 
         }
 

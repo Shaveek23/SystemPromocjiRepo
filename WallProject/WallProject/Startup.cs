@@ -37,7 +37,9 @@ namespace WallProject
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserService, UserService>();
-            
+            services.AddScoped<INewsletterService, NewsletterService>();
+            services.AddScoped<IUserInterfaceService, UserInterfaceService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
