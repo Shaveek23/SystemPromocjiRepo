@@ -29,7 +29,7 @@
                         <!-- Say Hi to user -->
                         <h3 class="grid-title">Hello @Model.Owner.UserName!</h3>
                         <hr>
-                        <button type="button" class="btn btn-outline-primary btn-block">Edit your profile</button>
+                        <button type="button" class="btn btn-outline-primary btn-block">@Html.ActionLink("Edit your profile", "EditUser", "Home", new { userID = Model.Owner.UserID }, null)</button>
                         <br />
                         <button type="button" class="btn btn-outline-primary btn-block">@Html.ActionLink("See your Posts", "userPosts", "Home", new { userID = Model.Owner.UserID }, null)</button>
                         <br />
