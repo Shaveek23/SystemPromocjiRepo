@@ -49,6 +49,10 @@
     <Compile Remove="Migrations\20210312140625_AddPeople.Designer.cs" />
     <Compile Remove="Migrations\20210328091920_AddComments.cs" />
     <Compile Remove="Migrations\20210328091920_AddComments.Designer.cs" />
+    <Compile Remove="Migrations\20210614143935_CreateDB.cs" />
+    <Compile Remove="Migrations\20210614143935_CreateDB.Designer.cs" />
+    <Compile Remove="Migrations\20210614144707_Create2.cs" />
+    <Compile Remove="Migrations\20210614144707_Create2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

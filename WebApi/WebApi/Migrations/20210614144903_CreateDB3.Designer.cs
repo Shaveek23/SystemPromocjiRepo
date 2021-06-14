@@ -10,8 +10,8 @@ using WebApi.Database;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210423194509_AddLikesUp5")]
-    partial class AddLikesUp5
+    [Migration("20210614144903_CreateDB3")]
+    partial class CreateDB3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -80,32 +80,6 @@ namespace WebApi.Migrations
                     b.HasKey("CommentID");
 
                     b.ToTable("Comment");
-
-                    b.HasData(
-                        new
-                        {
-                            CommentID = 1,
-                            Content = "tralalala ",
-                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
-                            PostID = 1,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 2,
-                            Content = "tralalala pararara",
-                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
-                            PostID = 2,
-                            UserID = 1
-                        },
-                        new
-                        {
-                            CommentID = 3,
-                            Content = "tu ti tu rum tu tu",
-                            DateTime = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
-                            PostID = 1,
-                            UserID = 2
-                        });
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.CommentLike", b =>
@@ -124,6 +98,24 @@ namespace WebApi.Migrations
                     b.HasKey("CommentLikeID");
 
                     b.ToTable("CommentLike");
+                });
+
+            modelBuilder.Entity("WebApi.Models.POCO.Newsletter", b =>
+                {
+                    b.Property<int>("NewsletterID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("NewsletterID");
+
+                    b.ToTable("Newsletter");
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.Person", b =>
@@ -156,16 +148,6 @@ namespace WebApi.Migrations
                     b.HasKey("PersonID");
 
                     b.ToTable("People");
-
-                    b.HasData(
-                        new
-                        {
-                            PersonID = 1,
-                            Address = "ul. Koszykowa 57A/7",
-                            City = "Warszawa",
-                            FirstName = "Adam",
-                            LastName = "Nowak"
-                        });
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.Post", b =>
@@ -199,38 +181,6 @@ namespace WebApi.Migrations
                     b.HasKey("PostID");
 
                     b.ToTable("Posts");
-
-                    b.HasData(
-                        new
-                        {
-                            PostID = 1,
-                            CategoryID = 1,
-                            Content = "Oto mój pierwszy post!",
-                            Date = new DateTime(2021, 3, 11, 12, 23, 46, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 1",
-                            UserID = 1
-                        },
-                        new
-                        {
-                            PostID = 2,
-                            CategoryID = 1,
-                            Content = "Oto mój drugi post!",
-                            Date = new DateTime(2021, 6, 21, 11, 2, 44, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 2",
-                            UserID = 2
-                        },
-                        new
-                        {
-                            PostID = 3,
-                            CategoryID = 1,
-                            Content = "Oto mój trzeci post!",
-                            Date = new DateTime(2021, 4, 11, 1, 21, 4, 0, DateTimeKind.Unspecified),
-                            IsPromoted = false,
-                            Title = "tytuł 3",
-                            UserID = 3
-                        });
                 });
 
             modelBuilder.Entity("WebApi.Models.POCO.PostLike", b =>
@@ -285,30 +235,6 @@ namespace WebApi.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            Active = true,
-                            IsAdmin = false,
-                            IsEnterprenuer = true,
-                            IsVerified = true,
-                            Timestamp = new DateTime(2021, 4, 16, 22, 30, 20, 0, DateTimeKind.Unspecified),
-                            UserEmail = "jaroslaw@kaczyslaw.pl",
-                            UserName = "jaroslawpolsezbaw"
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            Active = true,
-                            IsAdmin = false,
-                            IsEnterprenuer = false,
-                            IsVerified = false,
-                            Timestamp = new DateTime(2021, 4, 13, 12, 30, 20, 0, DateTimeKind.Unspecified),
-                            UserEmail = "antoni@kaczyslaw.pl",
-                            UserName = "tobrzozawybuchla"
-                        });
                 });
 #pragma warning restore 612, 618
         }
