@@ -12,13 +12,14 @@ namespace UIAutomatedTests
     public class AutomatedUITests : IDisposable
     {
         private readonly string projectName = "WallProject";
-        private static  readonly string currentUser = "135";
+        private static readonly string currentUser = "1";
         private static readonly string localHostUrl = $"https://localhost:44399/getWall/{currentUser}";
-        private static readonly string deployedWallAppUrl = $"https://wallproject.azurewebsites.net/getWall/{currentUser}";
+        private static readonly string deployedWallAppUrl = $"https://systempromocjiwall.azurewebsites.net/getWall/{currentUser}";
+        
 
-        private readonly string targetURL = $"{localHostUrl}";
+        private readonly string targetURL = $"{deployedWallAppUrl}";
 
-        private readonly string APIurl = "https://systempromocji.azurewebsites.net/";
+        private readonly string APIurl = "https://systempromocjinew.azurewebsites.net/";
         private string getDriverPath()
         {
             return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
@@ -36,11 +37,11 @@ namespace UIAutomatedTests
 
 
             _driver = new ChromeDriver(driverPath + "driver");
-            
+
         }
         public void Dispose()
         {
-            
+
             _driver.Quit();
             _driver.Dispose();
         }
@@ -53,7 +54,7 @@ namespace UIAutomatedTests
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-       
+
         [Fact]
         public async void Create_WhenExecuted_ReturnsCreateView()
         {
@@ -61,7 +62,7 @@ namespace UIAutomatedTests
 
             _driver.Navigate()
                 .GoToUrl(targetURL);
-        
+
 
             // Dodanie nowego posta:
             var textBox = _driver.FindElement(By.Id("NewPost"));
@@ -141,7 +142,7 @@ namespace UIAutomatedTests
             foreach (var commentContent in commentsContents)
             {
                 var curr = commentContent.FindElements(By.XPath("//*[@type='text']"));
-                foreach(var Text in curr)
+                foreach (var Text in curr)
                 {
                     var currText = Text.GetAttribute("value");
                     if (currText == commentRandomContent)
@@ -151,11 +152,11 @@ namespace UIAutomatedTests
                         break;
                     }
                 }
-              
+
             }
 
-            
-         
+
+
             bool isDeleted;
             id = id.Substring(12);
             //Wysy³anie Request z delete
@@ -176,12 +177,12 @@ namespace UIAutomatedTests
         {
             _driver.Navigate()
                    .GoToUrl(targetURL);
-           
+
             var categories = _driver.FindElements(By.ClassName("icheck"));
             var postsContents = _driver.FindElements(By.ClassName("displayedCategories"));
             var firstCategory = categories[0].FindElement(By.XPath("..")).Text;
-           
-         
+
+
             categories[0].Click();
             var postsContentsAfter = _driver.FindElements(By.ClassName("displayedCategories"));
             var containsAfter = false;
@@ -196,7 +197,7 @@ namespace UIAutomatedTests
 
 
             }
-           
+
             Assert.False(containsAfter);
 
 
@@ -207,7 +208,7 @@ namespace UIAutomatedTests
             _driver.Navigate()
               .GoToUrl(targetURL);
             var posts = _driver.FindElements(By.ClassName("fb-user-status"));
-            string likeName= "Like_"+ posts[0].FindElement(By.XPath("..")).GetProperty("id");
+            string likeName = "Like_" + posts[0].FindElement(By.XPath("..")).GetProperty("id");
 
 
             var like = _driver.FindElement(By.Id(likeName));
@@ -221,8 +222,8 @@ namespace UIAutomatedTests
             like = _driver.FindElement(By.Id(likeName));
             var likeContent3 = like.Text;
 
-            Assert.Equal(likeContent1, likeContent3);
-            Assert.NotEqual(likeContent1, likeContent2);
+            Assert.Equal(likeContent1, likeContent2);
+            Assert.NotEqual(likeContent1, likeContent3);
 
         }
         [Fact]
@@ -242,11 +243,11 @@ namespace UIAutomatedTests
             textBox.Clear();
 
             textBox.SendKeys(postRandomContent);
-           
+
             var selectElement = new SelectElement(_driver.FindElement(By.Id("CategorySelection")));
             selectElement.SelectByValue("2");
             string categoryText = selectElement.Options[1].Text;
-        
+
 
             var postButton = _driver.FindElement(By.Id("PostBtnId"));
 
@@ -268,7 +269,7 @@ namespace UIAutomatedTests
                 if (currText == postRandomContent)
                 {
                     id = postContent.FindElement(By.XPath("..")).GetProperty("id");
-                     categoryId = postContent.FindElement(By.XPath("..")).FindElement(By.ClassName("fb-user-details")).FindElement(By.ClassName("post_category")).Text;
+                    categoryId = postContent.FindElement(By.XPath("..")).FindElement(By.ClassName("fb-user-details")).FindElement(By.ClassName("post_category")).Text;
                     foundContent = currText;
                 }
             }
@@ -297,12 +298,12 @@ namespace UIAutomatedTests
         public async void AdddPostWithTitley()
         {
             string postRandomContent = "Nowy post utworzony przez selenium: " + RandomString(20);
-            string titleRandomContent =  RandomString(20);
+            string titleRandomContent = RandomString(20);
 
             _driver.Navigate()
                 .GoToUrl(targetURL);
 
-          
+
 
 
             // Dodanie nowego posta:
@@ -326,8 +327,8 @@ namespace UIAutomatedTests
 
             _driver.Navigate()
                .GoToUrl(targetURL);
-          
-        
+
+
 
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-status"));
@@ -347,7 +348,7 @@ namespace UIAutomatedTests
                 }
             }
             // Odnalezienie dodanego posta
-           
+
 
             string testPostId = "";
             if (id != "")
@@ -366,7 +367,7 @@ namespace UIAutomatedTests
                 var response = await client.DeleteAsync($"post/{testPostId}");
                 isDeleted = response.IsSuccessStatusCode;
             }
-           
+
             Assert.Equal(foundContent, postRandomContent);
             Assert.Equal(title, titleRandomContent);
             Assert.True(isDeleted);
@@ -377,21 +378,21 @@ namespace UIAutomatedTests
         {
             _driver.Navigate()
                   .GoToUrl(targetURL);
-          
+
             var postButton = _driver.FindElements(By.CssSelector("button[class='btn btn-outline-primary btn-block']"));
 
             postButton[1].Click();
 
             var postsContents = _driver.FindElements(By.ClassName("fb-user-details"));
             string user;
-           
+
             bool isOk = true;
-            if ( postsContents.Count>0)
+            if (postsContents.Count > 0)
             {
                 user = postsContents[0].FindElement(By.CssSelector("a")).Text;
-                for (int i=1;i<postsContents.Count;i++)
+                for (int i = 1; i < postsContents.Count; i++)
                 {
-                    if(user != postsContents[i].FindElement(By.CssSelector("a")).Text)
+                    if (user != postsContents[i].FindElement(By.CssSelector("a")).Text)
                     {
                         isOk = false;
                         break;
@@ -408,7 +409,7 @@ namespace UIAutomatedTests
 
             var commentButton = _driver.FindElements(By.CssSelector("button[class='btn btn-outline-primary btn-block']"));
 
-           commentButton[2].Click();
+            commentButton[2].Click();
 
             var commentsContents = _driver.FindElements(By.ClassName("cmt-details"));
             string user;
@@ -432,7 +433,7 @@ namespace UIAutomatedTests
         [Fact]
         public async void EditPost()
         {
-           
+
 
             _driver.Navigate()
                 .GoToUrl(targetURL);
@@ -446,7 +447,7 @@ namespace UIAutomatedTests
             _driver.Navigate()
                .GoToUrl(targetURL);
 
-          
+
             var selfPostButton = _driver.FindElements(By.CssSelector("button[class='btn btn-outline-primary btn-block']"));
 
             selfPostButton[1].Click();
@@ -459,11 +460,11 @@ namespace UIAutomatedTests
             editButton.Click();
             //pobranie obecnej tresci i podmiana na nowa
             var post = _driver.FindElement(By.CssSelector("input[id ^= 'PostContentInput_']"));
-       
+
             var postText = post.GetProperty("value");
             post.Click();
             post.Clear();
-           string  postRandomContent = "Nowy post utworzony przez selenium: " + RandomString(20);
+            string postRandomContent = "Nowy post utworzony przez selenium: " + RandomString(20);
             post.SendKeys(postRandomContent);
 
             //zapisanie
@@ -481,7 +482,55 @@ namespace UIAutomatedTests
             saveButton.Click();
             var currentText = _driver.FindElement(By.CssSelector("input[id ^= 'PostContentInput_']")).GetProperty("value");
             Assert.Equal(postRandomContent, currentText);
-            Assert.Equal(postText, editedText );
+            Assert.Equal(postText, editedText);
+
+
+
+        }
+        [Fact]
+        public async void EditComment()
+        {
+
+
+            _driver.Navigate()
+                .GoToUrl(targetURL);
+
+            var selfPostButton = _driver.FindElements(By.CssSelector("button[class='btn btn-outline-primary btn-block']"));
+
+            selfPostButton[2].Click();
+            // znalezienie postu
+           
+
+            var editButton = _driver.FindElement(By.CssSelector("a[class='btn-block']"));
+            editButton.Click();
+          
+            var post = _driver.FindElement(By.CssSelector("input[id ^= 'EditComment_']"));
+
+            var postText = post.GetProperty("value");
+
+            post.Click();
+           
+          
+            string postRandomContent = "Nowy kometarz utworzony przez selenium: " + RandomString(20);
+            post.SendKeys(postRandomContent);
+
+            //zapisanie
+            var saveButton = _driver.FindElements(By.CssSelector("a[class='btn-block']"))[1];
+            saveButton.Click();
+            //edycja na pierwotny tekst
+            var editedPost = _driver.FindElement(By.CssSelector("input[id ^= 'EditComment_']"));
+            var editedText = editedPost.GetProperty("value");
+            editButton = _driver.FindElement(By.CssSelector("a[class='btn-block']"));
+
+            editButton.Click();
+            editedPost.Click();
+            editedPost.Clear();
+            editedPost.SendKeys(postText);
+            saveButton = _driver.FindElement(By.CssSelector("a[id^='CommentSaveButton_']"));
+            saveButton.Click();
+            var currentText = _driver.FindElement(By.CssSelector("input[id ^= 'EditComment_']")).GetProperty("value");
+           
+            Assert.Equal(postText , editedText);
 
 
 
