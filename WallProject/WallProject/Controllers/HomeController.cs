@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WallProject.Models;
+using WallProject.Models.MainView;
 using WallProject.Services;
 using WallProject.Services.Services_Interfaces;
 
@@ -18,19 +19,24 @@ namespace WallProject.Controllers
         private readonly IWallService _service;
         private readonly ICommentService _commentService;
         private readonly IPostService _postService;
+        private readonly IUserService _userService;
+        private readonly IUserInterfaceService _userInterfaceService;
 
-        public HomeController(ILogger<HomeController> logger, IWallService service, ICommentService commentService, IPostService postService)
+        public HomeController(ILogger<HomeController> logger, IWallService service, ICommentService commentService, IPostService postService, IUserService userService,IUserInterfaceService userInterfaceService)
         {
             _logger = logger;
             _service = service;
             _commentService = commentService;
             _postService = postService;
+            _userService = userService;
+            _userInterfaceService = userInterfaceService;
+
         }
 
 
         public async Task<IActionResult> WallAsync()
         {
-            ServiceResult<WallViewModel> wall = await _service.getWall(1);
+            ServiceResult<WallViewModel> wall = await _service.getWall(140);
             if (wall.IsOk())
                 return View(wall.Result);
             else
@@ -58,6 +64,17 @@ namespace WallProject.Controllers
             else
                 return View("Privacy", wall.Message);
         }
+
+        [Route("UserInterface/{userID}")]
+        public async Task<IActionResult> UserInterface([FromRoute] int userID)
+        {
+            ServiceResult<UserInterfaceView> wall = await _userInterfaceService.getUserInterface(userID);
+            if (wall.IsOk())
+                return View("UserInterface", wall.Result);
+            else
+                return View("Privacy", wall.Message);
+        }
+
 
         [Route("userPosts/{userID}")]
         public async Task<IActionResult> UserPosts([FromRoute] int userID)

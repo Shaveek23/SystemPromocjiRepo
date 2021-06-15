@@ -21,15 +21,16 @@
                    id="EditComment_@Model.Id.ToString()"
                    value="@Model.Content">
         </p>
+
         <div style="overflow: hidden;">
 
             @if (@Model.OwnerMode)
             {
                 <p style="float:inline-end;">
-                    <a id="CommentEditButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentEditClick(@Model.Id)">
+                    <a id="CommentEditButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentEditClickListing(@Model.Id)">
                         Edit
                     </a>
-                    <a id="CommentSaveButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentSaveClick(@Model.CurrentUser.UserID, @Model.Id)" hidden=true>
+                    <a id="CommentSaveButton_@Model.Id.ToString()" href="#" class="btn-block" onclick="CommentSaveClickListing(@Model.CurrentUser.UserID, @Model.Id)" hidden=true>
                         Save
                     </a>
                 </p>
@@ -49,13 +50,13 @@
 
 <script type="text/javascript">
     //PURE JS
-    async function CommentEditClick(id) {
+    async function CommentEditClickListing(id) {
         document.getElementById("EditComment_" + id.toString()).disabled = !document.getElementById("EditComment_" + id.toString()).disabled;
         document.getElementById("CommentSaveButton_" + id.toString()).hidden = !document.getElementById("CommentSaveButton_" + id.toString()).hidden;
         document.getElementById("CommentEditButton_" + id.toString()).hidden = !document.getElementById("CommentEditButton_" + id.toString()).hidden;
     }
 
-    async function CommentSaveClick(userID, commentID) {
+    async function CommentSaveClickListing(userID, commentID) {
         var content = document.getElementById("EditComment_" + commentID.toString()).value;
         EditComment(userID, commentID, content)
 
@@ -85,22 +86,24 @@
         location.reload(true);
     }
 
-        async function LikeComment(userId, commentId, like) {
+    async function LikeComment(userId, commentId, like) {
         $.ajax({
             url: '@Url.Action("EditCommentLikeStatus", "Comment")',
-            data: { "userID": userId,  "commentID": commentId, "like": like },
+            data: { "userID": userId, "commentID": commentId, "like": like },
 
-        type: 'PUT',
-        dateType: "json",
-        cache:false,
-        success: function (data)
-        {
-        },
-        error: function (data)
-        {
-            console.log("ERROR " + data)
-        }
-     });
+            type: 'PUT',
+            dateType: "json",
+            cache: false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+            }
+        });
+
 
         location.reload(true);
+    }
+    
+
 </script>

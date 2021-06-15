@@ -1,0 +1,97 @@
+﻿@model WallProject.Models.MainView.UserInterfaceView
+
+@{
+    ViewData["Title"] = "UserInterface";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.User.UserName</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <h4>User Name</h4>
+        <p class="fb-user-status">
+            <input style="border:none;background-color:white"
+                   type="text"
+                   id="UserName"
+                   value="@Model.User.UserName" />
+        </p>
+        <hr />
+        <h4>User Email</h4>
+        <p class="fb-user-status">
+            <input style="border:none;background-color:white"
+                   type="text"
+                   id="UserEmail"
+                   value="@Model.User.UserEmail" />
+        </p>
+        @*<div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>*@
+        <div class="form-group">
+            <input type="button" value="Save" class="submitBtn" onclick="UserSubmitClick(@Model.User.UserID)" />
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block">@Html.ActionLink("Go back to wall", "UserWall", "Home", new { userID = Model.User.UserID }, null)</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+
+        <h4>All categories you can subscribe to:</h4>
+        @foreach (var category in @Model.AllCategories)
+        {
+            <div class="checkbox">
+                @if (Model.SubscribedCategoriesID.Contains(category.CategoryID))
+                {
+                    <label><input type="checkbox" class="icheck" checked onclick="CheckboxClick(@Model.User.UserID, @category.CategoryID, 0)"> @category.CategoryName </label>
+                }
+                else
+                {
+                    <label><input type="checkbox" class="icheck" onclick="CheckboxClick(@Model.User.UserID, @category.CategoryID, 1)"> @category.CategoryName </label>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    async function UserSubmitClick(userID) {
+        var userName = document.getElementById("UserName").value.toString();
+        var userEmail = document.getElementById("UserEmail").value.toString();
+        EditUser(userID, userName, userEmail);
+    }
+
+    async function CheckboxClick(userID, categoryID, subscribe) {
+        SubscribeCategory(userID, categoryID, subscribe);
+    }
+
+    async function EditUser(userId, userName, userEmail) {
+
+        $.ajax({
+            url: '@Url.Action("EditUser", "UserInterface")',
+            data: { "userID": userId, "userName": userName, "userEmail": userEmail },
+
+
+            type: 'PUT',
+            dateType: "json",
+            cache:false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+                }
+            });
+        location.reload(true);
+    }
+
+    async function SubscribeCategory(userId, categoryId, subscribe) {
+
+        $.ajax({
+            url: '@Url.Action("SubscribeCategory", "UserInterface")',
+            data: { "userID": userId, "categoryID": categoryId, "subscribe": subscribe }
+        });
+        location.reload(true);
+    }
+</script>
