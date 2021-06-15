@@ -85,22 +85,22 @@
         location.reload(true);
     }
 
-        async function LikeComment(userId, commentId, like) {
+    async function LikeComment(userId, commentId, like) {
         $.ajax({
             url: '@Url.Action("EditCommentLikeStatus", "Comment")',
-            data: { "userID": userId,  "commentID": commentId, "like": like },
+            data: { "userID": userId, "commentID": commentId, "like": like },
 
-        type: 'PUT',
-        dateType: "json",
-        cache:false,
-        success: function (data)
-        {
-        },
-        error: function (data)
-        {
-            console.log("ERROR " + data)
-        }
-     });
+            type: 'PUT',
+            dateType: "json",
+            cache: false,
+            success: function (data) {
+            },
+            error: function (data) {
+                console.log("ERROR " + data)
+            }
+        });
 
         location.reload(true);
+    }
+    
 </script>
